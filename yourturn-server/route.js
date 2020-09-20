@@ -1,12 +1,11 @@
+const { json } = require('express');
+const controller = require('./controller');
 const express = require('express');
+var bodyParser = require('body-parser');
+var jsonParser = bodyParser.json();
 const router = express.Router();
 
-const welcome = __dirname+'/welcome.html'
-
-router.get('/', (req,res) => res.send('welcome'));
-router.use((req,res)=> {
-    res.statusCode = 404;
-    res.send('Error 404');
-});
+router.post('/signin', jsonParser, controller.signIn);
+router.use(controller.error);
 
 module.exports = router;

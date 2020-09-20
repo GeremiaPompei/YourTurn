@@ -1,5 +1,6 @@
 import 'package:yourturn_client/model/cache.dart';
 import 'package:yourturn_client/model/queue.dart';
+import 'package:yourturn_client/model/rest_functions.dart';
 import 'package:yourturn_client/model/user.dart';
 
 class MainController {
@@ -9,6 +10,12 @@ class MainController {
   MainController() {
     this._authenticate = false;
     this._cache = new Cache();
+  }
+
+  Future<dynamic> signIn(Map<String, String> params) async{
+    var res = await RestFunctions.signIn(params);
+    this._authenticate = true;
+    return res;
   }
 
   void createQueue(String id, String luogo) =>

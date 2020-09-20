@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>668343194323-g0unikvmtdebd4rgs490r14bgtv5niqk.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.668343194323-g0unikvmtdebd4rgs490r14bgtv5niqk</string>
+	<key>API_KEY</key>
+	<string>AIzaSyDOrmBoS9lIEea5vNeDjH0zc0vMvzFDzSk</string>
+	<key>GCM_SENDER_ID</key>
+	<string>668343194323</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.unicam.pawm.yourturn.client</string>
+	<key>PROJECT_ID</key>
+	<string>yourturn-9772d</string>
+	<key>STORAGE_BUCKET</key>
+	<string>yourturn-9772d.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:668343194323:ios:d35f57329df7a2b3ae3a26</string>
+	<key>DATABASE_URL</key>
+	<string>https://yourturn-9772d.firebaseio.com</string>
+</dict>
+</plist>

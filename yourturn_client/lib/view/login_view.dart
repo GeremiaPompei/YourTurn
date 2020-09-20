@@ -16,7 +16,7 @@ class LogInView extends StatefulWidget {
 }
 
 class _LogInViewState extends State<LogInView> {
-  Map<String,String> _param = {'User': null, 'Password': null};
+  Map<String,String> _param = {'Email': null, 'Password': null};
 
   @override
   Widget build(BuildContext context) {

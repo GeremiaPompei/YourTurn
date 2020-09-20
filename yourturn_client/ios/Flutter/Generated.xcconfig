@@ -1,7 +1,7 @@
 // This is a generated file; do not edit or check into version control.
 FLUTTER_ROOT=/Users/geremiapompei/Developer/flutter
-FLUTTER_APPLICATION_PATH=/Users/geremiapompei/Desktop/YourTurn/yourturn_client
-FLUTTER_TARGET=/Users/geremiapompei/Desktop/YourTurn/yourturn_client/lib/main.dart
+FLUTTER_APPLICATION_PATH=/Users/geremiapompei/Desktop/JetBrains/IntelliJ/YourTurn/yourturn_client
+FLUTTER_TARGET=/Users/geremiapompei/Desktop/JetBrains/IntelliJ/YourTurn/yourturn_client/lib/main.dart
 FLUTTER_BUILD_DIR=build
 SYMROOT=${SOURCE_ROOT}/../build/ios
 OTHER_LDFLAGS=$(inherited) -framework Flutter

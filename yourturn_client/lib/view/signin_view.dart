@@ -16,7 +16,16 @@ class SignInView extends StatefulWidget {
 }
 
 class _SignInViewState extends State<SignInView> {
-  Map<String,String> _param = {'User': null, 'Password': null};
+  Map<String, String> _params = {
+    'Nome': null,
+    'Cognome': null,
+    'Eta': null,
+    'Sesso': null,
+    'Telefono': null,
+    'Email': null,
+    'Password': null,
+    'Ripeti Password': null
+  };
 
   @override
   Widget build(BuildContext context) {
@@ -31,9 +40,9 @@ class _SignInViewState extends State<SignInView> {
               child: ListView.separated(
                 shrinkWrap: true,
                 scrollDirection: Axis.vertical,
-                itemCount: _param.length,
+                itemCount: _params.length,
                 itemBuilder: (context, i) =>
-                    CreateCellView(_param, _param.keys.toList()[i]),
+                    CreateCellView(_params, _params.keys.toList()[i]),
                 separatorBuilder: (context, i) => SizedBox(
                   height: 20,
                 ),
@@ -50,8 +59,13 @@ class _SignInViewState extends State<SignInView> {
               ),
               onPressed: () {
                 setState(() {
-                  Navigator.pushNamedAndRemoveUntil(
-                      context, '/body', (route) => route.popped == null);
+                  if (_params.values.elementAt(_params.length - 2) ==
+                      _params.values.elementAt(_params.length - 1))
+                    widget._controller.signIn(_params).then((value) {
+                      if (value == 'Signed')
+                        Navigator.pushNamedAndRemoveUntil(
+                            context, '/body', (route) => route.popped == null);
+                    });
                 });
               },
             ),
