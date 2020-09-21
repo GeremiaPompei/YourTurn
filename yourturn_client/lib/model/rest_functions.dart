@@ -1,13 +1,20 @@
 import 'dart:convert';
 import 'package:http/http.dart';
+import '../main.dart';
 
 class RestFunctions {
-  static const String indirizzo = 'http://localhost:3000/';
-
-  static Future<dynamic> signIn(Map<String, String> params) async {
+  static Future<dynamic> signIn(String nome, String cognome, String eta,
+      String sesso, String email, String telefono) async {
     String element;
     Map<String, String> header = {"Content-Type": "application/json"};
-    dynamic body = json.encode(params);
+    dynamic body = json.encode({
+      'Nome': nome,
+      'Cognome': cognome,
+      'Eta': eta,
+      'Sesso': sesso,
+      'Email': email,
+      'Telefono': telefono
+    });
     final response = await _requestByPost(indirizzo + 'signin', header, body);
     if (response.statusCode == 200) {
       element = response.body;

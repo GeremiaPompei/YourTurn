@@ -61,7 +61,16 @@ class _SignInViewState extends State<SignInView> {
                 setState(() {
                   if (_params.values.elementAt(_params.length - 2) ==
                       _params.values.elementAt(_params.length - 1))
-                    widget._controller.signIn(_params).then((value) {
+                    widget._controller
+                        .signIn(
+                            _params['Nome'],
+                            _params['Cognome'],
+                            _params['Eta'],
+                            _params['Sesso'],
+                            _params['Email'],
+                            _params['Telefono'],
+                            _params['Password'])
+                        .then((value) {
                       if (value == 'Signed')
                         Navigator.pushNamedAndRemoveUntil(
                             context, '/body', (route) => route.popped == null);

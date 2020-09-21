@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "668343194323",
+    "firebase_url": "https://yourturn-9772d.firebaseio.com",
+    "project_id": "yourturn-9772d",
+    "storage_bucket": "yourturn-9772d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:668343194323:android:7267002db1befa17ae3a26",
+        "android_client_info": {
+          "package_name": "com.unicam.pawm.yourturn.client.yourturn_client"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "668343194323-8msmcrmbnkci70oku3e7eoaqjfrbgoe2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAV66APnsPkQQK9rNX-PHmmP3rKguv4kgM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "668343194323-8msmcrmbnkci70oku3e7eoaqjfrbgoe2.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "668343194323-g0unikvmtdebd4rgs490r14bgtv5niqk.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.unicam.pawm.yourturn.client"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
