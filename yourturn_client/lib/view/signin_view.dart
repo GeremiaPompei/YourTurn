@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:yourturn_client/controller/main_controller.dart';
+import 'package:yourturn_client/model/user.dart';
 import 'package:yourturn_client/utility/colore.dart';
 import 'package:yourturn_client/utility/stile_text.dart';
 
@@ -19,7 +20,7 @@ class _SignInViewState extends State<SignInView> {
   Map<String, String> _params = {
     'Nome': null,
     'Cognome': null,
-    'Eta': null,
+    'Anno di Nascita': null,
     'Sesso': null,
     'Telefono': null,
     'Email': null,
@@ -65,7 +66,7 @@ class _SignInViewState extends State<SignInView> {
                         .signIn(
                             _params['Nome'],
                             _params['Cognome'],
-                            _params['Eta'],
+                            _params['Anno di Nascita'],
                             _params['Sesso'],
                             _params['Email'],
                             _params['Telefono'],
@@ -74,7 +75,12 @@ class _SignInViewState extends State<SignInView> {
                       if (value == 'Signed')
                         Navigator.pushNamedAndRemoveUntil(
                             context, '/body', (route) => route.popped == null);
-                    });
+                    }).catchError((err) => {
+                              if (err.code == 'weak-password')
+                                print('weak-password')
+                              else if (err.code == 'email-already-in-use')
+                                print('email-already-in-use')
+                            });
                 });
               },
             ),

@@ -34,10 +34,9 @@ class _LogInViewState extends State<LogInView> {
                 itemCount: _param.length,
                 itemBuilder: (context, i) =>
                     CreateCellView(_param, _param.keys.toList()[i]),
-                separatorBuilder: (context, i) =>
-                    SizedBox(
-                      height: 20,
-                    ),
+                separatorBuilder: (context, i) => SizedBox(
+                  height: 20,
+                ),
               ),
             ),
             SizedBox(
@@ -51,10 +50,23 @@ class _LogInViewState extends State<LogInView> {
               ),
               onPressed: () {
                 setState(() {
-                  widget._controller.logIn(_param['Email'], _param['Password'])
-                      .then((value) =>
-                      Navigator.pushNamedAndRemoveUntil(
-                          context, '/body', (route) => route.popped == null));
+                  widget._controller
+                      .logIn(_param['Email'], _param['Password'])
+                      .then((value) => {
+                            if (value != null)
+                              {
+                                Navigator.pushNamedAndRemoveUntil(context,
+                                    '/body', (route) => route.popped == null)
+                              }
+                          })
+                      .catchError((err) => {
+                            if (err.code == 'user-not-found')
+                              print('user-not-found')
+                            else if (err.code == 'wrong-password')
+                              print('wrong-password')
+                            else if (err.code == 'invalid-email')
+                              print('invalid-email')
+                          });
                 });
               },
             ),

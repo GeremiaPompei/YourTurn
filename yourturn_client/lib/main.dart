@@ -4,9 +4,9 @@ import 'package:yourturn_client/controller/main_controller.dart';
 import 'package:yourturn_client/view/authenticate_view.dart';
 import 'package:yourturn_client/view/main_view.dart';
 
-const String indirizzo = 'http://localhost:3000/';
+const String indirizzo = 'http://192.168.1.111:3000/';
 
-void main() async{
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   MainController _controller = MainController();

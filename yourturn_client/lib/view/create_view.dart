@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 import 'package:yourturn_client/utility/colore.dart';
 import 'package:yourturn_client/utility/stile_text.dart';
 import 'package:yourturn_client/view/create_cell_view.dart';
@@ -11,7 +12,7 @@ class CreateView extends StatefulWidget {
 
 class _CreateViewState extends State<CreateView> {
   var _nuovaCoda = {
-    'ID': null,
+    'ID': 'null',
     'Luogo': null,
   };
 
@@ -31,10 +32,18 @@ class _CreateViewState extends State<CreateView> {
                 itemCount: _nuovaCoda.length,
                 itemBuilder: (context, i) =>
                     CreateCellView(_nuovaCoda, _nuovaCoda.keys.toList()[i]),
-                separatorBuilder: (context, i) => SizedBox(
-                  height: 20,
-                ),
+                separatorBuilder: (context, i) =>
+                    SizedBox(
+                      height: 20,
+                    ),
               ),
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            QrImage(
+              size: 200,
+              data: _nuovaCoda['ID'],
             ),
             SizedBox(
               height: 20,

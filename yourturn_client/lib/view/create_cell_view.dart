@@ -24,7 +24,9 @@ class _CreateCellViewState extends State<CreateCellView> {
           style: StileText.sottotitolo,
         ),
         TextField(
-          onChanged: (text) => widget._nuovaCoda[widget._title] = text,
+          onChanged: (text) => setState(() {
+            widget._nuovaCoda[widget._title] = text;
+          }),
         ),
       ],
     );
