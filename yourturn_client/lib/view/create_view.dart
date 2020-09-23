@@ -1,11 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import 'package:yourturn_client/controller/main_controller.dart';
 import 'package:yourturn_client/utility/colore.dart';
 import 'package:yourturn_client/utility/stile_text.dart';
 import 'package:yourturn_client/view/create_cell_view.dart';
 
 class CreateView extends StatefulWidget {
+  MainController _controller;
+
   @override
   _CreateViewState createState() => _CreateViewState();
 }
@@ -32,10 +35,9 @@ class _CreateViewState extends State<CreateView> {
                 itemCount: _nuovaCoda.length,
                 itemBuilder: (context, i) =>
                     CreateCellView(_nuovaCoda, _nuovaCoda.keys.toList()[i]),
-                separatorBuilder: (context, i) =>
-                    SizedBox(
-                      height: 20,
-                    ),
+                separatorBuilder: (context, i) => SizedBox(
+                  height: 20,
+                ),
               ),
             ),
             SizedBox(
@@ -55,7 +57,10 @@ class _CreateViewState extends State<CreateView> {
                 style: StileText.sottotitolo,
               ),
               onPressed: () {
-                setState(() {});
+                setState(() {
+                  widget._controller
+                      .createQueue(_nuovaCoda['ID'], _nuovaCoda['Luogo']);
+                });
               },
             ),
           ],

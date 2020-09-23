@@ -38,4 +38,8 @@ class Queue {
   String get id => _id;
 
   DateTime get startDateTime => _startDateTime;
+
+  Map<String, dynamic> toMap() {
+
+  }
 }
