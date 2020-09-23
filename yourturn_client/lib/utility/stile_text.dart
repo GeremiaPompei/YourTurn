@@ -13,7 +13,7 @@ class StileText {
   static final sottotitolo = TextStyle(
     fontFamily: Font.sottotitolo,
     fontWeight: FontWeight.w900,
-    fontSize: 25,
+    fontSize: 20,
     color: Colore.front1,
   );
 

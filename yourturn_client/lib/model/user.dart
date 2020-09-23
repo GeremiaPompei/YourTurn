@@ -1,4 +1,6 @@
+import 'dart:convert';
 import 'package:yourturn_client/model/queue.dart';
+import 'package:yourturn_client/model/rest_functions.dart';
 
 class User {
   String _uid;
@@ -9,23 +11,41 @@ class User {
   String _sesso;
   String _email;
   String _telefono;
-  List<Queue> _myQueues = [];
-  List<Queue> _otherQueues = [];
+  List<Queue> _myQueues;
+  List<Queue> _otherQueues;
 
   User(this._uid, this._tokenid, this._nome, this._cognome, this._anno_nascita,
-      this._sesso, this._email, this._telefono);
+      this._sesso, this._email, this._telefono) {
+    this._myQueues = [];
+    this._otherQueues = [];
+  }
 
-  User.fromJson(Map<String, dynamic> json) {
-    this._uid = json['uid'];
-    this._nome = json['nome'];
-    this._cognome = json['cognome'];
-    this._anno_nascita = json['annonascita'];
-    this._sesso = json['sesso'];
-    this._email = json['email'];
-    this._telefono = json['telefono'];
-    this._telefono = json['tokenid'];
-    json['myqueues'].forEach((value) => {this._myQueues.add(value)});
-    json['otherqueues'].forEach((value) => {this._otherQueues.add(value)});
+  User.fromJson(Map<String, dynamic> pjson, Queue queue) {
+    RestFunctions rest = new RestFunctions();
+    this._uid = pjson['uid'];
+    this._nome = pjson['nome'];
+    this._cognome = pjson['cognome'];
+    this._anno_nascita = pjson['annonascita'];
+    this._sesso = pjson['sesso'];
+    this._email = pjson['email'];
+    this._telefono = pjson['telefono'];
+    this._telefono = pjson['tokenid'];
+    this._myQueues = [];
+    this._otherQueues = [];
+    _initQueue('myqueue', this._myQueues, queue, pjson, rest);
+    _initQueue('otherqueue', this._otherQueues, queue, pjson, rest);
+  }
+
+  void _initQueue(String title, List<Queue> lqueues, Queue queue,
+      Map<String, dynamic> pjson, RestFunctions rest) async {
+    for (dynamic value in pjson[title]) {
+      if (queue != null && queue.id == value)
+        lqueues.add(queue);
+      else {
+        var res = await rest.getQueue(value);
+        lqueues.add(Queue.fromJson(json.decode(res), this));
+      }
+    }
   }
 
   String get uid => _uid;

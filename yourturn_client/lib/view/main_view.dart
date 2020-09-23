@@ -6,7 +6,6 @@ import 'package:yourturn_client/utility/stile_text.dart';
 import 'package:yourturn_client/view/create_view.dart';
 import 'package:yourturn_client/view/history_view.dart';
 import 'package:yourturn_client/view/navigation_bar.dart';
-import 'package:yourturn_client/view/scan_view.dart';
 
 class MainView extends StatefulWidget {
   MainController _controller;
@@ -31,13 +30,10 @@ class _MainViewState extends State<MainView> {
       this._indexItem = index;
       switch (index) {
         case 0:
-          this._varWidget = HistoryView();
+          this._varWidget = HistoryView(widget._controller);
           break;
         case 1:
-          this._varWidget = ScanView();
-          break;
-        case 2:
-          this._varWidget = CreateView();
+          this._varWidget = CreateView(widget._controller);
           break;
       }
     });
@@ -57,8 +53,10 @@ class _MainViewState extends State<MainView> {
             icon: Icon(Icons.exit_to_app),
             onPressed: () {
               setState(() {
-                Navigator.pushNamedAndRemoveUntil(
-                    context, '/authenticate', (route) => route.popped == null);
+                widget._controller.logOut().then((value) =>
+                    Navigator.pushNamedAndRemoveUntil(
+                        context, '/authenticate', (route) =>
+                    route.popped == null));
               });
             },
           ),

@@ -8,12 +8,13 @@ class MainController {
   myuser.User _user;
   bool _authenticate;
   FirebaseAuth _auth = FirebaseAuth.instance;
+  RestFunctions _rest = new RestFunctions();
 
   MainController() {
     this._authenticate = false;
   }
 
-  Future<dynamic> signIn(String nome, String cognome, String eta, String sesso,
+  Future<dynamic> signIn(String nome, String cognome, String annonascita, String sesso,
       String email, String telefono, String password) async {
     UserCredential credential = await _auth.createUserWithEmailAndPassword(
         email: email, password: password);
@@ -22,11 +23,11 @@ class MainController {
         await credential.user.getIdToken(),
         nome,
         cognome,
-        eta,
+        annonascita,
         sesso,
         email,
         telefono);
-    var response = await RestFunctions.signIn(user);
+    var response = await _rest.createUser(user);
     this._user = user;
     this._authenticate = true;
     return response;
@@ -35,20 +36,39 @@ class MainController {
   Future<dynamic> logIn(String email, String password) async {
     UserCredential credential = await _auth.signInWithEmailAndPassword(
         email: email, password: password);
-    var response = await RestFunctions.logIn(credential.user.uid);
-    this._user = new myuser.User.fromJson(json.decode(response));
+    var response = await _rest.getUser(credential.user.uid);
+    this._user = new myuser.User.fromJson(json.decode(response),null);
     this._authenticate = true;
     return response;
   }
 
-  void createQueue(String id, String luogo) =>
-      myQueues.add(new Queue(id, luogo, _user));
+  Future<dynamic> logOut() async {
+    var out = await _auth.signOut();
+    _authenticate = false;
+    return out;
+  }
 
-  void enqueue(myuser.User user) => myQueues.last.enqueue(user);
+  Future<dynamic> createQueue(String id, String luogo) async {
+    Queue queue = new Queue(id, luogo, _user);
+    var response = await _rest.createQueue(queue);
+    myQueues.add(queue);
+    return response;
+  }
 
-  void dequeue(myuser.User user) => myQueues.last.dequeue(user);
+  void closeQueue() => myQueues.last.close();
 
-  void next() => myQueues.last.next();
+  void next() {
+    if (!myQueues.last.isClosed) myQueues.last.next();
+  }
+
+  Future<dynamic> enqueueToOther(String id) async {
+    Map<String, dynamic> queue = json.decode(await _rest.getQueue(id));
+    Map<String, dynamic> enqueue = {'uid': _user.uid, 'id': queue['id']};
+    _user.otherQueues.add(Queue.fromJson(queue, _user));
+    return await _rest.enqueue(enqueue);
+  }
+
+  myuser.User get user => _user;
 
   myuser.User get first => myQueues.last.getFirst();
 

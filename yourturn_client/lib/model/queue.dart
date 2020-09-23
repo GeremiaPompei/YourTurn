@@ -1,13 +1,45 @@
+import 'dart:convert';
+
+import 'package:yourturn_client/model/rest_functions.dart';
 import 'package:yourturn_client/model/user.dart';
 
 class Queue {
-  final String _id;
-  final String _luogo;
-  final User _admin;
-  final List<User> _queue = [];
+  String _id;
+  String _luogo;
+  User _admin;
+  List<User> _queue = [];
   DateTime _startDateTime = DateTime.now();
+  DateTime _stopDateTime;
+  bool _isClosed = false;
 
   Queue(this._id, this._luogo, this._admin);
+
+  Queue.fromJson(Map<String, dynamic> pjson, User user) {
+    RestFunctions rest = new RestFunctions();
+    this._id = pjson['id'];
+    this._luogo = pjson['luogo'];
+    List<User> lusers = [];
+    _initUser('admin', lusers, user, pjson, rest);
+    this._admin = lusers.first;
+    _initUser('queue', this._queue, user, pjson, rest);
+    this._startDateTime = DateTime.parse(pjson['startdatetime']);
+    if (pjson['stopdatetime'] == 'null')
+      this._stopDateTime = null;
+    else
+      this._stopDateTime = DateTime.parse(pjson['stopdatetime']);
+  }
+
+  void _initUser(String title, List<User> lusers, User user,
+      Map<String, dynamic> pjson, RestFunctions rest) async {
+    for (dynamic value in pjson[title]) {
+      if (user != null && user.uid == value)
+        lusers.add(user);
+      else {
+        var res = await rest.getQueue(value);
+        lusers.add(User.fromJson(json.decode(res), this));
+      }
+    }
+  }
 
   void enqueue(User user) {
     this._queue.add(user);
@@ -18,15 +50,19 @@ class Queue {
   }
 
   void next() {
-    if(this._queue.isNotEmpty)
-      this._queue.removeAt(0);
+    if (this._queue.isNotEmpty) this._queue.removeAt(0);
   }
 
   User getFirst() {
-    if(this._queue.isNotEmpty)
+    if (this._queue.isNotEmpty)
       return this._queue.first;
     else
       return null;
+  }
+
+  void close() {
+    this._stopDateTime = DateTime.now();
+    this._isClosed = true;
   }
 
   List<User> get queue => _queue;
@@ -39,7 +75,16 @@ class Queue {
 
   DateTime get startDateTime => _startDateTime;
 
-  Map<String, dynamic> toMap() {
+  DateTime get stopDateTime => _stopDateTime;
 
-  }
+  bool get isClosed => _isClosed;
+
+  Map<String, dynamic> toMap() => {
+        'id': id,
+        'luogo': luogo,
+        'admin': admin.uid,
+        'queue': queue.map((element) => element.uid).toList(),
+        'startdatetime': startDateTime.toString(),
+        'stopdatetime': stopDateTime.toString()
+      };
 }

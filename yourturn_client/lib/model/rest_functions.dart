@@ -1,38 +1,40 @@
+import 'dart:collection';
 import 'dart:convert';
 import 'package:http/http.dart';
+import 'package:yourturn_client/model/queue.dart';
 import 'package:yourturn_client/model/user.dart' as myuser;
 import '../main.dart';
 
 class RestFunctions {
-  static Future<dynamic> signIn(myuser.User user) async {
+  Future<dynamic> createUser(myuser.User user) async {
+    return await _requestByPost('signin', user.toMap());
+  }
+
+  Future<dynamic> getUser(String uid) async {
+    return await _requestByPost('login', {'uid': uid});
+  }
+
+  Future<dynamic> createQueue(Queue queue) async {
+    return await _requestByPost('createqueue', queue.toMap());
+  }
+
+  Future<dynamic> enqueue(Map<String, dynamic> queue) async {
+    return await _requestByPost('enqueue', queue);
+  }
+
+  Future<dynamic> getQueue(String id) async {
+    return await _requestByPost('getqueue', {'id': id});
+  }
+
+  Future<String> _requestByPost(String url, Map el) async {
     String element;
     Map<String, String> header = {"Content-Type": "application/json"};
-    dynamic body = json.encode(user.toMap());
-    final response = await _requestByPost(indirizzo + 'signin', header, body);
+    dynamic body = json.encode(el);
+    final response = await Client()
+        .post(Uri.parse(indirizzo + url), headers: header, body: body);
     if (response.statusCode == 200) {
       element = response.body;
     }
     return element;
-  }
-
-  static Future<dynamic> logIn(String uid) async {
-    String element;
-    Map<String, String> header = {"Content-Type": "application/json"};
-    final response = await _requestByPost(
-        indirizzo + 'login', header, json.encode({'uid': uid}));
-    if (response.statusCode == 200) {
-      element = response.body;
-    }
-    return element;
-  }
-
-  static Future<Response> _responseByGet(
-      String word, Map<String, String> header, dynamic body) async {
-    return await Client().get(Uri.parse(word));
-  }
-
-  static Future<Response> _requestByPost(
-      String word, Map<String, String> header, dynamic body) async {
-    return await Client().post(Uri.parse(word), headers: header, body: body);
   }
 }

@@ -4,10 +4,10 @@ import 'package:yourturn_client/utility/colore.dart';
 import 'package:yourturn_client/utility/stile_text.dart';
 
 class CreateCellView extends StatefulWidget {
-  Map<String, String> _nuovaCoda;
   String _title;
+  Widget _varWidget;
 
-  CreateCellView(this._nuovaCoda, this._title);
+  CreateCellView(this._title, this._varWidget);
 
   @override
   _CreateCellViewState createState() => _CreateCellViewState();
@@ -16,19 +16,17 @@ class CreateCellView extends StatefulWidget {
 class _CreateCellViewState extends State<CreateCellView> {
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Text(
-          widget._title,
-          textAlign: TextAlign.center,
-          style: StileText.sottotitolo,
-        ),
-        TextField(
-          onChanged: (text) => setState(() {
-            widget._nuovaCoda[widget._title] = text;
-          }),
-        ),
-      ],
-    );
+    return Padding(
+        padding: EdgeInsets.all(10),
+        child: Column(
+          children: [
+            Text(
+              widget._title,
+              textAlign: TextAlign.center,
+              style: StileText.sottotitolo,
+            ),
+            widget._varWidget,
+          ],
+        ));
   }
 }

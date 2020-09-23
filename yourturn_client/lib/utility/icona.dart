@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 class Icona {
-  static const prima = Icons.history;
-  static const seconda = Icons.photo_camera;
-  static const terza = Icons.create;
+  static const prima = Icons.people;
+  static const seconda = Icons.create_new_folder;
 }
