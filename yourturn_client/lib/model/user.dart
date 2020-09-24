@@ -20,7 +20,7 @@ class User {
     this._otherQueues = [];
   }
 
-  User.fromJson(Map<String, dynamic> pjson, Queue queue) {
+  User.fromJson(Map<String, dynamic> pjson) {
     RestFunctions rest = new RestFunctions();
     this._uid = pjson['uid'];
     this._nome = pjson['nome'];
@@ -29,20 +29,18 @@ class User {
     this._sesso = pjson['sesso'];
     this._email = pjson['email'];
     this._telefono = pjson['telefono'];
-    this._telefono = pjson['tokenid'];
+    this._tokenid = pjson['tokenid'];
     this._myQueues = [];
     this._otherQueues = [];
-    _initQueue('myqueue', this._myQueues, queue, pjson, rest);
-    _initQueue('otherqueue', this._otherQueues, queue, pjson, rest);
+    _initQueue(pjson['myqueues'], this._myQueues, rest);
+    _initQueue(pjson['otherqueues'], this._otherQueues, rest);
   }
 
-  void _initQueue(String title, List<Queue> lqueues, Queue queue,
-      Map<String, dynamic> pjson, RestFunctions rest) async {
-    for (dynamic value in pjson[title]) {
-      if (queue != null && queue.id == value)
-        lqueues.add(queue);
-      else {
-        var res = await rest.getQueue(value);
+  void _initQueue(
+      List<dynamic> lstr, List<Queue> lqueues, RestFunctions rest) async {
+    if (lstr != null) {
+      for (dynamic value in lstr) {
+        var res = await rest.getQueue(value.toString());
         lqueues.add(Queue.fromJson(json.decode(res), this));
       }
     }

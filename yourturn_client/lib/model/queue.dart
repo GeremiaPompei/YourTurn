@@ -19,9 +19,10 @@ class Queue {
     this._id = pjson['id'];
     this._luogo = pjson['luogo'];
     List<User> lusers = [];
-    _initUser('admin', lusers, user, pjson, rest);
-    this._admin = lusers.first;
-    _initUser('queue', this._queue, user, pjson, rest);
+    _initUser([pjson['admin']], lusers, user, rest).then((value) {
+      this._admin = lusers.first;
+    });
+    _initUser(pjson['queue'], this._queue, user, rest);
     this._startDateTime = DateTime.parse(pjson['startdatetime']);
     if (pjson['stopdatetime'] == 'null')
       this._stopDateTime = null;
@@ -29,16 +30,19 @@ class Queue {
       this._stopDateTime = DateTime.parse(pjson['stopdatetime']);
   }
 
-  void _initUser(String title, List<User> lusers, User user,
-      Map<String, dynamic> pjson, RestFunctions rest) async {
-    for (dynamic value in pjson[title]) {
-      if (user != null && user.uid == value)
+  Future<dynamic> _initUser(List<dynamic> lstr, List<User> lusers, User user,
+      RestFunctions rest) async {
+    for (dynamic value in lstr) {
+      if (user != null && user.uid == value.toString())
         lusers.add(user);
       else {
-        var res = await rest.getQueue(value);
-        lusers.add(User.fromJson(json.decode(res), this));
+        Map<String,dynamic> res = json.decode(await rest.getUser(value.toString()));
+        res['myqueues'] = [];
+        res['otherqueues'] = [];
+        lusers.add(User.fromJson(res));
       }
     }
+    return lusers;
   }
 
   void enqueue(User user) {

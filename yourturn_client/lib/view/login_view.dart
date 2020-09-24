@@ -16,8 +16,10 @@ class LogInView extends StatefulWidget {
 }
 
 class _LogInViewState extends State<LogInView> {
-  String _email = null;
-  String _password = null;
+  String _email = '';
+  String _password = '';
+  String _emailError = null;
+  String _passwordError = null;
 
   @override
   Widget build(BuildContext context) {
@@ -36,6 +38,9 @@ class _LogInViewState extends State<LogInView> {
                   CreateCellView(
                     'Email',
                     TextField(
+                      decoration: InputDecoration(
+                          hintText: 'Inserisci l\'Email',
+                          errorText: _emailError),
                       onChanged: (text) => setState(() {
                         _email = text;
                       }),
@@ -44,9 +49,12 @@ class _LogInViewState extends State<LogInView> {
                   CreateCellView(
                     'Password',
                     TextField(
+                      decoration: InputDecoration(
+                          hintText: 'Inserisci la Password',
+                          errorText: _passwordError),
                       obscureText: true,
                       onChanged: (text) => setState(() {
-                        _email = text;
+                        _password = text;
                       }),
                     ),
                   ),
@@ -58,25 +66,45 @@ class _LogInViewState extends State<LogInView> {
                     ),
                     onPressed: () {
                       setState(() {
-                        widget._controller
-                            .logIn(_email, _password)
-                            .then((value) => {
-                          if (value != null)
-                            {
-                              Navigator.pushNamedAndRemoveUntil(context,
-                                  '/body', (route) => route.popped == null)
-                            }
-                        })
-                            .catchError((err) => {
-                          if (err.code == 'user-not-found')
-                            print('user-not-found')
-                          else if (err.code == 'wrong-password')
-                            print('wrong-password')
-                          else if (err.code == 'invalid-email')
-                              print('invalid-email')
+                        if (_email.isNotEmpty || _password.isNotEmpty) {
+                          widget._controller
+                              .logIn(_email, _password)
+                              .then((value) => {
+                                    if (value != null)
+                                      {
+                                        Navigator.pushNamedAndRemoveUntil(
+                                            context,
+                                            '/body',
+                                            (route) => route.popped == null)
+                                      }
+                                  })
+                              .catchError((err) => {
+                                    setState(() {
+                                      if (err.code == 'user-not-found') {
+                                        _emailError = 'Utente non trovato';
+                                        _passwordError = null;
+                                      } else if (err.code == 'wrong-password') {
+                                        _passwordError = 'Password errata';
+                                        _emailError = null;
+                                      } else if (err.code == 'invalid-email') {
+                                        _emailError = 'Email non valida';
+                                        _passwordError = null;
+                                      } else
+                                        print(err);
+                                    })
+                                  });
+                        } else {
+                          setState(() {
+                            if (_email.isEmpty)
+                              _emailError = 'Inserire Email';
                             else
-                              print(err)
-                        });
+                              _emailError = null;
+                            if (_password.isEmpty)
+                              _passwordError = 'Inserire Password';
+                            else
+                              _passwordError = null;
+                          });
+                        }
                       });
                     },
                   ),

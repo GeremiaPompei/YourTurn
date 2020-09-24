@@ -1,9 +1,12 @@
 import 'package:barcode_scan/barcode_scan.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart' as speed;
 import 'package:yourturn_client/controller/main_controller.dart';
 import 'package:yourturn_client/utility/colore.dart';
 import 'package:yourturn_client/utility/stile_text.dart';
+import 'package:yourturn_client/view/queuelist_view.dart';
 
 class HistoryView extends StatefulWidget {
   MainController _controller;
@@ -14,82 +17,126 @@ class HistoryView extends StatefulWidget {
   _HistoryViewState createState() => _HistoryViewState();
 }
 
-class _HistoryViewState extends State<HistoryView> {
+class _HistoryViewState extends State<HistoryView>
+    with TickerProviderStateMixin {
   String qrCodeResult = "";
+  ScrollController scrollController;
+  bool dialVisible = true;
+
+  @override
+  void initState() {
+    super.initState();
+    scrollController = ScrollController()
+      ..addListener(() {
+        setState(() {
+          dialVisible = scrollController.position.userScrollDirection ==
+              ScrollDirection.forward;
+        });
+      });
+  }
+
+  speed.SpeedDial buildSpeedDial() {
+    return speed.SpeedDial(
+      foregroundColor: Colore.front1,
+      backgroundColor: Colore.back1,
+      animatedIcon: AnimatedIcons.menu_close,
+      animatedIconTheme: IconThemeData(size: 22.0),
+      visible: dialVisible,
+      curve: Curves.bounceIn,
+      children: [
+        speed.SpeedDialChild(
+          child: Icon(Icons.camera_alt, color: Colore.front1),
+          backgroundColor: Colore.back1,
+          onTap: () async {
+            String codeSanner = await BarcodeScanner.scan(); //barcode scnner
+            setState(() {
+              qrCodeResult = codeSanner;
+            });
+            showPartecipa(context, qrCodeResult);
+          },
+          label: 'Scanner',
+          labelStyle: StileText.sottotitolo,
+          labelBackgroundColor: Colore.back1,
+        ),
+        speed.SpeedDialChild(
+          child: Icon(Icons.search, color: Colore.front1),
+          backgroundColor: Colore.back1,
+          onTap: () {
+            showDialog(
+                context: context,
+                builder: (context) {
+                  String text = '';
+                  return AlertDialog(
+                    title: Text(text),
+                    content: Container(
+                      width: 200,
+                      height: 20,
+                      child: TextField(
+                        onChanged: (input) {
+                          text = input;
+                        },
+                      ),
+                    ),
+                    actions: [
+                      FlatButton(
+                        child: Text(
+                          'Cerca',
+                          style: StileText.corpo,
+                        ),
+                        onPressed: () {
+                          showPartecipa(context, text);
+                        },
+                      ),
+                    ],
+                  );
+                });
+          },
+          label: 'Cerca',
+          labelStyle: StileText.sottotitolo,
+          labelBackgroundColor: Colore.back1,
+        ),
+      ],
+    );
+  }
+
+  void showPartecipa(BuildContext context, String text) {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text(text),
+            actions: [
+              FlatButton(
+                child: Text(
+                  'Partecipa',
+                  style: StileText.corpo,
+                ),
+                onPressed: () async {
+                  await widget._controller.enqueueToOther(text);
+                },
+              ),
+            ],
+          );
+        });
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Colore.back2,
-      child: Padding(
-        padding: EdgeInsets.all(20),
-        child: Flex(
-          direction: Axis.vertical,
-          children: <Widget>[
-            Flexible(
-              child: ListView.separated(
-                itemBuilder: (context, i) => ListTile(
-                  onTap: () {
-                    setState(() {});
-                  },
-                  leading: Text(
-                    widget._controller.otherQueues[i].id,
-                    style: StileText.sottotitolo,
-                  ),
-                  trailing: Text(
-                    widget._controller.otherQueues[i].admin.nome.toString(),
-                    style: StileText.sottotitolo,
-                  ),
+    return Scaffold(
+        body: Container(
+          color: Colore.back2,
+          child: Padding(
+            padding: EdgeInsets.all(10),
+            child: Flex(
+              direction: Axis.vertical,
+              children: <Widget>[
+                Flexible(
+                  child: QueueListView(widget._controller.otherQueues),
                 ),
-                separatorBuilder: (context, i) => Divider(),
-                itemCount: widget._controller.otherQueues.length,
-              ),
+              ],
             ),
-            FlatButton(
-              padding: EdgeInsets.all(15.0),
-              onPressed: () async {
-                String codeSanner =
-                    await BarcodeScanner.scan(); //barcode scnner
-                setState(() {
-                  qrCodeResult = codeSanner;
-                });
-                showDialog(
-                    context: context,
-                    builder: (context) {
-                      return AlertDialog(
-                        title: Text(qrCodeResult),
-                        actions: [
-                          FlatButton(
-                            child: Text(
-                              'Partecipa',
-                              style: StileText.corpo,
-                            ),
-                            onPressed: () async {
-                              await widget._controller
-                                  .enqueueToOther(qrCodeResult);
-                            },
-                          ),
-                        ],
-                      );
-                    });
-                // try{
-                //   BarcodeScanner.scan()    this method is used to scan the QR code
-                // }catch (e){
-                //   BarcodeScanner.CameraAccessDenied;   we can print that user has denied for the permisions
-                //   BarcodeScanner.UserCanceled;   we can print on the page that user has cancelled
-                // }
-              },
-              child: Text(
-                "Apri Scanner",
-                style: StileText.corpo,
-              ),
-              shape: RoundedRectangleBorder(
-                  side: BorderSide(color: Colore.front1, width: 3.0),
-                  borderRadius: BorderRadius.circular(20.0)),
-            ),
-          ],
+          ),
         ),
-      ),
-    );
+        floatingActionButton: buildSpeedDial());
   }
 }

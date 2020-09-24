@@ -14,8 +14,8 @@ class MainController {
     this._authenticate = false;
   }
 
-  Future<dynamic> signIn(String nome, String cognome, String annonascita, String sesso,
-      String email, String telefono, String password) async {
+  Future<dynamic> signIn(String nome, String cognome, String annonascita,
+      String sesso, String email, String telefono, String password) async {
     UserCredential credential = await _auth.createUserWithEmailAndPassword(
         email: email, password: password);
     myuser.User user = new myuser.User(
@@ -37,7 +37,7 @@ class MainController {
     UserCredential credential = await _auth.signInWithEmailAndPassword(
         email: email, password: password);
     var response = await _rest.getUser(credential.user.uid);
-    this._user = new myuser.User.fromJson(json.decode(response),null);
+    this._user = new myuser.User.fromJson(json.decode(response));
     this._authenticate = true;
     return response;
   }
@@ -63,7 +63,7 @@ class MainController {
 
   Future<dynamic> enqueueToOther(String id) async {
     Map<String, dynamic> queue = json.decode(await _rest.getQueue(id));
-    Map<String, dynamic> enqueue = {'uid': _user.uid, 'id': queue['id']};
+    Map<String, dynamic> enqueue = {'uid': _user.uid, 'id': id};
     _user.otherQueues.add(Queue.fromJson(queue, _user));
     return await _rest.enqueue(enqueue);
   }

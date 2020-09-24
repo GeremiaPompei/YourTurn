@@ -12,14 +12,27 @@ class StileText {
 
   static final sottotitolo = TextStyle(
     fontFamily: Font.sottotitolo,
-    fontWeight: FontWeight.w900,
+    fontWeight: FontWeight.w700,
     fontSize: 20,
     color: Colore.front1,
   );
 
   static final corpo = TextStyle(
     fontFamily: Font.corpo,
-    fontWeight: FontWeight.w900,
+    fontWeight: FontWeight.w500,
+    fontSize: 17,
+    color: Colore.front1,
+  );
+
+  static final corpoMini1 = TextStyle(
+    fontFamily: Font.corpo,
+    fontWeight: FontWeight.w200,
+    fontSize: 15,
+    color: Colore.front2,
+  );
+
+  static final corpoMini2 = TextStyle(
+    fontFamily: Font.corpo,
     fontSize: 15,
     color: Colore.front1,
   );
