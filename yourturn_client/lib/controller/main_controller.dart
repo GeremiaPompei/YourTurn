@@ -47,7 +47,7 @@ class MainController {
     UserCredential credential = await _auth.signInWithEmailAndPassword(
         email: email, password: password);
     var response = await _rest.getUser(credential.user.uid);
-    this._user = new myuser.User.fromJson(json.decode(response));
+    this._user = await myuser.User.fromJson(json.decode(response));
     this._authenticate = true;
     return response;
   }
@@ -55,7 +55,7 @@ class MainController {
   Future<dynamic> update() async {
     await testConnection();
     var response = await _rest.getUser(this._user.uid);
-    this._user = new myuser.User.fromJson(json.decode(response));
+    this._user = await myuser.User.fromJson(json.decode(response));
     this._authenticate = true;
     return response;
   }
@@ -101,7 +101,7 @@ class MainController {
     if (res.toString() == '') return null;
     Map<String, dynamic> queue = json.decode(res);
     await update();
-    return Queue.fromJson(queue, _user);
+    return await Queue.fromJson(queue, _user);
   }
 
   myuser.User get user => _user;

@@ -20,30 +20,46 @@ class User {
     this._otherQueues = [];
   }
 
-  User.fromJson(Map<String, dynamic> pjson) {
+  User.all(
+      this._uid,
+      this._tokenid,
+      this._nome,
+      this._cognome,
+      this._anno_nascita,
+      this._sesso,
+      this._email,
+      this._telefono,
+      this._myQueues,
+      this._otherQueues);
+
+  static Future<User> fromJson(Map<String, dynamic> pjson) async {
     RestFunctions rest = new RestFunctions();
-    this._uid = pjson['uid'];
-    this._nome = pjson['nome'];
-    this._cognome = pjson['cognome'];
-    this._anno_nascita = pjson['annonascita'];
-    this._sesso = pjson['sesso'];
-    this._email = pjson['email'];
-    this._telefono = pjson['telefono'];
-    this._tokenid = pjson['tokenid'];
-    this._myQueues = [];
-    this._otherQueues = [];
-    _initQueue(pjson['myqueues'], this._myQueues, rest);
-    _initQueue(pjson['otherqueues'], this._otherQueues, rest);
+    String uid = pjson['uid'];
+    String nome = pjson['nome'];
+    String cognome = pjson['cognome'];
+    String annonascita = pjson['annonascita'];
+    String sesso = pjson['sesso'];
+    String email = pjson['email'];
+    String telefono = pjson['telefono'];
+    String tokenid = pjson['tokenid'];
+    List<Queue> myQueues = [];
+    List<Queue> otherQueues = [];
+    User user = User.all(uid, tokenid, nome, cognome, annonascita, sesso, email,
+        telefono, myQueues, otherQueues);
+    await _initQueue(pjson['myqueues'], user.myQueues, rest, user);
+    await _initQueue(pjson['otherqueues'], user.otherQueues, rest, user);
+    return user;
   }
 
-  void _initQueue(
-      List<dynamic> lstr, List<Queue> lqueues, RestFunctions rest) async {
+  static Future<dynamic> _initQueue(List<dynamic> lstr, List<Queue> lqueues,
+      RestFunctions rest, User user) async {
     if (lstr != null) {
       for (dynamic value in lstr) {
         var res = await rest.getQueue(value.toString());
-        lqueues.add(Queue.fromJson(json.decode(res), this));
+        lqueues.add(await Queue.fromJson(json.decode(res), user));
       }
     }
+    return lqueues;
   }
 
   String get uid => _uid;

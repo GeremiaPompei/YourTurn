@@ -14,32 +14,43 @@ class Queue {
 
   Queue(this._id, this._luogo, this._admin);
 
-  Queue.fromJson(Map<String, dynamic> pjson, User user) {
+  Queue.all(this._id, this._luogo, this._admin, this._queue,
+      this._startDateTime, this._stopDateTime, this._isClosed);
+
+  static Future<Queue> fromJson(Map<String, dynamic> pjson, User user) async {
     RestFunctions rest = new RestFunctions();
-    this._id = pjson['id'];
-    this._luogo = pjson['luogo'];
+    String id = pjson['id'];
+    String luogo = pjson['luogo'];
     List<User> lusers = [];
-    _initUser([pjson['admin']], lusers, user, rest).then((value) {
-      this._admin = lusers.first;
-    });
-    _initUser(pjson['queue'], this._queue, user, rest);
-    this._startDateTime = DateTime.parse(pjson['startdatetime']);
-    if (pjson['stopdatetime'] == 'null')
-      this._stopDateTime = null;
-    else
-      this._stopDateTime = DateTime.parse(pjson['stopdatetime']);
+    await _initUser([pjson['admin']], lusers, user, rest);
+    User admin = lusers.first;
+    List<User> queue = [];
+    await _initUser(pjson['queue'], queue, user, rest);
+    DateTime startDateTime = DateTime.parse(pjson['startdatetime']);
+    DateTime stopDateTime;
+    bool isClosed;
+    if (pjson['stopdatetime'] == 'null') {
+      stopDateTime = null;
+      isClosed = false;
+    } else {
+      stopDateTime = DateTime.parse(pjson['stopdatetime']);
+      isClosed = true;
+    }
+    return Queue.all(
+        id, luogo, admin, queue, startDateTime, stopDateTime, isClosed);
   }
 
-  Future<dynamic> _initUser(List<dynamic> lstr, List<User> lusers, User user,
-      RestFunctions rest) async {
+  static Future<dynamic> _initUser(List<dynamic> lstr, List<User> lusers,
+      User user, RestFunctions rest) async {
     for (dynamic value in lstr) {
       if (user != null && user.uid == value.toString())
         lusers.add(user);
       else {
-        Map<String,dynamic> res = json.decode(await rest.getUser(value.toString()));
+        Map<String, dynamic> res =
+            json.decode(await rest.getUser(value.toString()));
         res['myqueues'] = [];
         res['otherqueues'] = [];
-        lusers.add(User.fromJson(res));
+        lusers.add(await User.fromJson(res));
       }
     }
     return lusers;
