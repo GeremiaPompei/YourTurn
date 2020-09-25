@@ -31,7 +31,7 @@ class RestFunctions {
     Map<String, String> header = {"Content-Type": "application/json"};
     dynamic body = json.encode(el);
     final response = await Client()
-        .post(Uri.parse(indirizzo + url), headers: header, body: body);
+        .post(Uri.parse(indirizzoRoot + url), headers: header, body: body);
     if (response.statusCode == 200) {
       element = response.body;
     }

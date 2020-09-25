@@ -4,7 +4,8 @@ import 'package:yourturn_client/controller/main_controller.dart';
 import 'package:yourturn_client/view/authenticate_view.dart';
 import 'package:yourturn_client/view/main_view.dart';
 
-const String indirizzo = 'http://192.168.1.111:3000/';
+const String indirizzoRoot = 'http://192.168.1.111:3000/';
+const String indirizzoCoda = indirizzoRoot + 'queue/';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

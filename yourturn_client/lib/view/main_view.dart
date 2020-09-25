@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:yourturn_client/controller/main_controller.dart';
 import 'package:yourturn_client/utility/colore.dart';
 import 'package:yourturn_client/utility/stile_text.dart';
-import 'package:yourturn_client/view/create_view.dart';
-import 'package:yourturn_client/view/history_view.dart';
+import 'package:yourturn_client/view/myqueues_view.dart';
+import 'package:yourturn_client/view/otherqueues_view.dart';
 import 'package:yourturn_client/view/navigation_bar.dart';
 import 'package:yourturn_client/view/user_view.dart';
 
@@ -31,10 +31,10 @@ class _MainViewState extends State<MainView> {
       this._indexItem = index;
       switch (index) {
         case 0:
-          this._bodyWidget = HistoryView(widget._controller);
+          this._bodyWidget = OtherQueuesView(widget._controller);
           break;
         case 1:
-          this._bodyWidget = CreateView(widget._controller);
+          this._bodyWidget = MyQueuesView(widget._controller);
           break;
       }
     });
@@ -57,7 +57,20 @@ class _MainViewState extends State<MainView> {
                   context: context,
                   builder: (context) {
                     return AlertDialog(
-                      title: UserView(widget._controller),
+                      content: UserView(widget._controller.user),
+                      title: FloatingActionButton(
+                        backgroundColor: Colore.back1,
+                        child: Icon(Icons.exit_to_app, color: Colore.front1),
+                        onPressed: () {
+                          setState(() {
+                            widget._controller.logOut().then((value) =>
+                                Navigator.pushNamedAndRemoveUntil(
+                                    context,
+                                    '/authenticate',
+                                    (route) => route.popped == null));
+                          });
+                        },
+                      ),
                     );
                   });
             },

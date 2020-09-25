@@ -19,7 +19,9 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="3f1a1f3b-27fa-4a3e-84ba-1b49cb8dc486" name="Default Changelist" comment="Configurato log in e sign in con firebase" />
+    <list default="true" id="3f1a1f3b-27fa-4a3e-84ba-1b49cb8dc486" name="Default Changelist" comment="Configurato log in e sign in con firebase">
+      <change beforePath="$PROJECT_DIR$/yourturn_client/ios/Flutter/App.framework/flutter_assets/kernel_blob.bin" beforeDir="false" afterPath="$PROJECT_DIR$/yourturn_client/ios/Flutter/App.framework/flutter_assets/kernel_blob.bin" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -99,7 +101,14 @@
       <option name="project" value="LOCAL" />
       <updated>1600887764722</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="Migliorata view">
+      <created>1600975199773</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1600975199773</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -120,7 +129,8 @@
     <MESSAGE value="Aggiunto lettore e generatore qr e collegato client, server e database" />
     <MESSAGE value="Prova implementazione di notifiche al login e signin, eliminazione della cache e accorpamento nel user" />
     <MESSAGE value="Collegato client e server e db per creazione fila e partecipazione a quest'ultima. Possibile bug nella deserializzazione. Sistemata grafica login signin" />
-    <option name="LAST_COMMIT_MESSAGE" value="Collegato client e server e db per creazione fila e partecipazione a quest'ultima. Possibile bug nella deserializzazione. Sistemata grafica login signin" />
+    <MESSAGE value="Migliorata view" />
+    <option name="LAST_COMMIT_MESSAGE" value="Migliorata view" />
   </component>
   <component name="WindowStateProjectService">
     <state x="57" y="14" width="1071" height="786" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1600450741124">
@@ -151,11 +161,11 @@
       <screen x="0" y="0" width="1280" height="800" />
     </state>
     <state x="94" y="38" key="SettingsEditor/0.0.1280.800@0.0.1280.800" timestamp="1600450561374" />
-    <state x="56" y="151" key="Vcs.Push.Dialog.v2" timestamp="1600887767696">
+    <state x="56" y="151" key="Vcs.Push.Dialog.v2" timestamp="1600975205365">
       <screen x="0" y="23" width="1280" height="777" />
     </state>
     <state x="56" y="132" key="Vcs.Push.Dialog.v2/0.0.1280.800@0.0.1280.800" timestamp="1600709863708" />
-    <state x="56" y="151" key="Vcs.Push.Dialog.v2/0.23.1280.777@0.23.1280.777" timestamp="1600887767696" />
+    <state x="56" y="151" key="Vcs.Push.Dialog.v2/0.23.1280.777@0.23.1280.777" timestamp="1600975205365" />
     <state x="200" y="152" key="com.intellij.openapi.vcs.changes.SpecificFilesViewDialog" timestamp="1600887648781">
       <screen x="0" y="23" width="1280" height="777" />
     </state>

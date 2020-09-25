@@ -4,7 +4,7 @@ import 'package:yourturn_client/controller/main_controller.dart';
 import 'package:yourturn_client/utility/colore.dart';
 import 'package:yourturn_client/utility/stile_text.dart';
 
-import 'create_cell_view.dart';
+import 'cell_view.dart';
 
 class SignInView extends StatefulWidget {
   MainController _controller;
@@ -48,7 +48,7 @@ class _SignInViewState extends State<SignInView> {
                 shrinkWrap: true,
                 scrollDirection: Axis.vertical,
                 children: [
-                  CreateCellView(
+                  CellView(
                     'Nome',
                     TextField(
                       decoration: InputDecoration(
@@ -60,7 +60,7 @@ class _SignInViewState extends State<SignInView> {
                       }),
                     ),
                   ),
-                  CreateCellView(
+                  CellView(
                     'Cognome',
                     TextField(
                       decoration: InputDecoration(
@@ -71,7 +71,7 @@ class _SignInViewState extends State<SignInView> {
                       }),
                     ),
                   ),
-                  CreateCellView(
+                  CellView(
                     'Anno di Nascita',
                     DropdownButton(
                       items: _lAnnoN
@@ -88,7 +88,7 @@ class _SignInViewState extends State<SignInView> {
                       value: _vAnnoN,
                     ),
                   ),
-                  CreateCellView(
+                  CellView(
                     'Sesso',
                     DropdownButton(
                       items: _lSesso
@@ -105,7 +105,7 @@ class _SignInViewState extends State<SignInView> {
                       value: _vSesso,
                     ),
                   ),
-                  CreateCellView(
+                  CellView(
                     'Telefono',
                     TextField(
                       decoration: InputDecoration(
@@ -116,7 +116,7 @@ class _SignInViewState extends State<SignInView> {
                       }),
                     ),
                   ),
-                  CreateCellView(
+                  CellView(
                     'Email',
                     TextField(
                       decoration: InputDecoration(
@@ -128,7 +128,7 @@ class _SignInViewState extends State<SignInView> {
                       }),
                     ),
                   ),
-                  CreateCellView(
+                  CellView(
                     'Password',
                     TextField(
                       decoration: InputDecoration(
@@ -141,7 +141,7 @@ class _SignInViewState extends State<SignInView> {
                       }),
                     ),
                   ),
-                  CreateCellView(
+                  CellView(
                     'Ripeti Password',
                     TextField(
                       decoration: InputDecoration(

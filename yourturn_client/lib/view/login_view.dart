@@ -4,7 +4,7 @@ import 'package:yourturn_client/controller/main_controller.dart';
 import 'package:yourturn_client/utility/colore.dart';
 import 'package:yourturn_client/utility/stile_text.dart';
 
-import 'create_cell_view.dart';
+import 'cell_view.dart';
 
 class LogInView extends StatefulWidget {
   MainController _controller;
@@ -35,7 +35,7 @@ class _LogInViewState extends State<LogInView> {
                 shrinkWrap: true,
                 scrollDirection: Axis.vertical,
                 children: [
-                  CreateCellView(
+                  CellView(
                     'Email',
                     TextField(
                       decoration: InputDecoration(
@@ -46,7 +46,7 @@ class _LogInViewState extends State<LogInView> {
                       }),
                     ),
                   ),
-                  CreateCellView(
+                  CellView(
                     'Password',
                     TextField(
                       decoration: InputDecoration(

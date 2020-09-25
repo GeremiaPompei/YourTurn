@@ -1,10 +1,11 @@
 import 'package:intl/intl.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:qr_flutter/qr_flutter.dart';
 import 'package:yourturn_client/model/queue.dart';
 import 'package:yourturn_client/utility/colore.dart';
 import 'package:yourturn_client/utility/stile_text.dart';
+import 'package:yourturn_client/view/detailedqueue_view.dart';
+import 'package:yourturn_client/view/qr_generator.dart';
 
 class QueueListView extends StatefulWidget {
   List<Queue> _queues;
@@ -26,19 +27,7 @@ class _QueueListViewState extends State<QueueListView> {
                 context: context,
                 builder: (context) {
                   return AlertDialog(
-                    title: Text(
-                      widget._queues[i].id,
-                      style: StileText.corpo,
-                    ),
-                    content: Container(
-                      width: MediaQuery.of(context).size.width,
-                      height: MediaQuery.of(context).size.width,
-                      alignment: Alignment.center,
-                      child: QrImage(
-                        size: MediaQuery.of(context).size.width,
-                        data: widget._queues[i].id,
-                      ),
-                    ),
+                    title: DetailedQueueView(widget._queues[i]),
                   );
                 });
           });

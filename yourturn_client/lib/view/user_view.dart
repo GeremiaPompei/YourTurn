@@ -1,13 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:yourturn_client/controller/main_controller.dart';
+import 'package:yourturn_client/model/user.dart';
 import 'package:yourturn_client/utility/colore.dart';
-import 'create_cell_view.dart';
+import 'package:yourturn_client/utility/stile_text.dart';
+import 'cell_view.dart';
 
 class UserView extends StatefulWidget {
-  MainController _controller;
+  User _user;
 
-  UserView(this._controller);
+  UserView(this._user);
 
   @override
   _UserViewState createState() => _UserViewState();
@@ -23,46 +24,29 @@ class _UserViewState extends State<UserView> {
       color: Colore.back2,
       child: ListView(
         children: [
-          CreateCellView(
+          CellView(
             'Nome',
-            Text(widget._controller.user.nome),
+            Text(widget._user.nome, style: StileText.corpo),
           ),
-          CreateCellView(
+          CellView(
             'Cognome',
-            Text(widget._controller.user.cognome),
+            Text(widget._user.cognome, style: StileText.corpo),
           ),
-          CreateCellView(
+          CellView(
             'Anno di Nascita',
-            Text(widget._controller.user.anno_nascita),
+            Text(widget._user.anno_nascita, style: StileText.corpo),
           ),
-          CreateCellView(
+          CellView(
             'Sesso',
-            Text(widget._controller.user.sesso),
+            Text(widget._user.sesso, style: StileText.corpo),
           ),
-          CreateCellView(
+          CellView(
             'Telefono',
-            Text(widget._controller.user.telefono),
+            Text(widget._user.telefono, style: StileText.corpo),
           ),
-          CreateCellView(
+          CellView(
             'Email',
-            Text(widget._controller.user.email),
-          ),
-          Container(
-            height: 10,
-          ),
-          FloatingActionButton(
-            backgroundColor: Colore.back1,
-            child: Icon(Icons.exit_to_app,color: Colore.front1),
-            onPressed: () {
-              setState(() {
-                widget._controller.logOut().then((value) =>
-                    Navigator.pushNamedAndRemoveUntil(context, '/authenticate',
-                            (route) => route.popped == null));
-              });
-            },
-          ),
-          Container(
-            height: 20,
+            Text(widget._user.email, style: StileText.corpo),
           ),
         ],
       ),

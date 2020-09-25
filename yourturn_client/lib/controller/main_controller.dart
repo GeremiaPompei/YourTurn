@@ -61,11 +61,27 @@ class MainController {
     if (!myQueues.last.isClosed) myQueues.last.next();
   }
 
-  Future<dynamic> enqueueToOther(String id) async {
-    Map<String, dynamic> queue = json.decode(await _rest.getQueue(id));
-    Map<String, dynamic> enqueue = {'uid': _user.uid, 'id': id};
-    _user.otherQueues.add(Queue.fromJson(queue, _user));
+  Future<dynamic> enqueueToOther(Queue queue) async {
+    Map<String, dynamic> enqueue = {'uid': _user.uid, 'id': queue.id};
+    _user.otherQueues.add(queue);
     return await _rest.enqueue(enqueue);
+  }
+
+  Future<bool> checkQueue(String id) async {
+    if (id == '') return false;
+    var res = await _rest.getQueue(id);
+    if (res.toString() == '')
+      return false;
+    else
+      return true;
+  }
+
+  Future<Queue> getQueue(String id) async {
+    if (id == '') return null;
+    dynamic res = await _rest.getQueue(id);
+    if (res.toString() == '') return null;
+    Map<String, dynamic> queue = json.decode(res);
+    return Queue.fromJson(queue, _user);
   }
 
   myuser.User get user => _user;
