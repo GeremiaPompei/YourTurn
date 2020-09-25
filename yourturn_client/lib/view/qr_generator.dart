@@ -16,7 +16,7 @@ class _QRGeneratorState extends State<QRGenerator> {
   Widget build(BuildContext context) {
     return QrImage(
       size: MediaQuery.of(context).size.width,
-      data: indirizzoCoda + widget._id,
+      data: indirizzoRoot + indirizzoCoda + widget._id,
     );
   }
 }

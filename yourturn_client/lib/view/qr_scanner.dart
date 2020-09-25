@@ -5,7 +5,7 @@ class QRScanner {
 
   Future<String> scan() async{
     String codeSanner = await BarcodeScanner.scan();
-    return codeSanner.replaceAll(indirizzoCoda, '');
+    return codeSanner.replaceAll(indirizzoRoot + indirizzoCoda, '');
   }
 
 }
