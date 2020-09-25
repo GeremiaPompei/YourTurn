@@ -39,6 +39,7 @@ class _AuthenticateViewState extends State<AuthenticateView> {
           ),
           onSubmitted: (input) => setState(() {
                 indirizzoRoot = 'http://' + input + ':3000/';
+                _tmpWidget = _tmpWs[0];
               }))
     ];
     this._tmpWidget = this._tmpWs[0];

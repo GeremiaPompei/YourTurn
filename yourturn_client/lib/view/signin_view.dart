@@ -40,6 +40,16 @@ class _SignInViewState extends State<SignInView> {
     'password nuovamente',
     'general',
   ]);
+  List<Widget> _childButton = [
+    Text(
+      'SignIn',
+      style: StileText.sottotitolo,
+    ),
+    LinearProgressIndicator(
+      backgroundColor: Colore.front1,
+    )
+  ];
+  int _indexButton = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -163,12 +173,10 @@ class _SignInViewState extends State<SignInView> {
                   ),
                   FlatButton(
                     color: Colore.back1,
-                    child: Text(
-                      'SignIn',
-                      style: StileText.sottotitolo,
-                    ),
+                    child: _childButton[_indexButton],
                     onPressed: () async {
                       setState(() {
+                        _indexButton = 1;
                         if (_nome.isNotEmpty &&
                             _cognome.isNotEmpty &&
                             _email.isNotEmpty &&
@@ -187,9 +195,9 @@ class _SignInViewState extends State<SignInView> {
                                       _telefono,
                                       _password)
                                   .then((value) {
-                                if (value == 'Signed')
-                                  Navigator.pushNamedAndRemoveUntil(context,
-                                      '/body', (route) => route.popped == null);
+                                Navigator.pushNamedAndRemoveUntil(context,
+                                    '/body', (route) => route.popped == null);
+                                _indexButton = 0;
                               }).catchError((err) => {
                                         if (err.runtimeType == SocketException)
                                           {
@@ -229,10 +237,12 @@ class _SignInViewState extends State<SignInView> {
                                           {
                                             _errMexM
                                                 .manage({'general': 'Error'})
-                                          }
+                                          },
+                                        _indexButton = 0
                                       });
                             } catch (e) {
                               _errMexM.manage({'general': 'Error'});
+                              _indexButton = 0;
                             }
                           } else {
                             setState(() {
@@ -240,6 +250,7 @@ class _SignInViewState extends State<SignInView> {
                                 'password nuovamente': 'Password differenti'
                               });
                             });
+                            _indexButton = 0;
                           }
                         } else {
                           _errMexM.checkEmpty({
@@ -250,6 +261,7 @@ class _SignInViewState extends State<SignInView> {
                             'password': _password,
                             'password nuovamente': _ripetiPassword,
                           });
+                          _indexButton = 0;
                         }
                       });
                     },

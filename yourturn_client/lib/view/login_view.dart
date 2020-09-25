@@ -22,6 +22,16 @@ class LogInView extends StatefulWidget {
 class _LogInViewState extends State<LogInView> {
   String _email = '';
   String _password = '';
+  List<Widget> _childButton = [
+    Text(
+      'LogIn',
+      style: StileText.sottotitolo,
+    ),
+    LinearProgressIndicator(
+      backgroundColor: Colore.front1,
+    )
+  ];
+  int _indexButton = 0;
   ErrMessagesManager _errMexM = ErrMessagesManager.fromList([
     'email',
     'password',
@@ -67,12 +77,10 @@ class _LogInViewState extends State<LogInView> {
                   ),
                   FlatButton(
                     color: Colore.back1,
-                    child: Text(
-                      'LogIn',
-                      style: StileText.sottotitolo,
-                    ),
+                    child: _childButton[_indexButton],
                     onPressed: () async {
                       setState(() {
+                        _indexButton = 1;
                         if (_email.isNotEmpty && _password.isNotEmpty) {
                           widget._controller
                               .logIn(_email, _password)
@@ -83,7 +91,8 @@ class _LogInViewState extends State<LogInView> {
                                             context,
                                             '/body',
                                             (route) => route.popped == null)
-                                      }
+                                      },
+                                    _indexButton = 0
                                   })
                               .catchError((err) => {
                                     setState(() {
@@ -105,13 +114,13 @@ class _LogInViewState extends State<LogInView> {
                                       } else {
                                         _errMexM.manage({'general': 'Errore'});
                                       }
-                                    })
+                                    }),
+                                    _indexButton = 0
                                   });
                         } else {
-                          setState(() {
-                            _errMexM.checkEmpty(
-                                {'email': _email, 'password': _password});
-                          });
+                          _errMexM.checkEmpty(
+                              {'email': _email, 'password': _password});
+                          _indexButton = 0;
                         }
                       });
                     },

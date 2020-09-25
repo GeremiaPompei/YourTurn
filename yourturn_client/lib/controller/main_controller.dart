@@ -52,6 +52,14 @@ class MainController {
     return response;
   }
 
+  Future<dynamic> update() async {
+    await testConnection();
+    var response = await _rest.getUser(this._user.uid);
+    this._user = new myuser.User.fromJson(json.decode(response));
+    this._authenticate = true;
+    return response;
+  }
+
   Future<dynamic> logOut() async {
     var out = await _auth.signOut();
     _authenticate = false;
@@ -61,7 +69,7 @@ class MainController {
   Future<dynamic> createQueue(String id, String luogo) async {
     Queue queue = new Queue(id, luogo, _user);
     var response = await _rest.createQueue(queue);
-    myQueues.add(queue);
+    await update();
     return response;
   }
 
@@ -73,8 +81,9 @@ class MainController {
 
   Future<dynamic> enqueueToOther(Queue queue) async {
     Map<String, dynamic> enqueue = {'uid': _user.uid, 'id': queue.id};
-    _user.otherQueues.add(queue);
-    return await _rest.enqueue(enqueue);
+    var res = await _rest.enqueue(enqueue);
+    await update();
+    return res;
   }
 
   Future<bool> checkQueue(String id) async {
@@ -91,6 +100,7 @@ class MainController {
     dynamic res = await _rest.getQueue(id);
     if (res.toString() == '') return null;
     Map<String, dynamic> queue = json.decode(res);
+    await update();
     return Queue.fromJson(queue, _user);
   }
 
