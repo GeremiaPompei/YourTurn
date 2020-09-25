@@ -1,8 +1,12 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:yourturn_client/controller/main_controller.dart';
+import 'package:yourturn_client/main.dart';
 import 'package:yourturn_client/utility/colore.dart';
 import 'package:yourturn_client/utility/stile_text.dart';
+import 'package:yourturn_client/utility/errmessagesmanager.dart';
 
 import 'cell_view.dart';
 
@@ -18,8 +22,11 @@ class LogInView extends StatefulWidget {
 class _LogInViewState extends State<LogInView> {
   String _email = '';
   String _password = '';
-  String _emailError = null;
-  String _passwordError = null;
+  ErrMessagesManager _errMexM = ErrMessagesManager.fromList([
+    'email',
+    'password',
+    'general',
+  ]);
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +47,7 @@ class _LogInViewState extends State<LogInView> {
                     TextField(
                       decoration: InputDecoration(
                           hintText: 'Inserisci l\'Email',
-                          errorText: _emailError),
+                          errorText: _errMexM.allMex['email']),
                       onChanged: (text) => setState(() {
                         _email = text;
                       }),
@@ -51,7 +58,7 @@ class _LogInViewState extends State<LogInView> {
                     TextField(
                       decoration: InputDecoration(
                           hintText: 'Inserisci la Password',
-                          errorText: _passwordError),
+                          errorText: _errMexM.allMex['password']),
                       obscureText: true,
                       onChanged: (text) => setState(() {
                         _password = text;
@@ -64,9 +71,9 @@ class _LogInViewState extends State<LogInView> {
                       'LogIn',
                       style: StileText.sottotitolo,
                     ),
-                    onPressed: () {
+                    onPressed: () async {
                       setState(() {
-                        if (_email.isNotEmpty || _password.isNotEmpty) {
+                        if (_email.isNotEmpty && _password.isNotEmpty) {
                           widget._controller
                               .logIn(_email, _password)
                               .then((value) => {
@@ -80,33 +87,40 @@ class _LogInViewState extends State<LogInView> {
                                   })
                               .catchError((err) => {
                                     setState(() {
-                                      if (err.code == 'user-not-found') {
-                                        _emailError = 'Utente non trovato';
-                                        _passwordError = null;
+                                      if (err.runtimeType == SocketException) {
+                                        _errMexM.manage({
+                                          'general':
+                                              'Errore di connessione al server: ' +
+                                                  indirizzoRoot
+                                        });
+                                      } else if (err.code == 'user-not-found') {
+                                        _errMexM.manage(
+                                            {'email': 'Utente non trovato'});
                                       } else if (err.code == 'wrong-password') {
-                                        _passwordError = 'Password errata';
-                                        _emailError = null;
+                                        _errMexM.manage(
+                                            {'password': 'Password errata'});
                                       } else if (err.code == 'invalid-email') {
-                                        _emailError = 'Email non valida';
-                                        _passwordError = null;
-                                      } else
-                                        print(err);
+                                        _errMexM.manage(
+                                            {'email': 'Email non valida'});
+                                      } else {
+                                        _errMexM.manage({'general': 'Errore'});
+                                      }
                                     })
                                   });
                         } else {
                           setState(() {
-                            if (_email.isEmpty)
-                              _emailError = 'Inserire Email';
-                            else
-                              _emailError = null;
-                            if (_password.isEmpty)
-                              _passwordError = 'Inserire Password';
-                            else
-                              _passwordError = null;
+                            _errMexM.checkEmpty(
+                                {'email': _email, 'password': _password});
                           });
                         }
                       });
                     },
+                  ),
+                  Text(
+                    _errMexM.allMex['general'] == null
+                        ? ''
+                        : _errMexM.allMex['general'],
+                    style: TextStyle(color: Colors.red),
                   ),
                 ],
               ),

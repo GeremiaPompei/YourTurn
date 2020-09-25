@@ -1,12 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:qr_flutter/qr_flutter.dart';
 import 'package:yourturn_client/controller/main_controller.dart';
 import 'package:yourturn_client/utility/colore.dart';
 import 'package:yourturn_client/utility/stile_text.dart';
 import 'package:yourturn_client/view/qr_generator.dart';
-
-import '../main.dart';
+import 'package:yourturn_client/utility/errmessagesmanager.dart';
 import 'cell_view.dart';
 import 'navigation_bar.dart';
 
@@ -22,8 +20,10 @@ class CreateQueueView extends StatefulWidget {
 class _CreateQueueViewState extends State<CreateQueueView> {
   String _id = '';
   String _luogo = '';
-  String _idError = null;
-  String _luogoError = null;
+  ErrMessagesManager _errMexM = ErrMessagesManager.fromList([
+    'id',
+    'luogo',
+  ]);
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +51,7 @@ class _CreateQueueViewState extends State<CreateQueueView> {
                       TextField(
                         decoration: InputDecoration(
                           hintText: 'Inserisci l\'Id',
-                          errorText: _idError,
+                          errorText: _errMexM.allMex['id'],
                         ),
                         onChanged: (text) => setState(() {
                           _id = text;
@@ -63,7 +63,7 @@ class _CreateQueueViewState extends State<CreateQueueView> {
                       TextField(
                         decoration: InputDecoration(
                           hintText: 'Inserisci il Luogo',
-                          errorText: _luogoError,
+                          errorText: _errMexM.allMex['luogo'],
                         ),
                         onChanged: (text) => setState(() {
                           _luogo = text;
@@ -84,35 +84,37 @@ class _CreateQueueViewState extends State<CreateQueueView> {
             NavigationBar.titles[1],
             style: StileText.sottotitolo,
           ),
-          onPressed: () {
+          onPressed: () async {
+            bool exists = (await widget._controller.getQueue(_id)) == null;
             setState(() {
               if (_id.isNotEmpty && _luogo.isNotEmpty) {
-                widget._controller.createQueue(_id, _luogo);
-                showDialog(
-                    context: context,
-                    builder: (context) {
-                      return AlertDialog(
-                        title: Text(
-                          _id,
-                          style: StileText.corpo,
-                        ),
-                        content: Container(
-                          width: MediaQuery.of(context).size.width,
-                          height: MediaQuery.of(context).size.width,
-                          alignment: Alignment.center,
-                          child: QRGenerator(_id),
-                        ),
-                      );
-                    });
+                if (!exists) {
+                  _errMexM
+                      .manage({'id': 'Id gia esistente, inserire un altro id'});
+                } else {
+                  widget._controller.createQueue(_id, _luogo);
+                  showDialog(
+                      context: context,
+                      builder: (context) {
+                        return AlertDialog(
+                          title: Text(
+                            _id,
+                            style: StileText.corpo,
+                          ),
+                          content: Container(
+                            width: MediaQuery.of(context).size.width,
+                            height: MediaQuery.of(context).size.width,
+                            alignment: Alignment.center,
+                            child: QRGenerator(_id),
+                          ),
+                        );
+                      });
+                }
               } else {
-                if (_id.isEmpty)
-                  _idError = 'Inserire Id';
-                else
-                  _idError = null;
-                if (_luogo.isEmpty)
-                  _luogoError = 'Inserire Luogo';
-                else
-                  _luogoError = null;
+                _errMexM.checkEmpty({
+                  'id': _id,
+                  'luogo': _luogo,
+                });
               }
             });
           },

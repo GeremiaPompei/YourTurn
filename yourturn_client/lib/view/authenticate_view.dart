@@ -35,6 +35,7 @@ class _AuthenticateViewState extends State<AuthenticateView> {
       TextField(
           decoration: InputDecoration(
             hintText: 'Inserisci Ip del Server (es. 192.168.1.111)',
+            labelText: indirizzoRoot,
           ),
           onSubmitted: (input) => setState(() {
                 indirizzoRoot = 'http://' + input + ':3000/';

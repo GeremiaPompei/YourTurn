@@ -6,6 +6,10 @@ import 'package:yourturn_client/model/user.dart' as myuser;
 import '../main.dart';
 
 class RestFunctions {
+
+  Future<dynamic> test() async {
+    return await _requestByGet('test');
+  }
   Future<dynamic> createUser(myuser.User user) async {
     return await _requestByPost('signin', user.toMap());
   }
@@ -36,5 +40,11 @@ class RestFunctions {
       element = response.body;
     }
     return element;
+  }
+
+  Future<int> _requestByGet(String url) async {
+    final response = await Client()
+        .get(Uri.parse(indirizzoRoot + url));
+    return response.statusCode;
   }
 }

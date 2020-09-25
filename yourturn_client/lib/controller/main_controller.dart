@@ -14,8 +14,17 @@ class MainController {
     this._authenticate = false;
   }
 
+  Future<bool> testConnection() async {
+    var res = await _rest.test();
+    if (res == 200)
+      return true;
+    else
+      return false;
+  }
+
   Future<dynamic> signIn(String nome, String cognome, String annonascita,
       String sesso, String email, String telefono, String password) async {
+    await testConnection();
     UserCredential credential = await _auth.createUserWithEmailAndPassword(
         email: email, password: password);
     myuser.User user = new myuser.User(
@@ -34,6 +43,7 @@ class MainController {
   }
 
   Future<dynamic> logIn(String email, String password) async {
+    await testConnection();
     UserCredential credential = await _auth.signInWithEmailAndPassword(
         email: email, password: password);
     var response = await _rest.getUser(credential.user.uid);

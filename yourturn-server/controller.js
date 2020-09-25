@@ -50,6 +50,12 @@ const getQueue = (req,res) => {
     });
 };
 
+const test = (req,res)=> {
+    res.send('Success');
+    //log
+    console.log('Test ['+new Date().toLocaleString()+']');
+};
+
 const error = (req,res)=> {
     res.statusCode = 404;
     res.send('Error 404');
@@ -64,5 +70,6 @@ module.exports = {
     createQueue,
     enqueue,
     getQueue,
+    test,
     error
 }

@@ -38,11 +38,11 @@ class _DetailedQueueViewState extends State<DetailedQueueView> {
           ),
           CellView(
             'Id',
-            Text(widget._queue.id, style: StileText.corpo),
+            Text(widget._queue.id.toString(), style: StileText.corpo),
           ),
           CellView(
             'Luogo',
-            Text(widget._queue.luogo, style: StileText.corpo),
+            Text(widget._queue.luogo.toString(), style: StileText.corpo),
           ),
           CellView(
             'Data e Ora inizio',
@@ -66,7 +66,10 @@ class _DetailedQueueViewState extends State<DetailedQueueView> {
           ),
           CellView(
             'Admin',
-            Text(widget._queue.admin.nome + ' ' + widget._queue.admin.cognome,
+            Text(
+                widget._queue.admin.nome.toString() +
+                    ' ' +
+                    widget._queue.admin.cognome.toString(),
                 style: StileText.corpo),
           ),
           Container(
