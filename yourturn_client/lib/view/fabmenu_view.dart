@@ -39,25 +39,15 @@ class _FABMenuViewState extends State<FABMenuView>
       });
   }
 
-  void showPartecipa(BuildContext context, String text) {
+  void showPartecipa({String txt}) {
     showDialog(
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: Text(text),
-            actions: [
-              FlatButton(
-                child: Text(
-                  'Partecipa',
-                  style: StileText.corpo,
-                ),
-                onPressed: () async {
-                  Queue res = await widget._controller.getQueue(text);
-                  await widget._controller.enqueueToOther(res);
-                },
-              ),
-            ],
-          );
+              content: SearchQueueView(
+            widget._controller,
+            txt: txt,
+          ));
         });
   }
 
@@ -80,7 +70,7 @@ class _FABMenuViewState extends State<FABMenuView>
             setState(() {
               qrCodeResult = codeSanner;
             });
-            showPartecipa(context, qrCodeResult);
+            showPartecipa(txt: qrCodeResult);
           },
           backgroundColor: Colore.back1,
           label: 'Scanner',
@@ -91,17 +81,7 @@ class _FABMenuViewState extends State<FABMenuView>
           child: Icon(Icons.search, color: Colore.front1),
           backgroundColor: Colore.back1,
           onTap: () {
-            showDialog(
-                context: context,
-                builder: (context) {
-                  String text = '';
-                  return AlertDialog(
-                      title: SearchQueueView(
-                          text,
-                          widget._controller.enqueueToOther,
-                          widget._controller.getQueue,
-                          widget._controller.checkQueue));
-                });
+            showPartecipa();
           },
           label: 'Cerca',
           labelStyle: StileText.sottotitolo,

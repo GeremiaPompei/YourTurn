@@ -66,29 +66,21 @@ class _DetailedQueueViewState extends State<DetailedQueueView> {
           ),
           CellView(
             'Admin',
-            Text(
-                widget._queue.admin.nome.toString() +
-                    ' ' +
-                    widget._queue.admin.cognome.toString(),
-                style: StileText.corpo),
-          ),
-          Container(
-            height: 10,
-          ),
-          FloatingActionButton(
-            backgroundColor: Colore.back1,
-            child: Icon(Icons.person, color: Colore.front1),
-            onPressed: () {
-              setState(() {
-                showDialog(
-                    context: context,
-                    builder: (context) {
-                      return AlertDialog(
-                        title: UserView(widget._queue.admin),
-                      );
-                    });
-              });
-            },
+            FloatingActionButton(
+              backgroundColor: Colore.back1,
+              child: Icon(Icons.person, color: Colore.front1),
+              onPressed: () {
+                setState(() {
+                  showDialog(
+                      context: context,
+                      builder: (context) {
+                        return AlertDialog(
+                          content: UserView(widget._queue.admin),
+                        );
+                      });
+                });
+              },
+            ),
           ),
           Container(
             height: 20,

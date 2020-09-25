@@ -1,3 +1,4 @@
+const { text } = require("body-parser");
 var admin = require("firebase-admin");
 
 var serviceAccount = require("./yourturn-9772d-firebase-adminsdk-ibn2o-e14a5a05cf.json");
@@ -46,7 +47,8 @@ async function enqueue(map) {
 }
 
 async function getQueue(map) {
-  var result = (await (db.collection('queues').doc(map.id).get())).data();
+  var txt = map.id.replace('/');
+  var result = (await (db.collection('queues').doc(txt).get())).data();
   return result;
 }
 

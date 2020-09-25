@@ -18,7 +18,6 @@ class MyQueuesView extends StatefulWidget {
 }
 
 class _MyQueuesViewState extends State<MyQueuesView> {
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -49,7 +48,8 @@ class _MyQueuesViewState extends State<MyQueuesView> {
               showDialog(
                   context: context,
                   builder: (context) {
-                    return CreateQueueView(widget._controller);
+                    return AlertDialog(
+                        content: CreateQueueView(widget._controller));
                   });
             });
           },

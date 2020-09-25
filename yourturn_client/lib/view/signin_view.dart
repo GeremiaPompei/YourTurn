@@ -46,7 +46,7 @@ class _SignInViewState extends State<SignInView> {
     return Container(
       color: Colore.back2,
       child: Padding(
-        padding: EdgeInsets.all(20),
+        padding: EdgeInsets.all(40),
         child: Flex(
           direction: Axis.vertical,
           children: <Widget>[

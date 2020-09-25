@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:yourturn_client/controller/main_controller.dart';
 import 'package:yourturn_client/model/queue.dart';
 import 'package:yourturn_client/utility/colore.dart';
 import 'package:yourturn_client/utility/stile_text.dart';
@@ -7,26 +8,87 @@ import 'cell_view.dart';
 import 'detailedqueue_view.dart';
 
 class SearchQueueView extends StatefulWidget {
-  String _text;
-  Future<dynamic> Function(String) _get;
-  Future<dynamic> Function(Queue) _enqueue;
-  Future<bool> Function(String) _check;
+  MainController _controller;
+  TextEditingController _txtController = TextEditingController();
 
-  SearchQueueView(this._text, this._enqueue, this._get, this._check);
+  SearchQueueView(this._controller, {String txt}) {
+    {
+      _txtController.text = txt;
+    }
+  }
 
   @override
   _SearchQueueViewState createState() => _SearchQueueViewState();
 }
 
 class _SearchQueueViewState extends State<SearchQueueView> {
-  Widget _varWidget = Container();
+  Widget _varWidget;
+  String _text = '';
+
+  @override
+  void initState() {
+    _futureWidget(widget._txtController.text);
+  }
+
+  void _futureWidget(String input) {
+    setState(
+      () {
+        _text = input;
+        _varWidget = CircularProgressIndicator();
+        widget._controller.checkQueue(_text).then(
+              (value) => {
+                if (value)
+                  {
+                    setState(() {
+                      _varWidget = FloatingActionButton(
+                        backgroundColor: Colore.back1,
+                        child: Icon(Icons.done, color: Colore.front1),
+                        onPressed: () async {
+                          Queue queue =
+                              await widget._controller.getQueue(_text);
+                          showDialog(
+                              context: context,
+                              builder: (context) {
+                                return AlertDialog(
+                                  content: DetailedQueueView(queue),
+                                  actions: [
+                                    FlatButton(
+                                      child: Text(
+                                        'Partecipa',
+                                        style: StileText.corpo,
+                                      ),
+                                      onPressed: () {
+                                        widget._controller
+                                            .enqueueToOther(queue);
+                                      },
+                                    )
+                                  ],
+                                );
+                              });
+                        },
+                      );
+                    })
+                  }
+                else
+                  {
+                    setState(() {
+                      _varWidget = FloatingActionButton(
+                        backgroundColor: Colore.back1,
+                        child: Icon(Icons.close, color: Colore.front1),
+                      );
+                    })
+                  }
+              },
+            );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(10),
       width: MediaQuery.of(context).size.width,
-      height: MediaQuery.of(context).size.width,
+      height: 180,
       color: Colore.back2,
       child: ListView(
         children: [
@@ -34,73 +96,20 @@ class _SearchQueueViewState extends State<SearchQueueView> {
             child: CellView(
               'Cerca',
               TextField(
+                controller: widget._txtController,
                 decoration: InputDecoration(
                   hintText: 'Inserisci Id di una coda',
                 ),
                 onChanged: (input) {
-                  setState(
-                    () {
-                      widget._text = input;
-                      _varWidget = CircularProgressIndicator();
-                      widget._check(widget._text).then(
-                            (value) => {
-                              if (value)
-                                {
-                                  setState(() {
-                                    _varWidget = FloatingActionButton(
-                                      backgroundColor: Colore.back2,
-                                      child:
-                                          Icon(Icons.done, color: Colors.green),
-                                      onPressed: () async {
-                                        var res =
-                                            await widget._get(widget._text);
-                                        showDialog(
-                                            context: context,
-                                            builder: (context) {
-                                              return AlertDialog(
-                                                title: DetailedQueueView(res),
-                                                actions: [
-                                                  FlatButton(
-                                                    child: Text(
-                                                      'Partecipa',
-                                                      style: StileText.corpo,
-                                                    ),
-                                                    onPressed: () {
-                                                      widget._enqueue(res);
-                                                    },
-                                                  )
-                                                ],
-                                              );
-                                            });
-                                      },
-                                    );
-                                  })
-                                }
-                              else
-                                {
-                                  setState(() {
-                                    _varWidget = FloatingActionButton(
-                                      backgroundColor: Colore.back2,
-                                      child:
-                                          Icon(Icons.close, color: Colors.red),
-                                    );
-                                  })
-                                }
-                            },
-                          );
-                    },
-                  );
+                  _futureWidget(input);
                 },
               ),
             ),
           ),
           Container(
-              padding: EdgeInsets.all(10),
-              width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.width,
-              color: Colore.back2,
-              alignment: Alignment.center,
-              child: _varWidget),
+            height: 15,
+          ),
+          Container(alignment: Alignment.center, child: _varWidget),
         ],
       ),
     );

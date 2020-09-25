@@ -27,99 +27,97 @@ class _CreateQueueViewState extends State<CreateQueueView> {
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      title: Text(
-        NavigationBar.titles[1],
-        style: StileText.sottotitolo,
-      ),
-      content: Container(
-        width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.width,
-        color: Colore.back2,
-        child: Padding(
-          padding: EdgeInsets.all(20),
-          child: Flex(
-            direction: Axis.vertical,
-            children: <Widget>[
-              Flexible(
-                child: ListView(
-                  shrinkWrap: true,
-                  scrollDirection: Axis.vertical,
-                  children: [
-                    CellView(
-                      'Id',
-                      TextField(
-                        decoration: InputDecoration(
-                          hintText: 'Inserisci l\'Id',
-                          errorText: _errMexM.allMex['id'],
-                        ),
-                        onChanged: (text) => setState(() {
-                          _id = text;
-                        }),
+    return Container(
+      width: MediaQuery.of(context).size.width,
+      height: MediaQuery.of(context).size.width,
+      color: Colore.back2,
+      child: Padding(
+        padding: EdgeInsets.all(20),
+        child: Flex(
+          direction: Axis.vertical,
+          children: <Widget>[
+            Flexible(
+              child: ListView(
+                shrinkWrap: true,
+                scrollDirection: Axis.vertical,
+                children: [
+                  Text(
+                    NavigationBar.titles[1],
+                    style: StileText.sottotitolo,
+                  ),
+                  CellView(
+                    'Id',
+                    TextField(
+                      decoration: InputDecoration(
+                        hintText: 'Inserisci l\'Id',
+                        errorText: _errMexM.allMex['id'],
                       ),
+                      onChanged: (text) => setState(() {
+                        _id = text;
+                      }),
                     ),
-                    CellView(
-                      'Luogo',
-                      TextField(
-                        decoration: InputDecoration(
-                          hintText: 'Inserisci il Luogo',
-                          errorText: _errMexM.allMex['luogo'],
-                        ),
-                        onChanged: (text) => setState(() {
-                          _luogo = text;
-                        }),
+                  ),
+                  CellView(
+                    'Luogo',
+                    TextField(
+                      decoration: InputDecoration(
+                        hintText: 'Inserisci il Luogo',
+                        errorText: _errMexM.allMex['luogo'],
                       ),
+                      onChanged: (text) => setState(() {
+                        _luogo = text;
+                      }),
                     ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-      actions: [
-        FlatButton(
-          color: Colore.back1,
-          child: Text(
-            NavigationBar.titles[1],
-            style: StileText.sottotitolo,
-          ),
-          onPressed: () async {
-            bool exists = (await widget._controller.getQueue(_id)) == null;
-            setState(() {
-              if (_id.isNotEmpty && _luogo.isNotEmpty) {
-                if (!exists) {
-                  _errMexM
-                      .manage({'id': 'Id gia esistente, inserire un altro id'});
-                } else {
-                  widget._controller.createQueue(_id, _luogo);
-                  showDialog(
-                      context: context,
-                      builder: (context) {
-                        return AlertDialog(
-                          title: Text(
-                            _id,
-                            style: StileText.corpo,
-                          ),
-                          content: Container(
-                            width: MediaQuery.of(context).size.width,
-                            height: MediaQuery.of(context).size.width,
-                            alignment: Alignment.center,
-                            child: QRGenerator(_id),
-                          ),
-                        );
+                  ),
+                  FlatButton(
+                    color: Colore.back1,
+                    child: Text(
+                      NavigationBar.titles[1],
+                      style: StileText.sottotitolo,
+                    ),
+                    onPressed: () async {
+                      bool exists =
+                          (await widget._controller.getQueue(_id)) == null;
+                      setState(() {
+                        if (_id.isNotEmpty && _luogo.isNotEmpty) {
+                          if (!exists) {
+                            _errMexM.manage({
+                              'id': 'Id gia esistente, inserire un altro id'
+                            });
+                          } else {
+                            widget._controller.createQueue(_id, _luogo);
+                            showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return AlertDialog(
+                                    title: Text(
+                                      _id,
+                                      style: StileText.corpo,
+                                    ),
+                                    content: Container(
+                                      width: MediaQuery.of(context).size.width,
+                                      height: MediaQuery.of(context).size.width,
+                                      alignment: Alignment.center,
+                                      child: QRGenerator(_id),
+                                    ),
+                                  );
+                                });
+                          }
+                        } else {
+                          _errMexM.checkEmpty({
+                            'id': _id,
+                            'luogo': _luogo,
+                          });
+                        }
                       });
-                }
-              } else {
-                _errMexM.checkEmpty({
-                  'id': _id,
-                  'luogo': _luogo,
-                });
-              }
-            });
-          },
+                    },
+                  ),
+                ],
+              ),
+            ),
+          ],
         ),
-      ],
+      ),
     );
   }
 }
