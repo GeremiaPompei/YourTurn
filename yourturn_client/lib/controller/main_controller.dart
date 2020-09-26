@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:yourturn_client/model/queue.dart';
 import 'package:yourturn_client/model/rest_functions.dart';
+import 'package:yourturn_client/model/ticket.dart';
 import 'package:yourturn_client/model/user.dart' as myuser;
 
 class MainController {
@@ -47,7 +48,7 @@ class MainController {
     UserCredential credential = await _auth.signInWithEmailAndPassword(
         email: email, password: password);
     var response = await _rest.getUser(credential.user.uid);
-    this._user = await myuser.User.fromJson(json.decode(response));
+    this._user = await myuser.User.fromJsonAdmin(json.decode(response));
     this._authenticate = true;
     return response;
   }
@@ -55,7 +56,7 @@ class MainController {
   Future<dynamic> update() async {
     await testConnection();
     var response = await _rest.getUser(this._user.uid);
-    this._user = await myuser.User.fromJson(json.decode(response));
+    this._user = await myuser.User.fromJsonAdmin(json.decode(response));
     this._authenticate = true;
     return response;
   }
@@ -73,15 +74,9 @@ class MainController {
     return response;
   }
 
-  void closeQueue() => myQueues.last.close();
-
-  void next() {
-    if (!myQueues.last.isClosed) myQueues.last.next();
-  }
-
   Future<dynamic> enqueueToOther(Queue queue) async {
-    Map<String, dynamic> enqueue = {'uid': _user.uid, 'id': queue.id};
-    var res = await _rest.enqueue(enqueue);
+    Ticket ticket = Ticket(queue, _user);
+    var res = await _rest.enqueue(ticket);
     await update();
     return res;
   }
@@ -106,11 +101,9 @@ class MainController {
 
   myuser.User get user => _user;
 
-  myuser.User get first => myQueues.last.getFirst();
-
   List<Queue> get myQueues => _user.myQueues;
 
-  List<Queue> get otherQueues => _user.otherQueues;
+  List<Ticket> get tickets => _user.tickets;
 
   bool get authenticate => _authenticate;
 }

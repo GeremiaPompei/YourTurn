@@ -20,7 +20,8 @@ async function signIn(map) {
 }
 
 async function logIn(map) {
-  var result = (await (db.collection('accounts').doc(map.uid).get())).data();
+  var txt = map.uid.replace('/');
+  var result = (await (db.collection('accounts').doc(txt).get())).data();
   /*notifica
   admin.messaging()
   .sendToDevice(result.tokenid,{data: {MyKey1: 'Logged'}},{priority: 'high',timeToLive: 60*60*24})
@@ -37,12 +38,18 @@ async function createQueue(map) {
 }
 
 async function enqueue(map) {
-  await db.collection('accounts').doc(map.uid).update({
-    'otherqueues': admin.firestore.FieldValue.arrayUnion(map.id),
+  await db.collection('accounts').doc(map.user).update({
+    'tickets': admin.firestore.FieldValue.arrayUnion(map.numberid),
   });
-  var result = await db.collection('queues').doc(map.id).update({
-    'queue': admin.firestore.FieldValue.arrayUnion(map.uid),
+  await db.collection('queues').doc(map.queue).update({
+    'queue': admin.firestore.FieldValue.arrayUnion(map.numberid),
   });
+  return await db.collection('tickets').doc(map.numberid).set(map);
+}
+
+async function getTicket(map) {
+  var txt = map.number.replace('/');
+  var result = (await (db.collection('tickets').doc(txt).get())).data();
   return result;
 }
 
@@ -57,5 +64,6 @@ module.exports = {
   logIn,
   createQueue,
   enqueue,
-  getQueue
+  getQueue,
+  getTicket
 };

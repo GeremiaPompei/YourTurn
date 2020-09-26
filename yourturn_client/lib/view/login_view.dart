@@ -58,9 +58,10 @@ class _LogInViewState extends State<LogInView> {
                       decoration: InputDecoration(
                           hintText: 'Inserisci l\'Email',
                           errorText: _errMexM.allMex['email']),
-                      onChanged: (text) => setState(() {
-                        _email = text;
-                      }),
+                      onChanged: (text) =>
+                          setState(() {
+                            _email = text;
+                          }),
                     ),
                   ),
                   CellView(
@@ -70,53 +71,57 @@ class _LogInViewState extends State<LogInView> {
                           hintText: 'Inserisci la Password',
                           errorText: _errMexM.allMex['password']),
                       obscureText: true,
-                      onChanged: (text) => setState(() {
-                        _password = text;
-                      }),
+                      onChanged: (text) =>
+                          setState(() {
+                            _password = text;
+                          }),
                     ),
                   ),
                   FlatButton(
                     color: Colore.back1,
                     child: _childButton[_indexButton],
                     onPressed: () async {
+                      _indexButton == 1 ? null :
                       setState(() {
                         _indexButton = 1;
                         if (_email.isNotEmpty && _password.isNotEmpty) {
                           widget._controller
                               .logIn(_email, _password)
-                              .then((value) => {
-                                    if (value != null)
-                                      {
-                                        Navigator.pushNamedAndRemoveUntil(
-                                            context,
-                                            '/body',
-                                            (route) => route.popped == null)
-                                      },
-                                    _indexButton = 0
-                                  })
-                              .catchError((err) => {
-                                    setState(() {
-                                      if (err.runtimeType == SocketException) {
-                                        _errMexM.manage({
-                                          'general':
-                                              'Errore di connessione al server: ' +
-                                                  indirizzoRoot
-                                        });
-                                      } else if (err.code == 'user-not-found') {
-                                        _errMexM.manage(
-                                            {'email': 'Utente non trovato'});
-                                      } else if (err.code == 'wrong-password') {
-                                        _errMexM.manage(
-                                            {'password': 'Password errata'});
-                                      } else if (err.code == 'invalid-email') {
-                                        _errMexM.manage(
-                                            {'email': 'Email non valida'});
-                                      } else {
-                                        _errMexM.manage({'general': 'Errore'});
-                                      }
-                                    }),
-                                    _indexButton = 0
-                                  });
+                              .then((value) =>
+                          {
+                            if (value != null)
+                              {
+                                Navigator.pushNamedAndRemoveUntil(
+                                    context,
+                                    '/body',
+                                        (route) => route.popped == null)
+                              },
+                            _indexButton = 0
+                          })
+                              .catchError((err) =>
+                          {
+                            setState(() {
+                              if (err.runtimeType == SocketException) {
+                                _errMexM.manage({
+                                  'general':
+                                  'Errore di connessione al server: ' +
+                                      indirizzoRoot
+                                });
+                              } else if (err.code == 'user-not-found') {
+                                _errMexM.manage(
+                                    {'email': 'Utente non trovato'});
+                              } else if (err.code == 'wrong-password') {
+                                _errMexM.manage(
+                                    {'password': 'Password errata'});
+                              } else if (err.code == 'invalid-email') {
+                                _errMexM.manage(
+                                    {'email': 'Email non valida'});
+                              } else {
+                                _errMexM.manage({'general': 'Errore'});
+                              }
+                            }),
+                            _indexButton = 0
+                          });
                         } else {
                           _errMexM.checkEmpty(
                               {'email': _email, 'password': _password});

@@ -1,31 +1,32 @@
 import 'dart:convert';
-
 import 'package:yourturn_client/model/rest_functions.dart';
+import 'package:yourturn_client/model/ticket.dart';
 import 'package:yourturn_client/model/user.dart';
 
 class Queue {
   String _id;
   String _luogo;
   User _admin;
-  List<User> _queue = [];
-  DateTime _startDateTime = DateTime.now();
+  List<Ticket> _queue;
+  DateTime _startDateTime;
   DateTime _stopDateTime;
-  bool _isClosed = false;
+  bool _isClosed;
 
-  Queue(this._id, this._luogo, this._admin);
+  Queue(this._id, this._luogo, this._admin) {
+    _queue = [];
+    _startDateTime = DateTime.now();
+    _isClosed = false;
+  }
 
   Queue.all(this._id, this._luogo, this._admin, this._queue,
       this._startDateTime, this._stopDateTime, this._isClosed);
 
   static Future<Queue> fromJson(Map<String, dynamic> pjson, User user) async {
+    Queue finalQueue;
     RestFunctions rest = new RestFunctions();
     String id = pjson['id'];
     String luogo = pjson['luogo'];
-    List<User> lusers = [];
-    await _initUser([pjson['admin']], lusers, user, rest);
-    User admin = lusers.first;
-    List<User> queue = [];
-    await _initUser(pjson['queue'], queue, user, rest);
+    User admin = await _initUser(pjson['admin'], user, rest);
     DateTime startDateTime = DateTime.parse(pjson['startdatetime']);
     DateTime stopDateTime;
     bool isClosed;
@@ -36,51 +37,33 @@ class Queue {
       stopDateTime = DateTime.parse(pjson['stopdatetime']);
       isClosed = true;
     }
-    return Queue.all(
-        id, luogo, admin, queue, startDateTime, stopDateTime, isClosed);
+    finalQueue = Queue.all(
+        id, luogo, admin, [], startDateTime, stopDateTime, isClosed);
+    await _initTicket(pjson['queue'], finalQueue.queue, rest, finalQueue, user);
+    return finalQueue;
   }
 
-  static Future<dynamic> _initUser(List<dynamic> lstr, List<User> lusers,
-      User user, RestFunctions rest) async {
-    for (dynamic value in lstr) {
-      if (user != null && user.uid == value.toString())
-        lusers.add(user);
-      else {
-        Map<String, dynamic> res =
-            json.decode(await rest.getUser(value.toString()));
-        res['myqueues'] = [];
-        res['otherqueues'] = [];
-        lusers.add(await User.fromJson(res));
-      }
+  static Future<User> _initUser(
+      String value, User user, RestFunctions rest) async {
+    if (user != null && user.uid == value.toString())
+      return user;
+    else {
+      Map<String, dynamic> res =
+          json.decode(await rest.getUser(value.toString()));
+      return User.fromJsonUser(res);
     }
-    return lusers;
   }
 
-  void enqueue(User user) {
-    this._queue.add(user);
+  static Future<dynamic> _initTicket(
+      List<dynamic> lstr, List<Ticket> lt, RestFunctions rest, Queue queue, User user) async {
+    for (dynamic value in lstr) {
+      Map<String, dynamic> res = json.decode(await rest.getTicket(value));
+      lt.add(await Ticket.fromJson(res, user, queue));
+    }
+    return lt;
   }
 
-  void dequeue(User user) {
-    this._queue.remove(user);
-  }
-
-  void next() {
-    if (this._queue.isNotEmpty) this._queue.removeAt(0);
-  }
-
-  User getFirst() {
-    if (this._queue.isNotEmpty)
-      return this._queue.first;
-    else
-      return null;
-  }
-
-  void close() {
-    this._stopDateTime = DateTime.now();
-    this._isClosed = true;
-  }
-
-  List<User> get queue => _queue;
+  List<Ticket> get queue => _queue;
 
   User get admin => _admin;
 
@@ -98,7 +81,7 @@ class Queue {
         'id': id,
         'luogo': luogo,
         'admin': admin.uid,
-        'queue': queue.map((element) => element.uid).toList(),
+        'queue': queue.map((element) => element.numberId).toList(),
         'startdatetime': startDateTime.toString(),
         'stopdatetime': stopDateTime.toString()
       };

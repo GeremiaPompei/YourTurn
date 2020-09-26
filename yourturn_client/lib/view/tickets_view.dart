@@ -8,18 +8,16 @@ import 'package:yourturn_client/view/queuelist_view.dart';
 
 import '../main.dart';
 
-class OtherQueuesView extends StatefulWidget {
+class TicketsView extends StatefulWidget {
   MainController _controller;
 
-  OtherQueuesView(this._controller);
+  TicketsView(this._controller);
 
   @override
-  _OtherQueuesViewState createState() => _OtherQueuesViewState();
+  _TicketsViewState createState() => _TicketsViewState();
 }
 
-class _OtherQueuesViewState extends State<OtherQueuesView> {
-
-
+class _TicketsViewState extends State<TicketsView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,7 +29,8 @@ class _OtherQueuesViewState extends State<OtherQueuesView> {
               direction: Axis.vertical,
               children: <Widget>[
                 Flexible(
-                  child: QueueListView(widget._controller.otherQueues),
+                  child: QueueListView(
+                      widget._controller.tickets.map((e) => e.queue).toList()),
                 ),
               ],
             ),

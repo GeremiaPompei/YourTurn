@@ -57,8 +57,8 @@ class _SearchQueueViewState extends State<SearchQueueView> {
                                         'Partecipa',
                                         style: StileText.corpo,
                                       ),
-                                      onPressed: () {
-                                        widget._controller
+                                      onPressed: () async {
+                                        await widget._controller
                                             .enqueueToOther(queue);
                                       },
                                     )

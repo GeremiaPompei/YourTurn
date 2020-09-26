@@ -28,7 +28,10 @@ class _SignInViewState extends State<SignInView> {
   String _ripetiPassword = '';
   int _vAnnoN = 0;
   List<String> _lAnnoN =
-      List.generate(150, (index) => (DateTime.now().year - index).toString());
+  List.generate(150, (index) =>
+      (DateTime
+          .now()
+          .year - index).toString());
   int _vSesso = 0;
   List<String> _lSesso = ['Maschio', 'Femmina', 'Altro'];
   ErrMessagesManager _errMexM = ErrMessagesManager.fromList([
@@ -72,9 +75,10 @@ class _SignInViewState extends State<SignInView> {
                         hintText: 'Inserisci il Nome',
                         errorText: _errMexM.allMex['nome'],
                       ),
-                      onChanged: (text) => setState(() {
-                        _nome = text;
-                      }),
+                      onChanged: (text) =>
+                          setState(() {
+                            _nome = text;
+                          }),
                     ),
                   ),
                   CellView(
@@ -83,21 +87,24 @@ class _SignInViewState extends State<SignInView> {
                       decoration: InputDecoration(
                           hintText: 'Inserisci il Cognome',
                           errorText: _errMexM.allMex['cognome']),
-                      onChanged: (text) => setState(() {
-                        _cognome = text;
-                      }),
+                      onChanged: (text) =>
+                          setState(() {
+                            _cognome = text;
+                          }),
                     ),
                   ),
                   CellView(
                     'Anno di Nascita',
                     DropdownButton(
                       items: _lAnnoN
-                          .map((e) => DropdownMenuItem(
-                                child: Text(e),
-                                value: _lAnnoN.indexOf(e),
-                              ))
+                          .map((e) =>
+                          DropdownMenuItem(
+                            child: Text(e),
+                            value: _lAnnoN.indexOf(e),
+                          ))
                           .toList(),
-                      onChanged: (value) => {
+                      onChanged: (value) =>
+                      {
                         setState(() {
                           _vAnnoN = value;
                         })
@@ -109,12 +116,14 @@ class _SignInViewState extends State<SignInView> {
                     'Sesso',
                     DropdownButton(
                       items: _lSesso
-                          .map((e) => DropdownMenuItem(
-                                child: Text(e),
-                                value: _lSesso.indexOf(e),
-                              ))
+                          .map((e) =>
+                          DropdownMenuItem(
+                            child: Text(e),
+                            value: _lSesso.indexOf(e),
+                          ))
                           .toList(),
-                      onChanged: (value) => {
+                      onChanged: (value) =>
+                      {
                         setState(() {
                           _vSesso = value;
                         })
@@ -128,9 +137,10 @@ class _SignInViewState extends State<SignInView> {
                       decoration: InputDecoration(
                           hintText: 'Inserisci il numero di Telefono',
                           errorText: _errMexM.allMex['telefono']),
-                      onChanged: (text) => setState(() {
-                        _telefono = text;
-                      }),
+                      onChanged: (text) =>
+                          setState(() {
+                            _telefono = text;
+                          }),
                     ),
                   ),
                   CellView(
@@ -140,9 +150,10 @@ class _SignInViewState extends State<SignInView> {
                         hintText: 'Inserisci l\'Email',
                         errorText: _errMexM.allMex['email'],
                       ),
-                      onChanged: (text) => setState(() {
-                        _email = text;
-                      }),
+                      onChanged: (text) =>
+                          setState(() {
+                            _email = text;
+                          }),
                     ),
                   ),
                   CellView(
@@ -153,9 +164,10 @@ class _SignInViewState extends State<SignInView> {
                         errorText: _errMexM.allMex['password'],
                       ),
                       obscureText: true,
-                      onChanged: (text) => setState(() {
-                        _password = text;
-                      }),
+                      onChanged: (text) =>
+                          setState(() {
+                            _password = text;
+                          }),
                     ),
                   ),
                   CellView(
@@ -166,15 +178,17 @@ class _SignInViewState extends State<SignInView> {
                         errorText: _errMexM.allMex['password nuovamente'],
                       ),
                       obscureText: true,
-                      onChanged: (text) => setState(() {
-                        _ripetiPassword = text;
-                      }),
+                      onChanged: (text) =>
+                          setState(() {
+                            _ripetiPassword = text;
+                          }),
                     ),
                   ),
                   FlatButton(
                     color: Colore.back1,
                     child: _childButton[_indexButton],
                     onPressed: () async {
+                      _indexButton == 1 ? null :
                       setState(() {
                         _indexButton = 1;
                         if (_nome.isNotEmpty &&
@@ -187,59 +201,63 @@ class _SignInViewState extends State<SignInView> {
                             try {
                               widget._controller
                                   .signIn(
-                                      _nome,
-                                      _cognome,
-                                      _lAnnoN[_vAnnoN],
-                                      _lSesso[_vSesso],
-                                      _email,
-                                      _telefono,
-                                      _password)
+                                  _nome,
+                                  _cognome,
+                                  _lAnnoN[_vAnnoN],
+                                  _lSesso[_vSesso],
+                                  _email,
+                                  _telefono,
+                                  _password)
                                   .then((value) {
                                 Navigator.pushNamedAndRemoveUntil(context,
                                     '/body', (route) => route.popped == null);
                                 _indexButton = 0;
-                              }).catchError((err) => {
-                                        if (err.runtimeType == SocketException)
-                                          {
+                              }).catchError((err) =>
+                              {
+                                if (err.runtimeType == SocketException)
+                                  {
+                                    _errMexM.manage({
+                                      'general':
+                                      'Errore di connessione al server: ' +
+                                          indirizzoRoot
+                                    })
+                                  }
+                                else
+                                  if (err.code == 'weak-password')
+                                    {
+                                      setState(() {
+                                        _errMexM.manage({
+                                          'password':
+                                          'Password debole, minimo 6 caratteri'
+                                        });
+                                      })
+                                    }
+                                  else
+                                    if (err.code == 'invalid-email')
+                                      {
+                                        setState(() {
+                                          _errMexM.manage({
+                                            'email': 'Email non valida'
+                                          });
+                                        })
+                                      }
+                                    else
+                                      if (err.code ==
+                                          'email-already-in-use')
+                                        {
+                                          setState(() {
                                             _errMexM.manage({
-                                              'general':
-                                                  'Errore di connessione al server: ' +
-                                                      indirizzoRoot
-                                            })
-                                          }
-                                        else if (err.code == 'weak-password')
-                                          {
-                                            setState(() {
-                                              _errMexM.manage({
-                                                'password':
-                                                    'Password debole, minimo 6 caratteri'
-                                              });
-                                            })
-                                          }
-                                        else if (err.code == 'invalid-email')
-                                          {
-                                            setState(() {
-                                              _errMexM.manage({
-                                                'email': 'Email non valida'
-                                              });
-                                            })
-                                          }
-                                        else if (err.code ==
-                                            'email-already-in-use')
-                                          {
-                                            setState(() {
-                                              _errMexM.manage({
-                                                'email': 'Email gia esistente'
-                                              });
-                                            })
-                                          }
-                                        else
-                                          {
-                                            _errMexM
-                                                .manage({'general': 'Error'})
-                                          },
-                                        _indexButton = 0
-                                      });
+                                              'email': 'Email gia esistente'
+                                            });
+                                          })
+                                        }
+                                      else
+                                        {
+                                          _errMexM
+                                              .manage({'general': 'Error'})
+                                        },
+                                _indexButton = 0
+                              });
                             } catch (e) {
                               _errMexM.manage({'general': 'Error'});
                               _indexButton = 0;

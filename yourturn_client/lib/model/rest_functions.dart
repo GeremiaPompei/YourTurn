@@ -2,6 +2,7 @@ import 'dart:collection';
 import 'dart:convert';
 import 'package:http/http.dart';
 import 'package:yourturn_client/model/queue.dart';
+import 'package:yourturn_client/model/ticket.dart';
 import 'package:yourturn_client/model/user.dart' as myuser;
 import '../main.dart';
 
@@ -22,12 +23,16 @@ class RestFunctions {
     return await _requestByPost('createqueue', queue.toMap());
   }
 
-  Future<dynamic> enqueue(Map<String, dynamic> queue) async {
-    return await _requestByPost('enqueue', queue);
+  Future<dynamic> enqueue(Ticket ticket) async {
+    return await _requestByPost('enqueue', ticket.toMap());
   }
 
   Future<dynamic> getQueue(String id) async {
     return await _requestByPost('getqueue', {'id': id});
+  }
+
+  Future<dynamic> getTicket(String number) async {
+    return await _requestByPost('getticket', {'number': number});
   }
 
   Future<String> _requestByPost(String url, Map el) async {

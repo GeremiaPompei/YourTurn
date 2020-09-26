@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:yourturn_client/model/queue.dart';
 import 'package:yourturn_client/model/rest_functions.dart';
+import 'ticket.dart';
 
 class User {
   String _uid;
@@ -12,12 +13,12 @@ class User {
   String _email;
   String _telefono;
   List<Queue> _myQueues;
-  List<Queue> _otherQueues;
+  List<Ticket> _tickets;
 
   User(this._uid, this._tokenid, this._nome, this._cognome, this._anno_nascita,
       this._sesso, this._email, this._telefono) {
     this._myQueues = [];
-    this._otherQueues = [];
+    this._tickets = [];
   }
 
   User.all(
@@ -30,10 +31,9 @@ class User {
       this._email,
       this._telefono,
       this._myQueues,
-      this._otherQueues);
+      this._tickets);
 
-  static Future<User> fromJson(Map<String, dynamic> pjson) async {
-    RestFunctions rest = new RestFunctions();
+  static User fromJsonUser(Map<String, dynamic> pjson) {
     String uid = pjson['uid'];
     String nome = pjson['nome'];
     String cognome = pjson['cognome'];
@@ -43,23 +43,31 @@ class User {
     String telefono = pjson['telefono'];
     String tokenid = pjson['tokenid'];
     List<Queue> myQueues = [];
-    List<Queue> otherQueues = [];
-    User user = User.all(uid, tokenid, nome, cognome, annonascita, sesso, email,
-        telefono, myQueues, otherQueues);
-    await _initQueue(pjson['myqueues'], user.myQueues, rest, user);
-    await _initQueue(pjson['otherqueues'], user.otherQueues, rest, user);
+    List<Ticket> tickets = [];
+    return User.all(uid, tokenid, nome, cognome, annonascita, sesso, email,
+        telefono, myQueues, tickets);
+  }
+
+  static Future<User> fromJsonAdmin(Map<String, dynamic> pjson) async {
+    RestFunctions rest = new RestFunctions();
+    User user = User.fromJsonUser(pjson);
+    Function funcQueue = (str) async =>
+        await Queue.fromJson(json.decode(await rest.getQueue(str)), user);
+    await _initT(pjson['myqueues'], user.myQueues, user, funcQueue);
+    Function funcTicket = (str) async => await Ticket.fromJson(
+        json.decode(await rest.getTicket(str)), user, null);
+    await _initT(pjson['tickets'], user.tickets, user, funcTicket);
     return user;
   }
 
-  static Future<dynamic> _initQueue(List<dynamic> lstr, List<Queue> lqueues,
-      RestFunctions rest, User user) async {
+  static Future<dynamic> _initT(
+      List<dynamic> lstr, List lt, User user, Function func) async {
     if (lstr != null) {
       for (dynamic value in lstr) {
-        var res = await rest.getQueue(value.toString());
-        lqueues.add(await Queue.fromJson(json.decode(res), user));
+        lt.add(await func(value.toString()));
       }
     }
-    return lqueues;
+    return lt;
   }
 
   String get uid => _uid;
@@ -80,7 +88,7 @@ class User {
 
   List<Queue> get myQueues => _myQueues;
 
-  List<Queue> get otherQueues => _otherQueues;
+  List<Ticket> get tickets => _tickets;
 
   Map<String, dynamic> toMap() => {
         'uid': uid,
@@ -92,6 +100,6 @@ class User {
         'email': email,
         'telefono': telefono,
         'myqueues': myQueues.map((e) => e.id).toList(),
-        'otherqueues': myQueues.map((e) => e.id).toList(),
+        'tickets': tickets.map((e) => e.numberId).toList(),
       };
 }

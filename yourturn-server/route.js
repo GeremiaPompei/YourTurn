@@ -9,6 +9,7 @@ router.post('/login', bodyParser.json(), controller.logIn);
 router.post('/createqueue', bodyParser.json(), controller.createQueue);
 router.post('/enqueue', bodyParser.json(), controller.enqueue);
 router.post('/getqueue', bodyParser.json(), controller.getQueue);
+router.post('/getticket', bodyParser.json(), controller.getTicket);
 router.get('/test', controller.test)
 router.use(controller.error);
 

@@ -4,7 +4,7 @@ import 'package:yourturn_client/controller/main_controller.dart';
 import 'package:yourturn_client/utility/colore.dart';
 import 'package:yourturn_client/utility/stile_text.dart';
 import 'package:yourturn_client/view/myqueues_view.dart';
-import 'package:yourturn_client/view/otherqueues_view.dart';
+import 'package:yourturn_client/view/tickets_view.dart';
 import 'package:yourturn_client/view/navigation_bar.dart';
 import 'package:yourturn_client/view/user_view.dart';
 
@@ -31,7 +31,7 @@ class _MainViewState extends State<MainView> {
       this._indexItem = index;
       switch (index) {
         case 0:
-          this._bodyWidget = OtherQueuesView(widget._controller);
+          this._bodyWidget = TicketsView(widget._controller);
           break;
         case 1:
           this._bodyWidget = MyQueuesView(widget._controller);

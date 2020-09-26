@@ -40,6 +40,16 @@ const enqueue = (req,res) => {
     });
 };
 
+const getTicket = (req,res) => {
+    db.getTicket(req.body)
+    .then((value) => {
+        res.send(value);
+        //log
+        console.log('Ticket getted ['+new Date().toLocaleString()+']');
+        console.log(value);
+    });
+};
+
 const getQueue = (req,res) => {
     db.getQueue(req.body)
     .then((value) => {
@@ -70,6 +80,7 @@ module.exports = {
     createQueue,
     enqueue,
     getQueue,
+    getTicket,
     test,
     error
 }
