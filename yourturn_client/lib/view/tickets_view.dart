@@ -5,6 +5,7 @@ import 'package:yourturn_client/utility/colore.dart';
 import 'package:yourturn_client/utility/stile_text.dart';
 import 'package:yourturn_client/view/fabmenu_view.dart';
 import 'package:yourturn_client/view/queuelist_view.dart';
+import 'package:yourturn_client/view/ticketlist_view.dart';
 
 import '../main.dart';
 
@@ -29,8 +30,7 @@ class _TicketsViewState extends State<TicketsView> {
               direction: Axis.vertical,
               children: <Widget>[
                 Flexible(
-                  child: QueueListView(
-                      widget._controller.tickets.map((e) => e.queue).toList()),
+                  child: TicketListView(widget._controller.tickets),
                 ),
               ],
             ),

@@ -35,6 +35,10 @@ class RestFunctions {
     return await _requestByPost('getticket', {'number': number});
   }
 
+  Future<dynamic> next(String id) async {
+    return await _requestByPost('next', {'id': id});
+  }
+
   Future<String> _requestByPost(String url, Map el) async {
     String element;
     Map<String, String> header = {"Content-Type": "application/json"};

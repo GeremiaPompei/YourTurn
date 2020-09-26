@@ -5,7 +5,7 @@ import 'package:yourturn_client/model/queue.dart';
 import 'package:yourturn_client/utility/colore.dart';
 import 'package:yourturn_client/utility/stile_text.dart';
 import 'package:yourturn_client/view/qr_generator.dart';
-import 'package:yourturn_client/view/user_view.dart';
+import 'package:yourturn_client/view/detaileduser_view.dart';
 import 'cell_view.dart';
 
 class DetailedQueueView extends StatefulWidget {
@@ -75,7 +75,7 @@ class _DetailedQueueViewState extends State<DetailedQueueView> {
                       context: context,
                       builder: (context) {
                         return AlertDialog(
-                          content: UserView(widget._queue.admin),
+                          content: DetailedUserView(widget._queue.admin),
                         );
                       });
                 });

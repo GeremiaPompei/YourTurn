@@ -36,7 +36,7 @@ dependencies:
   barcode_scan: ^2.0.1
   qr_flutter: ^3.2.0
   flutter_speed_dial: ^1.2.5
-
+  share: ^0.6.3+1
 
 dev_dependencies:
   flutter_test:

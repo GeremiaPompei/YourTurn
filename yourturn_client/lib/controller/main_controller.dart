@@ -99,6 +99,18 @@ class MainController {
     return await Queue.fromJson(queue, _user);
   }
 
+  Future<dynamic> next() async {
+    await _rest.next(last.id);
+    return await update();
+  }
+
+  Future<dynamic> closeQueue() async {
+    last.close();
+    return await update();
+  }
+
+  Queue get last => _user.myQueues.last;
+
   myuser.User get user => _user;
 
   List<Queue> get myQueues => _user.myQueues;

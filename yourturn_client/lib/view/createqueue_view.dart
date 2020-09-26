@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:yourturn_client/controller/main_controller.dart';
 import 'package:yourturn_client/utility/colore.dart';
 import 'package:yourturn_client/utility/stile_text.dart';
-import 'package:yourturn_client/view/qr_generator.dart';
 import 'package:yourturn_client/utility/errmessagesmanager.dart';
 import 'cell_view.dart';
 import 'navigation_bar.dart';
@@ -76,40 +75,27 @@ class _CreateQueueViewState extends State<CreateQueueView> {
                       style: StileText.sottotitolo,
                     ),
                     onPressed: () async {
-                      bool exists =
-                          (await widget._controller.getQueue(_id)) == null;
-                      setState(() {
-                        if (_id.isNotEmpty && _luogo.isNotEmpty) {
-                          if (!exists) {
+                      if (_id.isNotEmpty && _luogo.isNotEmpty) {
+                        if (!((await widget._controller.getQueue(_id)) ==
+                            null)) {
+                          setState(() {
                             _errMexM.manage({
                               'id': 'Id gia esistente, inserire un altro id'
                             });
-                          } else {
-                            widget._controller.createQueue(_id, _luogo);
-                            showDialog(
-                                context: context,
-                                builder: (context) {
-                                  return AlertDialog(
-                                    title: Text(
-                                      _id,
-                                      style: StileText.corpo,
-                                    ),
-                                    content: Container(
-                                      width: MediaQuery.of(context).size.width,
-                                      height: MediaQuery.of(context).size.width,
-                                      alignment: Alignment.center,
-                                      child: QRGenerator(_id),
-                                    ),
-                                  );
-                                });
-                          }
+                          });
                         } else {
+                          await widget._controller.createQueue(_id, _luogo);
+                          Navigator.pushNamedAndRemoveUntil(context, '/service',
+                              (route) => route.popped == null);
+                        }
+                      } else {
+                        setState(() {
                           _errMexM.checkEmpty({
                             'id': _id,
                             'luogo': _luogo,
                           });
-                        }
-                      });
+                        });
+                      }
                     },
                   ),
                 ],

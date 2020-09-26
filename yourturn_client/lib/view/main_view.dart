@@ -6,7 +6,7 @@ import 'package:yourturn_client/utility/stile_text.dart';
 import 'package:yourturn_client/view/myqueues_view.dart';
 import 'package:yourturn_client/view/tickets_view.dart';
 import 'package:yourturn_client/view/navigation_bar.dart';
-import 'package:yourturn_client/view/user_view.dart';
+import 'package:yourturn_client/view/detaileduser_view.dart';
 
 class MainView extends StatefulWidget {
   MainController _controller;
@@ -57,7 +57,7 @@ class _MainViewState extends State<MainView> {
                   context: context,
                   builder: (context) {
                     return AlertDialog(
-                      content: UserView(widget._controller.user),
+                      content: DetailedUserView(widget._controller.user),
                       title: FloatingActionButton(
                         backgroundColor: Colore.back1,
                         child: Icon(Icons.exit_to_app, color: Colore.front1),

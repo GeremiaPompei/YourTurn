@@ -7,24 +7,27 @@ class Queue {
   String _id;
   String _luogo;
   User _admin;
-  List<Ticket> _queue;
+  List<Ticket> _tickets;
   DateTime _startDateTime;
   DateTime _stopDateTime;
   bool _isClosed;
+  int _index;
 
   Queue(this._id, this._luogo, this._admin) {
-    _queue = [];
+    this._index = 1;
+    _tickets = [];
     _startDateTime = DateTime.now();
     _isClosed = false;
   }
 
-  Queue.all(this._id, this._luogo, this._admin, this._queue,
-      this._startDateTime, this._stopDateTime, this._isClosed);
+  Queue.all(this._id, this._luogo, this._admin, this._tickets,
+      this._startDateTime, this._stopDateTime, this._isClosed, this._index);
 
   static Future<Queue> fromJson(Map<String, dynamic> pjson, User user) async {
     Queue finalQueue;
     RestFunctions rest = new RestFunctions();
     String id = pjson['id'];
+    int index = pjson['index'];
     String luogo = pjson['luogo'];
     User admin = await _initUser(pjson['admin'], user, rest);
     DateTime startDateTime = DateTime.parse(pjson['startdatetime']);
@@ -38,7 +41,7 @@ class Queue {
       isClosed = true;
     }
     finalQueue = Queue.all(
-        id, luogo, admin, [], startDateTime, stopDateTime, isClosed);
+        id, luogo, admin, [], startDateTime, stopDateTime, isClosed, index);
     await _initTicket(pjson['queue'], finalQueue.queue, rest, finalQueue, user);
     return finalQueue;
   }
@@ -54,8 +57,8 @@ class Queue {
     }
   }
 
-  static Future<dynamic> _initTicket(
-      List<dynamic> lstr, List<Ticket> lt, RestFunctions rest, Queue queue, User user) async {
+  static Future<dynamic> _initTicket(List<dynamic> lstr, List<Ticket> lt,
+      RestFunctions rest, Queue queue, User user) async {
     for (dynamic value in lstr) {
       Map<String, dynamic> res = json.decode(await rest.getTicket(value));
       lt.add(await Ticket.fromJson(res, user, queue));
@@ -63,7 +66,12 @@ class Queue {
     return lt;
   }
 
-  List<Ticket> get queue => _queue;
+  void close() {
+    _isClosed = true;
+    _stopDateTime = DateTime.now();
+  }
+
+  List<Ticket> get queue => _tickets;
 
   User get admin => _admin;
 
@@ -77,12 +85,15 @@ class Queue {
 
   bool get isClosed => _isClosed;
 
+  int get index => _index;
+
   Map<String, dynamic> toMap() => {
         'id': id,
         'luogo': luogo,
         'admin': admin.uid,
         'queue': queue.map((element) => element.numberId).toList(),
         'startdatetime': startDateTime.toString(),
-        'stopdatetime': stopDateTime.toString()
+        'stopdatetime': stopDateTime.toString(),
+        'index': _index,
       };
 }
