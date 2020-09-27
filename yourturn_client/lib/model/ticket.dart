@@ -43,6 +43,10 @@ class Ticket {
     return Ticket.all(number, startEnqueue, stopEnqueue, finalqueue, finaluser);
   }
 
+  void close() {
+    _stopEnqueue = DateTime.now();
+  }
+
   String get numberCode => _numberId.substring(_numberId.length - 3);
 
   User get user => _user;

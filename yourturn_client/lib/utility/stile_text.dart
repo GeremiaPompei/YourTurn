@@ -3,6 +3,13 @@ import 'colore.dart';
 import 'font.dart';
 
 class StileText {
+  static final superTitolo = TextStyle(
+    fontFamily: Font.titolo,
+    fontWeight: FontWeight.w700,
+    fontSize: 85,
+    color: Colore.front1,
+  );
+
   static final titolo = TextStyle(
     fontFamily: Font.titolo,
     fontWeight: FontWeight.w900,

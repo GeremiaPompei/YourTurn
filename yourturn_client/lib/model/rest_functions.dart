@@ -32,7 +32,11 @@ class RestFunctions {
   }
 
   Future<dynamic> getTicket(String number) async {
-    return await _requestByPost('getticket', {'number': number});
+    return await _requestByPost('getticket', {'numberid': number});
+  }
+
+  Future<dynamic> setTicket(Ticket ticket) async {
+    return await _requestByPost('setticket', ticket.toMap());
   }
 
   Future<dynamic> next(String id) async {

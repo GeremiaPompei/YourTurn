@@ -50,12 +50,32 @@ const getTicket = (req,res) => {
     });
 };
 
+const setTicket = (req,res) => {
+    db.setTicket(req.body)
+    .then((value) => {
+        res.send(value);
+        //log
+        console.log('Ticket setted ['+new Date().toLocaleString()+']');
+        console.log(value);
+    });
+};
+
 const getQueue = (req,res) => {
     db.getQueue(req.body)
     .then((value) => {
         res.send(value);
         //log
         console.log('Queue getted ['+new Date().toLocaleString()+']');
+        console.log(value);
+    });
+};
+
+const next = (req,res) => {
+    db.next(req.body)
+    .then((value) => {
+        res.send(value);
+        //log
+        console.log('User next ['+new Date().toLocaleString()+']');
         console.log(value);
     });
 };
@@ -81,6 +101,8 @@ module.exports = {
     enqueue,
     getQueue,
     getTicket,
+    setTicket,
+    next,
     test,
     error
 }

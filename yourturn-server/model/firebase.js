@@ -9,6 +9,7 @@ admin.initializeApp({
 });
 
 const db = admin.firestore();
+const converter = require("./ticketnumber_converter");
 
 async function signIn(map) {
   var result = await db.collection('accounts').doc(map.uid).set(map);
@@ -48,9 +49,13 @@ async function enqueue(map) {
 }
 
 async function getTicket(map) {
-  var txt = map.number.replace('/');
+  var txt = map.numberid.replace('/');
   var result = (await (db.collection('tickets').doc(txt).get())).data();
   return result;
+}
+
+async function setTicket(map) {
+  return await db.collection('tickets').doc(map.numberid).set(map);
 }
 
 async function getQueue(map) {
@@ -59,11 +64,24 @@ async function getQueue(map) {
   return result;
 }
 
+async function next(map) {
+  var txt = map.id.replace('/');
+  var queue = (await db.collection('queues').doc(txt).get()).data();
+  if(queue.index < queue.queue.length) {
+    await db.collection('queues').doc(txt).update({
+      'index': queue.index + 1,
+    });
+  }
+  return txt;
+}
+
 module.exports = {
   signIn,
   logIn,
   createQueue,
   enqueue,
   getQueue,
-  getTicket
+  getTicket,
+  setTicket,
+  next
 };

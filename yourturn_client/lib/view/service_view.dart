@@ -39,43 +39,37 @@ class _ServiceViewState extends State<ServiceView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colore.back2,
+        elevation: 0,
+        brightness: Brightness.light,
+      ),
       body: Container(
-        padding: EdgeInsets.all(40),
+        padding: EdgeInsets.fromLTRB(40, 0, 40, 0),
         color: Colore.back2,
         alignment: Alignment.center,
         child: ListView(
           children: [
-            AppBar(
-                backgroundColor: Colore.back2,
-                elevation: 0,
-                brightness: Brightness.light,
-                title: CircleAvatar(
-                    radius: 20,
-                    backgroundColor: Colore.back1,
-                    child: IconButton(
-                      icon: Icon(
-                        Icons.share,
-                        color: Colore.front1,
-                      ),
-                      onPressed: () {
-                        final RenderBox box = context.findRenderObject();
-                        Share.share(widget._controller.last.id,
-                            subject: 'Your Turn [' +
-                                widget._controller.last.id +
-                                ']'.replaceAll(indirizzoRoot, ''),
-                            sharePositionOrigin:
-                                box.localToGlobal(Offset.zero) & box.size);
-                      },
-                    ))),
             CellView(
               widget._controller.last.id,
               Center(
                 child: Container(
-                  width: MediaQuery.of(context).size.width - 200,
-                  height: MediaQuery.of(context).size.width - 200,
+                  width: MediaQuery.of(context).size.width - 220,
+                  height: MediaQuery.of(context).size.width - 220,
                   alignment: Alignment.center,
-                  child: QRGenerator(
-                    widget._controller.last.id,
+                  child: FlatButton(
+                    child: QRGenerator(
+                      widget._controller.last.id,
+                    ),
+                    onPressed: () {
+                      final RenderBox box = context.findRenderObject();
+                      Share.share(widget._controller.last.id,
+                          subject: 'Your Turn [' +
+                              widget._controller.last.id +
+                              ']'.replaceAll(indirizzoRoot, ''),
+                          sharePositionOrigin:
+                              box.localToGlobal(Offset.zero) & box.size);
+                    },
                   ),
                 ),
               ),
@@ -84,7 +78,7 @@ class _ServiceViewState extends State<ServiceView> {
               alignment: Alignment.center,
               child: Text(
                 TicketNumberConverter().fromInt(widget._controller.last.index),
-                style: StileText.titolo,
+                style: StileText.superTitolo,
               ),
             ),
             CellView(
@@ -98,7 +92,7 @@ class _ServiceViewState extends State<ServiceView> {
               color: Colore.back1,
               child: Text(
                 _ticket == null
-                    ? 'vuoto'
+                    ? 'Vuoto'
                     : (_ticket.user.nome + ' ' + _ticket.user.cognome),
                 style: StileText.sottotitolo,
               ),
@@ -127,6 +121,7 @@ class _ServiceViewState extends State<ServiceView> {
                 setState(() {
                   set();
                 });
+                await widget._controller.closeTicket(_ticket);
               },
             ),
             FlatButton(

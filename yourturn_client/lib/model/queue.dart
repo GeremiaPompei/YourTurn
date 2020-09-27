@@ -14,7 +14,7 @@ class Queue {
   int _index;
 
   Queue(this._id, this._luogo, this._admin) {
-    this._index = 1;
+    this._index = 0;
     _tickets = [];
     _startDateTime = DateTime.now();
     _isClosed = false;

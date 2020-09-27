@@ -58,8 +58,8 @@ class _SearchQueueViewState extends State<SearchQueueView> {
                                         style: StileText.corpo,
                                       ),
                                       onPressed: () async {
-                                        await widget._controller
-                                            .enqueueToOther(queue);
+                                        await widget._controller.enqueueToOther(
+                                            queue, widget._controller.user);
                                       },
                                     )
                                   ],

@@ -74,8 +74,8 @@ class MainController {
     return response;
   }
 
-  Future<dynamic> enqueueToOther(Queue queue) async {
-    Ticket ticket = Ticket(queue, _user);
+  Future<dynamic> enqueueToOther(Queue queue, myuser.User user) async {
+    Ticket ticket = Ticket(queue, user);
     var res = await _rest.enqueue(ticket);
     await update();
     return res;
@@ -95,7 +95,6 @@ class MainController {
     dynamic res = await _rest.getQueue(id);
     if (res.toString() == '') return null;
     Map<String, dynamic> queue = json.decode(res);
-    await update();
     return await Queue.fromJson(queue, _user);
   }
 
@@ -106,6 +105,13 @@ class MainController {
 
   Future<dynamic> closeQueue() async {
     last.close();
+    await _rest.createQueue(last);
+    return await update();
+  }
+
+  Future<dynamic> closeTicket(Ticket ticket) async{
+    ticket.close();
+    await _rest.setTicket(ticket);
     return await update();
   }
 
