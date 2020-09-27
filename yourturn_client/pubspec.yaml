@@ -41,6 +41,13 @@ dependencies:
   flutter_launcher_icons: ^0.7.5
   pull_to_refresh: ^1.6.0
   url_launcher: ^5.5.0
+  firebase_messaging: ^7.0.0
+  platform_device_id: ^0.1.1
+
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/icon/icon.JPG"
 
 dev_dependencies:
   flutter_test:

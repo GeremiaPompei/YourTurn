@@ -103,6 +103,7 @@ class _ServiceViewState extends State<ServiceView> {
               'Persone in coda',
               Text(
                 widget._controller.last.queue.length.toString(),
+                //widget._controller.index,
                 style: StileText.titolo,
               ),
             ),

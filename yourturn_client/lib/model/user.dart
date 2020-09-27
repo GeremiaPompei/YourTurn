@@ -90,6 +90,10 @@ class User {
 
   List<Ticket> get tickets => _tickets;
 
+  set tokenid(String value) {
+    _tokenid = value;
+  }
+
   Map<String, dynamic> toMap() => {
         'uid': uid,
         'tokenid': tokenid,

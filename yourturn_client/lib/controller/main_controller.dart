@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:yourturn_client/model/messaging_functions.dart';
 import 'package:yourturn_client/model/queue.dart';
 import 'package:yourturn_client/model/rest_functions.dart';
 import 'package:yourturn_client/model/ticket.dart';
@@ -10,6 +11,7 @@ class MainController {
   bool _authenticate;
   FirebaseAuth _auth = FirebaseAuth.instance;
   RestFunctions _rest = new RestFunctions();
+  MessagingFunctions _messaging = new MessagingFunctions();
 
   MainController() {
     this._authenticate = false;
@@ -30,7 +32,7 @@ class MainController {
         email: email, password: password);
     myuser.User user = new myuser.User(
         credential.user.uid,
-        await credential.user.getIdToken(),
+        _messaging.token,
         nome,
         cognome,
         annonascita,
@@ -49,6 +51,10 @@ class MainController {
         email: email, password: password);
     var response = await _rest.getUser(credential.user.uid);
     this._user = await myuser.User.fromJsonAdmin(json.decode(response));
+    if(this._user.tokenid != _messaging.token) {
+      this._user.tokenid = _messaging.token;
+      _rest.createUser(this._user);
+    }
     this._authenticate = true;
     return response;
   }
@@ -110,6 +116,8 @@ class MainController {
     ticket.close();
     return await _rest.setTicket(ticket);
   }
+
+  String get index => _messaging.listIndex.last;
 
   Queue get last => _user.myQueues.last;
 
