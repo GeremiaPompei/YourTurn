@@ -34,6 +34,7 @@ const enqueue = (req,res) => {
     db.enqueue(req.body)
     .then((value) => {
         res.send('Enqueued');
+        //notifica
         //log
         console.log('Enqueued ['+new Date().toLocaleString()+']');
         console.log(req.body);
@@ -74,6 +75,7 @@ const next = (req,res) => {
     db.next(req.body)
     .then((value) => {
         res.send(value);
+        //notifica
         //log
         console.log('User next ['+new Date().toLocaleString()+']');
         console.log(value);

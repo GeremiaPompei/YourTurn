@@ -4,6 +4,7 @@ import 'package:yourturn_client/controller/main_controller.dart';
 import 'package:yourturn_client/model/queue.dart';
 import 'package:yourturn_client/utility/colore.dart';
 import 'package:yourturn_client/utility/stile_text.dart';
+import 'package:yourturn_client/view/partecipaqueue_view.dart';
 import 'cell_view.dart';
 import 'detailedqueue_view.dart';
 
@@ -37,47 +38,30 @@ class _SearchQueueViewState extends State<SearchQueueView> {
         _varWidget = CircularProgressIndicator();
         widget._controller.checkQueue(_text).then(
               (value) => {
-                if (value)
-                  {
-                    setState(() {
-                      _varWidget = FloatingActionButton(
-                        backgroundColor: Colore.back1,
-                        child: Icon(Icons.done, color: Colore.front1),
-                        onPressed: () async {
-                          Queue queue =
-                              await widget._controller.getQueue(_text);
-                          showDialog(
-                              context: context,
-                              builder: (context) {
-                                return AlertDialog(
-                                  content: DetailedQueueView(queue),
-                                  actions: [
-                                    FlatButton(
-                                      child: Text(
-                                        'Partecipa',
-                                        style: StileText.corpo,
-                                      ),
-                                      onPressed: () async {
-                                        await widget._controller.enqueueToOther(
-                                            queue, widget._controller.user);
-                                      },
-                                    )
-                                  ],
-                                );
-                              });
-                        },
-                      );
-                    })
-                  }
-                else
-                  {
-                    setState(() {
-                      _varWidget = FloatingActionButton(
-                        backgroundColor: Colore.back1,
-                        child: Icon(Icons.close, color: Colore.front1),
-                      );
-                    })
-                  }
+                setState(() {
+                  _varWidget = FloatingActionButton(
+                    backgroundColor: Colore.back1,
+                    child: Icon(value ? Icons.done : Icons.close,
+                        color: Colore.front1),
+                    onPressed: () async {
+                      if (value) {
+                        setState(() {
+                          _varWidget = CircularProgressIndicator();
+                        });
+                        Queue queue = await widget._controller.getQueue(_text);
+                        showDialog(
+                            context: context,
+                            builder: (context) {
+                              return PartecipaQueueView(
+                                  widget._controller, queue);
+                            });
+                      }
+                      setState(() {
+                        _varWidget = Icon(Icons.done,color: Colore.front1,);
+                      });
+                    },
+                  );
+                })
               },
             );
       },

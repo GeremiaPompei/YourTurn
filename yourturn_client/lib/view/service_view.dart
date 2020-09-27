@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:share/share.dart';
 import 'package:yourturn_client/controller/main_controller.dart';
 import 'package:yourturn_client/utility/colore.dart';
@@ -25,10 +26,12 @@ class ServiceView extends StatefulWidget {
 
 class _ServiceViewState extends State<ServiceView> {
   Ticket _ticket;
+  RefreshController _refreshController =
+      RefreshController(initialRefresh: false);
 
   void set() {
     setState(() {
-      _ticket = widget._controller.tickets
+      _ticket = widget._controller.last.queue
           .where((element) =>
               element.numberCode ==
               TicketNumberConverter().fromInt(widget._controller.last.index))
@@ -40,15 +43,23 @@ class _ServiceViewState extends State<ServiceView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        brightness: Brightness.light,
         backgroundColor: Colore.back2,
         elevation: 0,
-        brightness: Brightness.light,
       ),
-      body: Container(
-        padding: EdgeInsets.fromLTRB(40, 0, 40, 0),
-        color: Colore.back2,
-        alignment: Alignment.center,
+      body: SmartRefresher(
+        enablePullDown: true,
+        header: ClassicHeader(),
+        controller: _refreshController,
+        onRefresh: () => setState(() {
+          widget._controller.update().then((value) {
+            (context as Element).reassemble();
+            _refreshController.refreshCompleted();
+          });
+        }),
         child: ListView(
+          padding: EdgeInsets.fromLTRB(40, 0, 40, 0),
+          shrinkWrap: true,
           children: [
             CellView(
               widget._controller.last.id,
@@ -114,14 +125,12 @@ class _ServiceViewState extends State<ServiceView> {
               color: Colors.green,
               child: Text('Prossimo', style: StileText.sottotitolo),
               onPressed: () async {
-                widget._controller.last.index >
-                        widget._controller.last.queue.length
-                    ? null
-                    : await widget._controller.next();
-                setState(() {
+                if (widget._controller.last.index <=
+                    widget._controller.last.queue.length) {
+                  await widget._controller.next();
                   set();
-                });
-                await widget._controller.closeTicket(_ticket);
+                  await widget._controller.closeTicket(_ticket);
+                }
               },
             ),
             FlatButton(

@@ -2,6 +2,18 @@
   "configVersion": 2,
   "packages": [
     {
+      "name": "archive",
+      "rootUri": "file:///Users/geremiapompei/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/archive-2.0.13",
+      "packageUri": "lib/",
+      "languageVersion": "2.0"
+    },
+    {
+      "name": "args",
+      "rootUri": "file:///Users/geremiapompei/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/args-1.6.0",
+      "packageUri": "lib/",
+      "languageVersion": "2.3"
+    },
+    {
       "name": "async",
       "rootUri": "file:///Users/geremiapompei/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/async-2.4.2",
       "packageUri": "lib/",
@@ -58,6 +70,18 @@
     {
       "name": "collection",
       "rootUri": "file:///Users/geremiapompei/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/collection-1.14.13",
+      "packageUri": "lib/",
+      "languageVersion": "2.3"
+    },
+    {
+      "name": "convert",
+      "rootUri": "file:///Users/geremiapompei/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/convert-2.1.1",
+      "packageUri": "lib/",
+      "languageVersion": "1.17"
+    },
+    {
+      "name": "crypto",
+      "rootUri": "file:///Users/geremiapompei/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/crypto-2.1.5",
       "packageUri": "lib/",
       "languageVersion": "2.3"
     },
@@ -140,6 +164,18 @@
       "languageVersion": "2.9"
     },
     {
+      "name": "flutter_launcher_icons",
+      "rootUri": "file:///Users/geremiapompei/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_launcher_icons-0.7.5",
+      "packageUri": "lib/",
+      "languageVersion": "2.2"
+    },
+    {
+      "name": "flutter_phone_direct_caller",
+      "rootUri": "file:///Users/geremiapompei/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_phone_direct_caller-1.0.1",
+      "packageUri": "lib/",
+      "languageVersion": "2.0"
+    },
+    {
       "name": "flutter_speed_dial",
       "rootUri": "file:///Users/geremiapompei/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_speed_dial-1.2.5",
       "packageUri": "lib/",
@@ -168,6 +204,12 @@
       "rootUri": "file:///Users/geremiapompei/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/http_parser-3.1.4",
       "packageUri": "lib/",
       "languageVersion": "2.3"
+    },
+    {
+      "name": "image",
+      "rootUri": "file:///Users/geremiapompei/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/image-2.1.18",
+      "packageUri": "lib/",
+      "languageVersion": "2.0"
     },
     {
       "name": "intl",
@@ -212,8 +254,20 @@
       "languageVersion": "2.1"
     },
     {
+      "name": "petitparser",
+      "rootUri": "file:///Users/geremiapompei/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/petitparser-3.0.4",
+      "packageUri": "lib/",
+      "languageVersion": "2.7"
+    },
+    {
       "name": "plugin_platform_interface",
       "rootUri": "file:///Users/geremiapompei/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/plugin_platform_interface-1.0.2",
+      "packageUri": "lib/",
+      "languageVersion": "2.1"
+    },
+    {
+      "name": "pull_to_refresh",
+      "rootUri": "file:///Users/geremiapompei/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/pull_to_refresh-1.6.2",
       "packageUri": "lib/",
       "languageVersion": "2.1"
     },
@@ -290,10 +344,58 @@
       "languageVersion": "2.4"
     },
     {
+      "name": "url_launcher",
+      "rootUri": "file:///Users/geremiapompei/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/url_launcher-5.7.2",
+      "packageUri": "lib/",
+      "languageVersion": "2.1"
+    },
+    {
+      "name": "url_launcher_linux",
+      "rootUri": "file:///Users/geremiapompei/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/url_launcher_linux-0.0.1+1",
+      "packageUri": "lib/",
+      "languageVersion": "2.1"
+    },
+    {
+      "name": "url_launcher_macos",
+      "rootUri": "file:///Users/geremiapompei/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/url_launcher_macos-0.0.1+8",
+      "packageUri": "lib/",
+      "languageVersion": "2.1"
+    },
+    {
+      "name": "url_launcher_platform_interface",
+      "rootUri": "file:///Users/geremiapompei/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/url_launcher_platform_interface-1.0.8",
+      "packageUri": "lib/",
+      "languageVersion": "2.1"
+    },
+    {
+      "name": "url_launcher_web",
+      "rootUri": "file:///Users/geremiapompei/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/url_launcher_web-0.1.4+1",
+      "packageUri": "lib/",
+      "languageVersion": "2.2"
+    },
+    {
+      "name": "url_launcher_windows",
+      "rootUri": "file:///Users/geremiapompei/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/url_launcher_windows-0.0.1+1",
+      "packageUri": "lib/",
+      "languageVersion": "2.1"
+    },
+    {
       "name": "vector_math",
       "rootUri": "file:///Users/geremiapompei/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/vector_math-2.0.8",
       "packageUri": "lib/",
       "languageVersion": "2.0"
+    },
+    {
+      "name": "xml",
+      "rootUri": "file:///Users/geremiapompei/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/xml-4.5.1",
+      "packageUri": "lib/",
+      "languageVersion": "2.7"
+    },
+    {
+      "name": "yaml",
+      "rootUri": "file:///Users/geremiapompei/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/yaml-2.2.1",
+      "packageUri": "lib/",
+      "languageVersion": "2.4"
     },
     {
       "name": "yourturn_client",
@@ -302,7 +404,7 @@
       "languageVersion": "2.7"
     }
   ],
-  "generated": "2020-09-26T16:59:20.568985Z",
+  "generated": "2020-09-27T09:58:34.306147Z",
   "generator": "pub",
   "generatorVersion": "2.9.2"
 }

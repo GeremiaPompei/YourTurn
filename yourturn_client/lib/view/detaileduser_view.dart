@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:yourturn_client/model/user.dart';
 import 'package:yourturn_client/utility/colore.dart';
 import 'package:yourturn_client/utility/stile_text.dart';
@@ -42,12 +44,24 @@ class _DetailedUserViewState extends State<DetailedUserView> {
           ),
           CellView(
             'Telefono',
-            Text(widget._user.telefono, style: StileText.corpo),
+            FlatButton(
+              color: Colore.back1,
+              child: Text(widget._user.telefono, style: StileText.corpo),
+              onPressed: () async {
+                await FlutterPhoneDirectCaller.callNumber(
+                    widget._user.telefono);
+              },
+            ),
           ),
           CellView(
-            'Email',
-            Text(widget._user.email, style: StileText.corpo),
-          ),
+              'Email',
+              FlatButton(
+                color: Colore.back1,
+                child: Text(widget._user.email, style: StileText.corpo),
+                onPressed: () async {
+                  await launch('mailto:${widget._user.email}');
+                },
+              )),
         ],
       ),
     );

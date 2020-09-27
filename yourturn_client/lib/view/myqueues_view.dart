@@ -6,8 +6,6 @@ import 'package:yourturn_client/utility/icona.dart';
 import 'package:yourturn_client/view/createqueue_view.dart';
 import 'package:yourturn_client/view/queuelist_view.dart';
 
-import '../main.dart';
-
 class MyQueuesView extends StatefulWidget {
   MainController _controller;
 
@@ -21,20 +19,8 @@ class _MyQueuesViewState extends State<MyQueuesView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        color: Colore.back2,
-        child: Padding(
-          padding: EdgeInsets.all(10),
-          child: Flex(
-            direction: Axis.vertical,
-            children: <Widget>[
-              Flexible(
-                child: QueueListView(widget._controller.myQueues),
-              ),
-            ],
-          ),
-        ),
-      ),
+      body:
+          QueueListView(widget._controller.myQueues, widget._controller.update),
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colore.back1,
         child: IconButton(

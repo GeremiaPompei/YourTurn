@@ -37,6 +37,10 @@ dependencies:
   qr_flutter: ^3.2.0
   flutter_speed_dial: ^1.2.5
   share: ^0.6.3+1
+  flutter_phone_direct_caller: ^1.0.1
+  flutter_launcher_icons: ^0.7.5
+  pull_to_refresh: ^1.6.0
+  url_launcher: ^5.5.0
 
 dev_dependencies:
   flutter_test:
