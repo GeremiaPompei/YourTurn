@@ -28,11 +28,11 @@ class _TicketListViewState extends State<TicketListView> {
       enablePullDown: true,
       header: ClassicHeader(),
       controller: _refreshController,
-      onRefresh: () => setState(() {
-        widget._update().then((value) {
+      onRefresh: () => widget._update().then((value) {
+        setState(() {
           (context as Element).reassemble();
-          _refreshController.refreshCompleted();
         });
+        _refreshController.refreshCompleted();
       }),
       child: ListView.separated(
         padding: EdgeInsets.all(8),

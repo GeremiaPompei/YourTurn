@@ -23,6 +23,16 @@ class _CreateQueueViewState extends State<CreateQueueView> {
     'id',
     'luogo',
   ]);
+  List<Widget> _childButton = [
+    Text(
+      NavigationBar.titles[1],
+      style: StileText.sottotitolo,
+    ),
+    LinearProgressIndicator(
+      backgroundColor: Colore.front1,
+    )
+  ];
+  int _indexButton = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -70,30 +80,35 @@ class _CreateQueueViewState extends State<CreateQueueView> {
                   ),
                   FlatButton(
                     color: Colore.back1,
-                    child: Text(
-                      NavigationBar.titles[1],
-                      style: StileText.sottotitolo,
-                    ),
+                    child: _childButton[_indexButton],
                     onPressed: () async {
-                      if (_id.isNotEmpty && _luogo.isNotEmpty) {
-                        if (!((await widget._controller.getQueue(_id)) ==
-                            null)) {
+                      if (_indexButton == 0) {
+                        setState(() {
+                          _indexButton = 1;
+                        });
+                        if (_id.isNotEmpty && _luogo.isNotEmpty) {
+                          if (!((await widget._controller.getQueue(_id)) ==
+                              null)) {
+                            setState(() {
+                              _errMexM.manage({
+                                'id': 'Id gia esistente, inserire un altro id'
+                              });
+                            });
+                          } else {
+                            await widget._controller.createQueue(_id, _luogo);
+                            Navigator.pushNamedAndRemoveUntil(context,
+                                '/service', (route) => route.popped == null);
+                          }
+                        } else {
                           setState(() {
-                            _errMexM.manage({
-                              'id': 'Id gia esistente, inserire un altro id'
+                            _errMexM.checkEmpty({
+                              'id': _id,
+                              'luogo': _luogo,
                             });
                           });
-                        } else {
-                          await widget._controller.createQueue(_id, _luogo);
-                          Navigator.pushNamedAndRemoveUntil(context, '/service',
-                              (route) => route.popped == null);
                         }
-                      } else {
                         setState(() {
-                          _errMexM.checkEmpty({
-                            'id': _id,
-                            'luogo': _luogo,
-                          });
+                          _indexButton = 0;
                         });
                       }
                     },

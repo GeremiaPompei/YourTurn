@@ -74,10 +74,11 @@ class MainController {
     return response;
   }
 
-  Future<dynamic> enqueueToOther(Queue queue, myuser.User user) async {
+  Future<Ticket> enqueueToOther(Queue queue, myuser.User user) async {
     Ticket ticket = Ticket(queue, user);
-    var res = await _rest.enqueue(ticket);
-    return res;
+    await _rest.enqueue(ticket);
+    await update();
+    return ticket;
   }
 
   Future<bool> checkQueue(String id) async {
@@ -102,8 +103,7 @@ class MainController {
 
   Future<dynamic> closeQueue() async {
     last.close();
-    await _rest.createQueue(last);
-    return await update();
+    return await _rest.createQueue(last);
   }
 
   Future<dynamic> closeTicket(Ticket ticket) async{

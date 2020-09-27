@@ -28,6 +28,13 @@ class _ServiceViewState extends State<ServiceView> {
   Ticket _ticket;
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
+  List<Widget> _prossimoW = [
+    Text('Prossimo', style: StileText.sottotitolo),
+    LinearProgressIndicator(
+      backgroundColor: Colore.front1,
+    ),
+  ];
+  int _indexProssimo = 0;
 
   void set() {
     setState(() {
@@ -51,11 +58,11 @@ class _ServiceViewState extends State<ServiceView> {
         enablePullDown: true,
         header: ClassicHeader(),
         controller: _refreshController,
-        onRefresh: () => setState(() {
-          widget._controller.update().then((value) {
+        onRefresh: () => widget._controller.update().then((value) {
+          setState(() {
             (context as Element).reassemble();
-            _refreshController.refreshCompleted();
           });
+          _refreshController.refreshCompleted();
         }),
         child: ListView(
           padding: EdgeInsets.fromLTRB(40, 0, 40, 0),
@@ -123,21 +130,30 @@ class _ServiceViewState extends State<ServiceView> {
             ),
             FlatButton(
               color: Colors.green,
-              child: Text('Prossimo', style: StileText.sottotitolo),
+              child: _prossimoW[_indexProssimo],
               onPressed: () async {
-                if (widget._controller.last.index <=
-                    widget._controller.last.queue.length) {
-                  await widget._controller.next();
-                  set();
-                  await widget._controller.closeTicket(_ticket);
+                if (_indexProssimo == 0) {
+                  setState(() {
+                    _indexProssimo = 1;
+                  });
+                  if (widget._controller.last.index <=
+                      widget._controller.last.queue.length) {
+                    await widget._controller.next();
+                    await widget._controller.update();
+                    set();
+                    await widget._controller.closeTicket(_ticket);
+                  }
+                  setState(() {
+                    _indexProssimo = 0;
+                  });
                 }
               },
             ),
             FlatButton(
               color: Colors.red,
               child: Text('Termina', style: StileText.sottotitolo),
-              onPressed: () async {
-                await widget._controller.closeQueue();
+              onPressed: () {
+                widget._controller.closeQueue();
                 Navigator.pushNamedAndRemoveUntil(
                     context, '/body', (route) => route.popped == null);
               },

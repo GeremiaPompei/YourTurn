@@ -55,10 +55,13 @@ class _SearchQueueViewState extends State<SearchQueueView> {
                               return PartecipaQueueView(
                                   widget._controller, queue);
                             });
+                        setState(() {
+                          _varWidget = Icon(
+                            Icons.done,
+                            color: Colore.front1,
+                          );
+                        });
                       }
-                      setState(() {
-                        _varWidget = Icon(Icons.done,color: Colore.front1,);
-                      });
                     },
                   );
                 })
