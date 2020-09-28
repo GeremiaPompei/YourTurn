@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:yourturn_client/model/messaging_functions.dart';
 import 'package:yourturn_client/model/queue.dart';
 import 'package:yourturn_client/model/rest_functions.dart';
@@ -10,12 +11,16 @@ class MainController {
   myuser.User _user;
   bool _authenticate;
   FirebaseAuth _auth = FirebaseAuth.instance;
-  RestFunctions _rest = new RestFunctions();
-  MessagingFunctions _messaging = new MessagingFunctions();
+  RestFunctions _rest;
+  MessagingFunctions _messaging;
 
   MainController() {
+    this._rest = new RestFunctions();
     this._authenticate = false;
+    this._messaging = new MessagingFunctions();
   }
+
+  List<Map<String,dynamic>> get messages => this._messaging.messages;
 
   Future<bool> testConnection() async {
     var res = await _rest.test();
@@ -30,15 +35,8 @@ class MainController {
     await testConnection();
     UserCredential credential = await _auth.createUserWithEmailAndPassword(
         email: email, password: password);
-    myuser.User user = new myuser.User(
-        credential.user.uid,
-        _messaging.token,
-        nome,
-        cognome,
-        annonascita,
-        sesso,
-        email,
-        telefono);
+    myuser.User user = new myuser.User(credential.user.uid, _messaging.token,
+        nome, cognome, annonascita, sesso, email, telefono);
     var response = await _rest.createUser(user);
     this._user = user;
     this._authenticate = true;
@@ -51,7 +49,7 @@ class MainController {
         email: email, password: password);
     var response = await _rest.getUser(credential.user.uid);
     this._user = await myuser.User.fromJsonAdmin(json.decode(response));
-    if(this._user.tokenid != _messaging.token) {
+    if (this._user.tokenid != _messaging.token) {
       this._user.tokenid = _messaging.token;
       _rest.createUser(this._user);
     }
@@ -69,6 +67,8 @@ class MainController {
 
   Future<dynamic> logOut() async {
     var out = await _auth.signOut();
+    _user.tokenid = null;
+    _rest.createUser(_user);
     _authenticate = false;
     return out;
   }
@@ -112,12 +112,10 @@ class MainController {
     return await _rest.createQueue(last);
   }
 
-  Future<dynamic> closeTicket(Ticket ticket) async{
+  Future<dynamic> closeTicket(Ticket ticket) async {
     ticket.close();
     return await _rest.setTicket(ticket);
   }
-
-  String get index => _messaging.listIndex.last;
 
   Queue get last => _user.myQueues.last;
 
