@@ -13,20 +13,12 @@ const converter = require("./ticketnumber_converter");
 
 async function signIn(map) {
   var result = await db.collection('accounts').doc(map.uid).set(map);
-  /*notifica
-  admin.messaging()
-  .sendToDevice(map.tokenid,{data: {MyKey1: 'Signed'}},{priority: 'high',timeToLive: 60*60*24})
-  .then((res)=>{console.log('Success '+res.results)});*/
   return result;
 }
 
 async function logIn(map) {
   var txt = map.uid.replace('/');
   var result = (await (db.collection('accounts').doc(txt).get())).data();
-  /*notifica
-  admin.messaging()
-  .sendToDevice(result.tokenid,{data: {MyKey1: 'Logged'}},{priority: 'high',timeToLive: 60*60*24})
-  .then((res)=>{console.log('Success '+res.results)});*/
   return result;
 }
 
@@ -71,8 +63,24 @@ async function next(map) {
     await db.collection('queues').doc(txt).update({
       'index': queue.index + 1,
     });
+    //notifica
+    if(queue.index < queue.queue.length) notify(queue.queue[queue.index],queue.id,'E\' il tuo turno');
+    if(queue.index + 1 < queue.queue.length) notify(queue.queue[queue.index + 1],queue.id,'Manca una persona prima di te');
+    if(queue.index + 2 < queue.queue.length) notify(queue.queue[queue.index + 2],queue.id,'Mancano due persone prima di te');
   }
   return txt;
+}
+
+async function notify(i,title,body) {
+  var ticket = (await db.collection('tickets').doc(i).get()).data();
+  var user = (await db.collection('accounts').doc(ticket.user).get()).data();
+  admin.messaging().send({
+    notification: {
+      title: title,
+      body: body,
+    },
+    token: user.tokenid})
+    .then((res)=>{console.log('Success '+res.results)});
 }
 
 module.exports = {

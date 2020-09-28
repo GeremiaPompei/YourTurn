@@ -57,7 +57,7 @@ const setTicket = (req,res) => {
         res.send(value);
         //log
         console.log('Ticket setted ['+new Date().toLocaleString()+']');
-        console.log(value);
+        console.log(req.body);
     });
 };
 
