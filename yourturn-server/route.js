@@ -1,7 +1,6 @@
-const { json } = require('express');
-const controller = require('./controller');
 const express = require('express');
 var bodyParser = require('body-parser');
+const controller = require('./controller');
 const router = express.Router();
 
 router.post('/signin', bodyParser.json(), controller.signIn);

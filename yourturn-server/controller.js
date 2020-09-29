@@ -1,4 +1,7 @@
-const db = require('./model/firebase');
+const db = require('./model/database');
+const messaging = require('./model/messaging');
+const ticket = require('./model/ticket');
+const convert = require('./model/ticketnumber_converter');
 
 const signIn = (req,res) => {
     db.signIn(req.body)
@@ -30,16 +33,16 @@ const createQueue = (req,res) => {
     });
 };
 
-const enqueue = (req,res) => {
-    db.enqueue(req.body)
-    .then((value) => {
-        res.send('Enqueued');
-        //notifica
-        //log
-        console.log('Enqueued ['+new Date().toLocaleString()+']');
-        console.log(req.body);
-    });
-};
+async function enqueue(req,res) {
+    var queue = await db.getQueue({'id': req.body.id});
+    var _ticket = ticket.fromJson(req.body.uid, req.body.id, req.body.id + '-' + convert.fromInt(queue.tickets.length + 1));
+    var value = await db.enqueue(req.body, _ticket)
+    res.send(value);
+    //notifica
+    //log
+    console.log('Enqueued ['+new Date().toLocaleString()+']');
+    console.log(value);
+}
 
 const getTicket = (req,res) => {
     db.getTicket(req.body)
@@ -73,14 +76,23 @@ const getQueue = (req,res) => {
 
 const next = (req,res) => {
     db.next(req.body)
-    .then((value) => {
-        res.send(value);
+    .then((queue) => {
+        res.send(queue);
         //notifica
+        if(queue.index < queue.queue.length) notify(queue.queue[queue.index],queue.id,'E\' il tuo turno');
+        if(queue.index + 1 < queue.queue.length) notify(queue.queue[queue.index + 1],queue.id,'Manca una persona prima di te');
+        if(queue.index + 2 < queue.queue.length) notify(queue.queue[queue.index + 2],queue.id,'Mancano due persone prima di te');
         //log
         console.log('User next ['+new Date().toLocaleString()+']');
-        console.log(value);
+        console.log(queue);
     });
 };
+  
+async function notify(ticketid,title,body) {
+  var ticket = await db.getTicket({'numberid': ticketid});
+  var user = await db.logIn({'uid': ticket.user});
+  return await messaging.notify(user.tokenid, title, body);
+}
 
 const test = (req,res)=> {
     res.send('Success');
