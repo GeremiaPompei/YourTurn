@@ -1,28 +1,35 @@
 const db = require('./model/database');
 const messaging = require('./model/messaging');
+const user = require('./model/user');
 const queue = require('./model/queue');
 const ticket = require('./model/ticket');
 const convert = require('./model/ticketnumber_converter');
 
-const signIn = (req,res) => {
-    db.signIn(req.body)
-    .then((value) => {
-        res.send('Signed');
-        //log
-        console.log('Signed ['+new Date().toLocaleString()+']');
-        console.log(req.body);
-    });
-};
+async function createUser(req,res) {
+    var _user = user.fromJson(req.body.uid, req.body.tokenid, req.body.nome, req.body.cognome
+        , req.body.annonascita, req.body.sesso, req.body.email, req.body.telefono);
+    var value = await db.createUser(_user);
+    res.send(value);
+    //log
+    console.log('User created ['+new Date().toLocaleString()+']');
+    console.log(value);
+}
 
-const logIn = (req,res) => {
-    db.logIn(req.body)
-    .then((value) => {
-        res.send(value);
-        //log
-        console.log('Logged ['+new Date().toLocaleString()+']');
-        console.log(value);
-    });
-};
+async function getUser(req,res) {
+    var value = await db.getUser(req.body);
+    res.send(value);
+    //log
+    console.log('User getted ['+new Date().toLocaleString()+']');
+    console.log(value);
+}
+
+async function setUser(req,res) {
+    var value = await db.setUser(req.body);
+    res.send(value);
+    //log
+    console.log('User setted ['+new Date().toLocaleString()+']');
+    console.log(value);
+}
 
 async function createQueue(req,res) {
     var _queue = queue.fromJson(req.body.id, req.body.luogo, req.body.uid);
@@ -31,7 +38,7 @@ async function createQueue(req,res) {
     //log
     console.log('Queue created ['+new Date().toLocaleString()+']');
     console.log(value);
-};
+}
 
 async function enqueue(req,res) {
     var _queue = await db.getQueue({'id': req.body.id});
@@ -44,48 +51,40 @@ async function enqueue(req,res) {
     console.log(value);
 }
 
-const getTicket = (req,res) => {
-    db.getTicket(req.body)
-    .then((value) => {
-        res.send(value);
-        //log
-        console.log('Ticket getted ['+new Date().toLocaleString()+']');
-        console.log(value);
-    });
-};
+async function getTicket(req,res) {
+    var value = await db.getTicket(req.body);
+    res.send(value);
+    //log
+    console.log('Ticket getted ['+new Date().toLocaleString()+']');
+    console.log(value);
+}
 
-const setTicket = (req,res) => {
-    db.setTicket(req.body)
-    .then((value) => {
-        res.send(value);
-        //log
-        console.log('Ticket setted ['+new Date().toLocaleString()+']');
-        console.log(req.body);
-    });
-};
+async function setTicket(req,res) {
+    var value = await db.setTicket(req.body);
+    res.send(value);
+     //log
+    console.log('Ticket setted ['+new Date().toLocaleString()+']');
+    console.log(req.body);
+}
 
-const getQueue = (req,res) => {
-    db.getQueue(req.body)
-    .then((value) => {
-        res.send(value);
-        //log
-        console.log('Queue getted ['+new Date().toLocaleString()+']');
-        console.log(value);
-    });
-};
+async function getQueue(req,res) {
+    var value = await db.getQueue(req.body);
+    res.send(value);
+    //log
+    console.log('Queue getted ['+new Date().toLocaleString()+']');
+    console.log(value);
+}
 
-const setQueue = (req,res) => {
-    db.setQueue(req.body)
-    .then((value) => {
-        res.send(value);
-        //log
-        console.log('Queue setted ['+new Date().toLocaleString()+']');
-        console.log(req.body);
-    });
-};
+async function setQueue(req,res) {
+    var value = await db.setQueue(req.body);
+    res.send(value);
+    //log
+    console.log('Queue setted ['+new Date().toLocaleString()+']');
+    console.log(req.body);
+}
 
 async function next(req,res) {
-    var queue = await db.next(req.body)
+    var queue = await db.next(req.body);
     res.send(queue);
     //notifica
     if(queue.index < queue.tickets.length) notify(queue.tickets[queue.index],queue.id,'E\' il tuo turno');
@@ -94,31 +93,32 @@ async function next(req,res) {
     //log
     console.log('User next ['+new Date().toLocaleString()+']');
     console.log(queue);
-};
+}
   
 async function notify(ticketid,title,body) {
   var ticket = await db.getTicket({'numberid': ticketid});
-  var user = await db.logIn({'uid': ticket.user});
+  var user = await db.getUser({'uid': ticket.user});
   return await messaging.notify(user.tokenid, title, body);
 }
 
-const test = (req,res)=> {
+function test(req,res) {
     res.send('Success');
     //log
     console.log('Test ['+new Date().toLocaleString()+']');
-};
+}
 
-const error = (req,res)=> {
+function error(req,res) {
     res.statusCode = 404;
     res.send('Error 404');
     //log
     console.log('Error 404 ['+new Date().toLocaleString()+']');
     console.log(req.body);
-};
+}
 
 module.exports = {
-    signIn,
-    logIn,
+    createUser,
+    getUser,
+    setUser,
     createQueue,
     enqueue,
     getQueue,

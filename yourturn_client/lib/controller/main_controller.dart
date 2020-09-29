@@ -34,9 +34,9 @@ class MainController {
       String sesso, String email, String telefono, String password) async {
     await testConnection();
     var credential = await this._authentication.signIn(email, password);
-    this._user = new myuser.User(credential.user.uid, _messaging.token, nome,
-        cognome, annonascita, sesso, email, telefono);
-    await _rest.createUser(this._user);
+    this._user = await myuser.User.fromJsonAdmin(json.decode(
+        await _rest.createUser(credential.user.uid, _messaging.token, nome,
+            cognome, annonascita, sesso, email, telefono)));
     this._authenticate = true;
     return _user;
   }
@@ -48,7 +48,7 @@ class MainController {
     this._user = await myuser.User.fromJsonAdmin(json.decode(response));
     if (this._user.tokenid != _messaging.token) {
       this._user.tokenid = _messaging.token;
-      _rest.createUser(this._user);
+      _rest.setUser(this._user);
     }
     this._authenticate = true;
     return _user;
@@ -65,7 +65,7 @@ class MainController {
   Future<void> logOut() async {
     await this._authentication.logOut();
     _user.tokenid = null;
-    _rest.createUser(_user);
+    _rest.setUser(_user);
     _authenticate = false;
   }
 

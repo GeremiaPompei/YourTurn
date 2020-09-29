@@ -11,12 +11,33 @@ class Rest {
     return await _requestByGet('test');
   }
 
-  Future<void> createUser(myuser.User user) async {
-    await _requestByPost('signin', user.toMap());
+  Future<String> createUser(
+      String uid,
+      String tokenid,
+      String nome,
+      String cognome,
+      String annonascita,
+      String sesso,
+      String email,
+      String telefono) async {
+    return await _requestByPost('createuser', {
+      'uid': uid,
+      'tokenid': tokenid,
+      'nome': nome,
+      'cognome': cognome,
+      'annonascita': annonascita,
+      'sesso': sesso,
+      'email': email,
+      'telefono': telefono,
+    });
   }
 
   Future<String> getUser(String uid) async {
-    return await _requestByPost('login', {'uid': uid});
+    return await _requestByPost('getuser', {'uid': uid});
+  }
+
+  Future<dynamic> setUser(myuser.User user) async {
+    return await _requestByPost('setuser', user.toMap());
   }
 
   Future<String> createQueue(String id, String luogo, String uid) async {

@@ -15,12 +15,6 @@ class User {
   List<Queue> _myQueues;
   List<Ticket> _tickets;
 
-  User(this._uid, this._tokenid, this._nome, this._cognome, this._anno_nascita,
-      this._sesso, this._email, this._telefono) {
-    this._myQueues = [];
-    this._tickets = [];
-  }
-
   User.all(
       this._uid,
       this._tokenid,

@@ -3,8 +3,9 @@ var bodyParser = require('body-parser');
 const controller = require('./controller');
 const router = express.Router();
 
-router.post('/signin', bodyParser.json(), controller.signIn);
-router.post('/login', bodyParser.json(), controller.logIn);
+router.post('/createuser', bodyParser.json(), controller.createUser);
+router.post('/getuser', bodyParser.json(), controller.getUser);
+router.post('/setuser', bodyParser.json(), controller.setUser);
 router.post('/createqueue', bodyParser.json(), controller.createQueue);
 router.post('/enqueue', bodyParser.json(), controller.enqueue);
 router.post('/getqueue', bodyParser.json(), controller.getQueue);
