@@ -1,7 +1,7 @@
 import 'dart:convert';
-
+import 'package:intl/intl.dart';
 import 'package:yourturn_client/model/queue.dart';
-import 'package:yourturn_client/model/rest_functions.dart';
+import 'package:yourturn_client/model/rest.dart';
 import 'package:yourturn_client/model/user.dart';
 import 'package:yourturn_client/utility/ticketnumber_converter.dart';
 
@@ -16,7 +16,7 @@ class Ticket {
     _startEnqueue = DateTime.now();
     _numberId = queue.id +
         '-' +
-        TicketNumberConverter().fromInt(this._queue.queue.length + 1);
+        TicketNumberConverter().fromInt(this._queue.tickets.length + 1);
   }
 
   Ticket.all(this._numberId, this._startEnqueue, this._stopEnqueue, this._queue,
@@ -24,14 +24,14 @@ class Ticket {
 
   static Future<Ticket> fromJson(
       Map<String, dynamic> pjson, User user, Queue queue) async {
-    RestFunctions rest = new RestFunctions();
+    Rest rest = new Rest();
     User finaluser = user != null && pjson['user'] == user.uid
         ? user
         : User.fromJsonUser(json.decode(await rest.getUser(pjson['user'])));
     String number = pjson['numberid'];
     DateTime startEnqueue = DateTime.parse(pjson['startenqueue']);
     DateTime stopEnqueue;
-    if (pjson['stopenqueue'] == 'null') {
+    if (pjson['stopenqueue'] == null) {
       stopEnqueue = null;
     } else {
       stopEnqueue = DateTime.parse(pjson['stopenqueue']);
@@ -62,7 +62,7 @@ class Ticket {
   Map<String, dynamic> toMap() => {
         'numberid': _numberId,
         'startenqueue': startQueue.toString(),
-        'stopenqueue': stopQueue.toString(),
+        'stopenqueue': stopQueue == null ? null : stopQueue.toString(),
         'queue': _queue.id,
         'user': _user.uid,
       };

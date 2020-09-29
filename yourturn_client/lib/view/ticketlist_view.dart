@@ -5,7 +5,9 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:yourturn_client/model/ticket.dart';
 import 'package:yourturn_client/utility/colore.dart';
 import 'package:yourturn_client/utility/stile_text.dart';
+import 'package:yourturn_client/utility/ticketnumber_converter.dart';
 
+import 'detailedqueue_view.dart';
 import 'detailedticket_view.dart';
 
 class TicketListView extends StatefulWidget {
@@ -71,24 +73,45 @@ class _TicketListViewState extends State<TicketListView> {
                 style: StileText.sottotitolo,
               ),
               Text(
-                'luogo: ' + widget._ticket[i].queue.luogo.toString(),
+                widget._ticket[i].queue.luogo.toString(),
                 style: StileText.corpoMini1,
               ),
               Text(
-                'inizio coda: ' +
-                    DateFormat('yyyy:MM:dd')
-                        .format(widget._ticket[i].startQueue),
+                DateFormat('yyyy:MM:dd HH:mm')
+                    .format(widget._ticket[i].startQueue),
                 style: StileText.corpoMini2,
               ),
             ],
           ),
           trailing: Container(
-            width: 50,
-            height: 50,
+            width: 60,
+            height: 60,
             alignment: Alignment.center,
-            child: Text(
-              DateFormat('HH:mm').format(widget._ticket[i].startQueue),
-              style: StileText.corpoMini2,
+            child: FloatingActionButton(
+              backgroundColor: TicketNumberConverter()
+                              .fromString(widget._ticket[i].numberCode) <
+                          widget._ticket[i].queue.index ||
+                      widget._ticket[i].queue.isClosed
+                  ? Colors.green
+                  : Colors.red,
+              child: widget._ticket[i].queue.isClosed
+                  ? Icon(Icons.done)
+                  : Text(
+                      TicketNumberConverter()
+                          .fromInt(widget._ticket[i].queue.index),
+                      style: StileText.sottotitoloWhite,
+                    ),
+              onPressed: () {
+                setState(() {
+                  showDialog(
+                      context: context,
+                      builder: (context) {
+                        return AlertDialog(
+                          content: DetailedQueueView(widget._ticket[i].queue),
+                        );
+                      });
+                });
+              },
             ),
           ),
         ),

@@ -19,9 +19,7 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="3f1a1f3b-27fa-4a3e-84ba-1b49cb8dc486" name="Default Changelist" comment="Configurato log in e sign in con firebase">
-      <change beforePath="$PROJECT_DIR$/yourturn_client/ios/Flutter/App.framework/flutter_assets/kernel_blob.bin" beforeDir="false" afterPath="$PROJECT_DIR$/yourturn_client/ios/Flutter/App.framework/flutter_assets/kernel_blob.bin" afterDir="false" />
-    </list>
+    <list default="true" id="3f1a1f3b-27fa-4a3e-84ba-1b49cb8dc486" name="Default Changelist" comment="Configurato log in e sign in con firebase" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />

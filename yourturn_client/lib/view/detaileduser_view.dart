@@ -26,6 +26,17 @@ class _DetailedUserViewState extends State<DetailedUserView> {
       color: Colore.back2,
       child: ListView(
         children: [
+          Padding(
+            padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
+            child: Container(
+              alignment: Alignment.center,
+              color: Colore.back1,
+              child: Text(
+                'UTENTE',
+                style: StileText.titolo,
+              ),
+            ),
+          ),
           CellView(
             'Nome',
             Text(widget._user.nome, style: StileText.corpo),

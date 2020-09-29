@@ -58,7 +58,7 @@ class _QueueListViewState extends State<QueueListView> {
               shape: BoxShape.circle,
             ),
             child: Text(
-              widget._queues[i].queue.length.toString(),
+              widget._queues[i].tickets.length.toString(),
               style: StileText.sottotitolo,
             ),
           ),

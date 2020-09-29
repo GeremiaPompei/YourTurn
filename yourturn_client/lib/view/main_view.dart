@@ -23,7 +23,7 @@ class _MainViewState extends State<MainView> {
 
   @override
   void initState() {
-    _onItemTapped(0);
+    _onItemTapped(1);
   }
 
   void _onItemTapped(int index) {

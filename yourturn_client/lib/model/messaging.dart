@@ -1,11 +1,11 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 
-class MessagingFunctions {
+class Messaging {
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
   String _token;
   List<Map<String, String>> _messages = [];
 
-  MessagingFunctions() {
+  Messaging() {
     _firebaseMessaging.getToken().then((value) => _token = value);
     _config();
   }

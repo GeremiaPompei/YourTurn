@@ -38,7 +38,7 @@ class _ServiceViewState extends State<ServiceView> {
 
   void set() {
     setState(() {
-      _ticket = widget._controller.last.queue
+      _ticket = widget._controller.last.tickets
           .where((element) =>
               element.numberCode ==
               TicketNumberConverter().fromInt(widget._controller.last.index))
@@ -102,7 +102,7 @@ class _ServiceViewState extends State<ServiceView> {
             CellView(
               'Persone in coda',
               Text(
-                widget._controller.last.queue.length.toString(),
+                widget._controller.last.tickets.length.toString(),
                 style: StileText.titolo,
               ),
             ),
@@ -137,7 +137,7 @@ class _ServiceViewState extends State<ServiceView> {
                     _indexProssimo = 1;
                   });
                   if (widget._controller.last.index <=
-                      widget._controller.last.queue.length) {
+                      widget._controller.last.tickets.length) {
                     await widget._controller.next();
                     await widget._controller.update();
                     set();

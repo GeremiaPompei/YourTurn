@@ -6,41 +6,41 @@ import 'package:yourturn_client/model/ticket.dart';
 import 'package:yourturn_client/model/user.dart' as myuser;
 import '../main.dart';
 
-class RestFunctions {
+class Rest {
 
   Future<dynamic> test() async {
     return await _requestByGet('test');
   }
-  Future<dynamic> createUser(myuser.User user) async {
-    return await _requestByPost('signin', user.toMap());
+  Future<void> createUser(myuser.User user) async {
+    await _requestByPost('signin', user.toMap());
   }
 
-  Future<dynamic> getUser(String uid) async {
+  Future<String> getUser(String uid) async {
     return await _requestByPost('login', {'uid': uid});
   }
 
-  Future<dynamic> createQueue(Queue queue) async {
-    return await _requestByPost('createqueue', queue.toMap());
+  Future<void> createQueue(Queue queue) async {
+    await _requestByPost('createqueue', queue.toMap());
   }
 
-  Future<dynamic> enqueue(Ticket ticket) async {
-    return await _requestByPost('enqueue', ticket.toMap());
+  Future<String> enqueue(String id, String uid) async {
+    return await _requestByPost('enqueue', {'id': id, 'uid': uid});
   }
 
-  Future<dynamic> getQueue(String id) async {
+  Future<String> getQueue(String id) async {
     return await _requestByPost('getqueue', {'id': id});
   }
 
-  Future<dynamic> getTicket(String number) async {
+  Future<String> getTicket(String number) async {
     return await _requestByPost('getticket', {'numberid': number});
   }
 
-  Future<dynamic> setTicket(Ticket ticket) async {
-    return await _requestByPost('setticket', ticket.toMap());
+  Future<void> setTicket(Ticket ticket) async {
+    await _requestByPost('setticket', ticket.toMap());
   }
 
-  Future<dynamic> next(String id) async {
-    return await _requestByPost('next', {'id': id});
+  Future<void> next(String id) async {
+    await _requestByPost('next', {'id': id});
   }
 
   Future<String> _requestByPost(String url, Map el) async {

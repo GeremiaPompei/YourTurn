@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:yourturn_client/model/queue.dart';
-import 'package:yourturn_client/model/rest_functions.dart';
+import 'package:yourturn_client/model/rest.dart';
 import 'ticket.dart';
 
 class User {
@@ -49,7 +49,7 @@ class User {
   }
 
   static Future<User> fromJsonAdmin(Map<String, dynamic> pjson) async {
-    RestFunctions rest = new RestFunctions();
+    Rest rest = new Rest();
     User user = User.fromJsonUser(pjson);
     Function funcQueue = (str) async =>
         await Queue.fromJson(json.decode(await rest.getQueue(str)), user);

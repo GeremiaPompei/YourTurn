@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'package:yourturn_client/model/rest_functions.dart';
+import 'package:yourturn_client/model/rest.dart';
 import 'package:yourturn_client/model/ticket.dart';
 import 'package:yourturn_client/model/user.dart';
 
@@ -25,7 +25,7 @@ class Queue {
 
   static Future<Queue> fromJson(Map<String, dynamic> pjson, User user) async {
     Queue finalQueue;
-    RestFunctions rest = new RestFunctions();
+    Rest rest = new Rest();
     String id = pjson['id'];
     int index = pjson['index'];
     String luogo = pjson['luogo'];
@@ -33,7 +33,7 @@ class Queue {
     DateTime startDateTime = DateTime.parse(pjson['startdatetime']);
     DateTime stopDateTime;
     bool isClosed;
-    if (pjson['stopdatetime'] == 'null') {
+    if (pjson['stopdatetime'] == null) {
       stopDateTime = null;
       isClosed = false;
     } else {
@@ -42,12 +42,11 @@ class Queue {
     }
     finalQueue = Queue.all(
         id, luogo, admin, [], startDateTime, stopDateTime, isClosed, index);
-    await _initTicket(pjson['queue'], finalQueue.queue, rest, finalQueue, user);
+    await _initTicket(pjson['tickets'], finalQueue.tickets, rest, finalQueue, user);
     return finalQueue;
   }
 
-  static Future<User> _initUser(
-      String value, User user, RestFunctions rest) async {
+  static Future<User> _initUser(String value, User user, Rest rest) async {
     if (user != null && user.uid == value.toString())
       return user;
     else {
@@ -58,7 +57,7 @@ class Queue {
   }
 
   static Future<dynamic> _initTicket(List<dynamic> lstr, List<Ticket> lt,
-      RestFunctions rest, Queue queue, User user) async {
+      Rest rest, Queue queue, User user) async {
     for (dynamic value in lstr) {
       Map<String, dynamic> res = json.decode(await rest.getTicket(value));
       lt.add(await Ticket.fromJson(res, user, queue));
@@ -71,7 +70,7 @@ class Queue {
     _stopDateTime = DateTime.now();
   }
 
-  List<Ticket> get queue => _tickets;
+  List<Ticket> get tickets => _tickets;
 
   User get admin => _admin;
 
@@ -88,12 +87,12 @@ class Queue {
   int get index => _index;
 
   Map<String, dynamic> toMap() => {
-        'id': id,
-        'luogo': luogo,
-        'admin': admin.uid,
-        'queue': queue.map((element) => element.numberId).toList(),
-        'startdatetime': startDateTime.toString(),
-        'stopdatetime': stopDateTime.toString(),
+        'id': _id,
+        'luogo': _luogo,
+        'admin': _admin.uid,
+        'tickets': _tickets.map((element) => element.numberId).toList(),
+        'startdatetime': _startDateTime.toString(),
+        'stopdatetime': _stopDateTime == null ? null : _stopDateTime.toString(),
         'index': _index,
       };
 }

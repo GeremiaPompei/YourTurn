@@ -24,6 +24,13 @@ class StileText {
     color: Colore.front1,
   );
 
+  static final sottotitoloWhite = TextStyle(
+    fontFamily: Font.sottotitolo,
+    fontWeight: FontWeight.w700,
+    fontSize: 20,
+    color: Colore.back2,
+  );
+
   static final corpo = TextStyle(
     fontFamily: Font.corpo,
     fontWeight: FontWeight.w500,

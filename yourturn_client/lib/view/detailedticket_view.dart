@@ -28,6 +28,17 @@ class _DetailedTicketViewState extends State<DetailedTicketView> {
       color: Colore.back2,
       child: ListView(
         children: [
+          Padding(
+            padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
+            child: Container(
+              alignment: Alignment.center,
+              color: Colore.back1,
+              child: Text(
+                'TICKET',
+                style: StileText.titolo,
+              ),
+            ),
+          ),
           CellView(
             'Numero',
             Text(widget._ticket.numberCode.toString(), style: StileText.titolo),

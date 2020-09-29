@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:yourturn_client/model/queue.dart';
 import 'package:yourturn_client/utility/colore.dart';
 import 'package:yourturn_client/utility/stile_text.dart';
+import 'package:yourturn_client/utility/ticketnumber_converter.dart';
 import 'package:yourturn_client/view/qr_generator.dart';
 import 'package:yourturn_client/view/detaileduser_view.dart';
 import 'cell_view.dart';
@@ -28,6 +29,25 @@ class _DetailedQueueViewState extends State<DetailedQueueView> {
       color: Colore.back2,
       child: ListView(
         children: [
+          Padding(
+            padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
+            child: Container(
+              alignment: Alignment.center,
+              color: Colore.back1,
+              child: Text(
+                'CODA',
+                style: StileText.titolo,
+              ),
+            ),
+          ),
+          widget._queue.isClosed
+              ? Container()
+              : CellView(
+                  'Stiamo servendo il numero',
+                  Text(
+                    TicketNumberConverter().fromInt(widget._queue.index),
+                    style: StileText.titolo,
+                  )),
           Center(
             child: Container(
               width: 100,
@@ -62,7 +82,7 @@ class _DetailedQueueViewState extends State<DetailedQueueView> {
           ),
           CellView(
             'Persone in coda',
-            Text(widget._queue.queue.length.toString(), style: StileText.corpo),
+            Text(widget._queue.tickets.length.toString(), style: StileText.corpo),
           ),
           CellView(
             'Admin',
