@@ -34,8 +34,8 @@ class MainController {
       String sesso, String email, String telefono, String password) async {
     await testConnection();
     var credential = await this._authentication.signIn(email, password);
-    this._user = new myuser.User(credential.user.uid, _messaging.token,
-        nome, cognome, annonascita, sesso, email, telefono);
+    this._user = new myuser.User(credential.user.uid, _messaging.token, nome,
+        cognome, annonascita, sesso, email, telefono);
     await _rest.createUser(this._user);
     this._authenticate = true;
     return _user;
@@ -63,20 +63,20 @@ class MainController {
   }
 
   Future<void> logOut() async {
-    var out = await this._authentication.logOut();
+    await this._authentication.logOut();
     _user.tokenid = null;
     _rest.createUser(_user);
     _authenticate = false;
   }
 
   Future<Queue> createQueue(String id, String luogo) async {
-    Queue queue = new Queue(id, luogo, _user);
-    await _rest.createQueue(queue);
-    await update();
+    this._user.myQueues.add(await Queue.fromJson(
+        json.decode(await _rest.createQueue(id, luogo, _user.uid)), _user));
     _user.myQueues.where((element) => !element.isClosed).forEach((element) {
       element.close();
+      _rest.setQueue(element);
     });
-    return queue;
+    return this._user.myQueues.last;
   }
 
   Future<Ticket> enqueueToOther(Queue queue, myuser.User user) async {
@@ -105,9 +105,9 @@ class MainController {
     await _rest.next(last.id);
   }
 
-  Future<void> closeQueue() async {
+  Future<void> closeQueue(Queue queue) async {
     last.close();
-    await _rest.createQueue(last);
+    await _rest.setQueue(queue);
   }
 
   Future<void> closeTicket(Ticket ticket) async {

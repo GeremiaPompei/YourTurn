@@ -13,22 +13,22 @@ async function logIn(map) {
 }
   
 async function createQueue(map) {
-    var result = await db.collection('queues').doc(map.id).set(map);
+    await db.collection('queues').doc(map.id).set(map);
     await db.collection('accounts').doc(map.admin).update({
       'myqueues': admin.firestore.FieldValue.arrayUnion(map.id),
     });
-    return result;
+    return map;
 }
   
-async function enqueue(map, ticket) {
-    await db.collection('accounts').doc(map.uid).update({
-      'tickets': admin.firestore.FieldValue.arrayUnion(ticket.numberid),
+async function enqueue(map) {
+    await db.collection('accounts').doc(map.user).update({
+      'tickets': admin.firestore.FieldValue.arrayUnion(map.numberid),
     });
-    await db.collection('queues').doc(map.id).update({
-      'tickets': admin.firestore.FieldValue.arrayUnion(ticket.numberid),
+    await db.collection('queues').doc(map.queue).update({
+      'tickets': admin.firestore.FieldValue.arrayUnion(map.numberid),
     });
-    await db.collection('tickets').doc(ticket.numberid).set(ticket);
-    return ticket;
+    await db.collection('tickets').doc(map.numberid).set(map);
+    return map;
 }
   
 async function getTicket(map) {
@@ -45,6 +45,10 @@ async function getQueue(map) {
     var txt = map.id.replace('/');
     var result = (await (db.collection('queues').doc(txt).get())).data();
     return result;
+}
+  
+async function setQueue(map) {
+    return await db.collection('queues').doc(map.id).set(map);
 }
   
 async function next(map) {
@@ -64,6 +68,7 @@ module.exports = {
     createQueue,
     enqueue,
     getQueue,
+    setQueue,
     getTicket,
     setTicket,
     next

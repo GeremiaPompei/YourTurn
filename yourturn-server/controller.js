@@ -1,5 +1,6 @@
 const db = require('./model/database');
 const messaging = require('./model/messaging');
+const queue = require('./model/queue');
 const ticket = require('./model/ticket');
 const convert = require('./model/ticketnumber_converter');
 
@@ -23,20 +24,19 @@ const logIn = (req,res) => {
     });
 };
 
-const createQueue = (req,res) => {
-    db.createQueue(req.body)
-    .then((value) => {
-        res.send(value);
-        //log
-        console.log('Queue created ['+new Date().toLocaleString()+']');
-        console.log(req.body);
-    });
+async function createQueue(req,res) {
+    var _queue = queue.fromJson(req.body.id, req.body.luogo, req.body.uid);
+    var value = await db.createQueue(_queue);
+    res.send(value);
+    //log
+    console.log('Queue created ['+new Date().toLocaleString()+']');
+    console.log(value);
 };
 
 async function enqueue(req,res) {
-    var queue = await db.getQueue({'id': req.body.id});
-    var _ticket = ticket.fromJson(req.body.uid, req.body.id, req.body.id + '-' + convert.fromInt(queue.tickets.length + 1));
-    var value = await db.enqueue(req.body, _ticket)
+    var _queue = await db.getQueue({'id': req.body.id});
+    var _ticket = ticket.fromJson(req.body.uid, req.body.id, req.body.id + '-' + convert.fromInt(_queue.tickets.length + 1));
+    var value = await db.enqueue(_ticket)
     res.send(value);
     //notifica
     //log
@@ -71,6 +71,16 @@ const getQueue = (req,res) => {
         //log
         console.log('Queue getted ['+new Date().toLocaleString()+']');
         console.log(value);
+    });
+};
+
+const setQueue = (req,res) => {
+    db.setQueue(req.body)
+    .then((value) => {
+        res.send(value);
+        //log
+        console.log('Queue setted ['+new Date().toLocaleString()+']');
+        console.log(req.body);
     });
 };
 
@@ -114,6 +124,7 @@ module.exports = {
     createQueue,
     enqueue,
     getQueue,
+    setQueue,
     getTicket,
     setTicket,
     next,

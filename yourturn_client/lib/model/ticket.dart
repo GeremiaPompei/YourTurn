@@ -12,13 +12,6 @@ class Ticket {
   Queue _queue;
   User _user;
 
-  Ticket(this._queue, this._user) {
-    _startEnqueue = DateTime.now();
-    _numberId = queue.id +
-        '-' +
-        TicketNumberConverter().fromInt(this._queue.tickets.length + 1);
-  }
-
   Ticket.all(this._numberId, this._startEnqueue, this._stopEnqueue, this._queue,
       this._user);
 

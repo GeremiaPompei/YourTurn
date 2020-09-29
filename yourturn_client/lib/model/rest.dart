@@ -7,10 +7,10 @@ import 'package:yourturn_client/model/user.dart' as myuser;
 import '../main.dart';
 
 class Rest {
-
   Future<dynamic> test() async {
     return await _requestByGet('test');
   }
+
   Future<void> createUser(myuser.User user) async {
     await _requestByPost('signin', user.toMap());
   }
@@ -19,8 +19,9 @@ class Rest {
     return await _requestByPost('login', {'uid': uid});
   }
 
-  Future<void> createQueue(Queue queue) async {
-    await _requestByPost('createqueue', queue.toMap());
+  Future<String> createQueue(String id, String luogo, String uid) async {
+    return await _requestByPost(
+        'createqueue', {'id': id, 'luogo': luogo, 'uid': uid});
   }
 
   Future<String> enqueue(String id, String uid) async {
@@ -29,6 +30,10 @@ class Rest {
 
   Future<String> getQueue(String id) async {
     return await _requestByPost('getqueue', {'id': id});
+  }
+
+  Future<void> setQueue(Queue queue) async {
+    await _requestByPost('setqueue', queue.toMap());
   }
 
   Future<String> getTicket(String number) async {
@@ -56,8 +61,7 @@ class Rest {
   }
 
   Future<int> _requestByGet(String url) async {
-    final response = await Client()
-        .get(Uri.parse(indirizzoRoot + url));
+    final response = await Client().get(Uri.parse(indirizzoRoot + url));
     return response.statusCode;
   }
 }

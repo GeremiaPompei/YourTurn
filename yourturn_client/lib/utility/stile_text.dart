@@ -50,4 +50,8 @@ class StileText {
     fontSize: 15,
     color: Colore.front1,
   );
+
+  static final error = TextStyle(
+    color: Colors.red,
+  );
 }

@@ -13,13 +13,6 @@ class Queue {
   bool _isClosed;
   int _index;
 
-  Queue(this._id, this._luogo, this._admin) {
-    this._index = 0;
-    _tickets = [];
-    _startDateTime = DateTime.now();
-    _isClosed = false;
-  }
-
   Queue.all(this._id, this._luogo, this._admin, this._tickets,
       this._startDateTime, this._stopDateTime, this._isClosed, this._index);
 
@@ -42,7 +35,8 @@ class Queue {
     }
     finalQueue = Queue.all(
         id, luogo, admin, [], startDateTime, stopDateTime, isClosed, index);
-    await _initTicket(pjson['tickets'], finalQueue.tickets, rest, finalQueue, user);
+    await _initTicket(
+        pjson['tickets'], finalQueue.tickets, rest, finalQueue, user);
     return finalQueue;
   }
 

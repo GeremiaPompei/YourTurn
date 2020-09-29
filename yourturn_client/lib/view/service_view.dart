@@ -153,7 +153,7 @@ class _ServiceViewState extends State<ServiceView> {
               color: Colors.red,
               child: Text('Termina', style: StileText.sottotitolo),
               onPressed: () {
-                widget._controller.closeQueue();
+                widget._controller.closeQueue(widget._controller.last);
                 Navigator.pushNamedAndRemoveUntil(
                     context, '/body', (route) => route.popped == null);
               },
