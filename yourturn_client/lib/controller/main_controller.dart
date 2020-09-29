@@ -70,12 +70,12 @@ class MainController {
   }
 
   Future<Queue> createQueue(String id, String luogo) async {
-    this._user.myQueues.add(await Queue.fromJson(
-        json.decode(await _rest.createQueue(id, luogo, _user.uid)), _user));
     _user.myQueues.where((element) => !element.isClosed).forEach((element) {
       element.close();
       _rest.setQueue(element);
     });
+    this._user.myQueues.add(await Queue.fromJson(
+        json.decode(await _rest.createQueue(id, luogo, _user.uid)), _user));
     return this._user.myQueues.last;
   }
 
