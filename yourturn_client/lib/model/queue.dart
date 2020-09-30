@@ -16,13 +16,12 @@ class Queue {
   Queue.all(this._id, this._luogo, this._admin, this._tickets,
       this._startDateTime, this._stopDateTime, this._isClosed, this._index);
 
-  static Future<Queue> fromJson(Map<String, dynamic> pjson, User user) async {
+  static Queue fromJson(Map<String, dynamic> pjson, User user, Ticket ticket) {
     Queue finalQueue;
-    Rest rest = new Rest();
     String id = pjson['id'];
     int index = pjson['index'];
     String luogo = pjson['luogo'];
-    User admin = await _initUser(pjson['admin'], user, rest);
+    User admin = _initUser(pjson['admin'], user);
     DateTime startDateTime = DateTime.parse(pjson['startdatetime']);
     DateTime stopDateTime;
     bool isClosed;
@@ -35,28 +34,17 @@ class Queue {
     }
     finalQueue = Queue.all(
         id, luogo, admin, [], startDateTime, stopDateTime, isClosed, index);
-    await _initTicket(
-        pjson['tickets'], finalQueue.tickets, rest, finalQueue, user);
+    if(ticket != null)
+      finalQueue.tickets.forEach((element) {element = ticket;});
     return finalQueue;
   }
 
-  static Future<User> _initUser(String value, User user, Rest rest) async {
-    if (user != null && user.uid == value.toString())
+  static User _initUser(dynamic value, User user) {
+    if (user != null && user.uid == value)
       return user;
     else {
-      Map<String, dynamic> res =
-          json.decode(await rest.getUser(value.toString()));
-      return User.fromJsonUser(res);
+      return User.fromJsonUser(value);
     }
-  }
-
-  static Future<dynamic> _initTicket(List<dynamic> lstr, List<Ticket> lt,
-      Rest rest, Queue queue, User user) async {
-    for (dynamic value in lstr) {
-      Map<String, dynamic> res = json.decode(await rest.getTicket(value));
-      lt.add(await Ticket.fromJson(res, user, queue));
-    }
-    return lt;
   }
 
   void close() {

@@ -45,7 +45,7 @@ class MainController {
     await testConnection();
     var credential = await this._authentication.logIn(email, password);
     var response = await _rest.getUser(credential.user.uid);
-    this._user = await myuser.User.fromJsonAdmin(json.decode(response));
+    this._user = myuser.User.fromJsonAdmin(json.decode(response));
     if (this._user.tokenid != _messaging.token) {
       this._user.tokenid = _messaging.token;
       _rest.setUser(this._user);
@@ -57,7 +57,7 @@ class MainController {
   Future<myuser.User> update() async {
     await testConnection();
     var response = await _rest.getUser(this._user.uid);
-    this._user = await myuser.User.fromJsonAdmin(json.decode(response));
+    this._user = myuser.User.fromJsonAdmin(json.decode(response));
     this._authenticate = true;
     return this._user;
   }
@@ -74,8 +74,8 @@ class MainController {
       element.close();
       _rest.setQueue(element);
     });
-    this._user.myQueues.add(await Queue.fromJson(
-        json.decode(await _rest.createQueue(id, luogo, _user.uid)), _user));
+    this._user.myQueues.add(Queue.fromJson(
+        json.decode(await _rest.createQueue(id, luogo, _user.uid)), _user, null));
     return this._user.myQueues.last;
   }
 
@@ -98,7 +98,7 @@ class MainController {
     dynamic res = await _rest.getQueue(id);
     if (res.toString() == '') return null;
     Map<String, dynamic> queue = json.decode(res);
-    return await Queue.fromJson(queue, _user);
+    return Queue.fromJson(queue, _user, null);
   }
 
   Future<void> next() async {

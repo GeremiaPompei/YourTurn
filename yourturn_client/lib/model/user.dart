@@ -42,26 +42,24 @@ class User {
         telefono, myQueues, tickets);
   }
 
-  static Future<User> fromJsonAdmin(Map<String, dynamic> pjson) async {
-    Rest rest = new Rest();
+  static User fromJsonAdmin(Map<String, dynamic> pjson) {
     User user = User.fromJsonUser(pjson);
-    Function funcQueue = (str) async =>
-        await Queue.fromJson(json.decode(await rest.getQueue(str)), user);
-    await _initT(pjson['myqueues'], user.myQueues, user, funcQueue);
-    Function funcTicket = (str) async => await Ticket.fromJson(
-        json.decode(await rest.getTicket(str)), user, null);
-    await _initT(pjson['tickets'], user.tickets, user, funcTicket);
+    Function funcQueue = (str) =>
+        Queue.fromJson(str, user, null);
+    _initT(pjson['myqueues'], user.myQueues, user, funcQueue);
+    Function funcTicket = (str) => Ticket.fromJson(
+        str, user, null);
+    _initT(pjson['tickets'], user.tickets, user, funcTicket);
     return user;
   }
 
-  static Future<dynamic> _initT(
-      List<dynamic> lstr, List lt, User user, Function func) async {
+  static void _initT(
+      List<dynamic> lstr, List lt, User user, Function func) {
     if (lstr != null) {
       for (dynamic value in lstr) {
-        lt.add(await func(value.toString()));
+        lt.add(func(value));
       }
     }
-    return lt;
   }
 
   String get uid => _uid;

@@ -15,12 +15,12 @@ class Ticket {
   Ticket.all(this._numberId, this._startEnqueue, this._stopEnqueue, this._queue,
       this._user);
 
-  static Future<Ticket> fromJson(
-      Map<String, dynamic> pjson, User user, Queue queue) async {
-    Rest rest = new Rest();
+  static Ticket fromJson(
+      Map<String, dynamic> pjson, User user, Queue queue) {
+    Ticket finalTicket;
     User finaluser = user != null && pjson['user'] == user.uid
         ? user
-        : User.fromJsonUser(json.decode(await rest.getUser(pjson['user'])));
+        : User.fromJsonUser(pjson['user']);
     String number = pjson['numberid'];
     DateTime startEnqueue = DateTime.parse(pjson['startenqueue']);
     DateTime stopEnqueue;
@@ -29,11 +29,11 @@ class Ticket {
     } else {
       stopEnqueue = DateTime.parse(pjson['stopenqueue']);
     }
-    Queue finalqueue = queue != null
+    finalTicket = Ticket.all(number, startEnqueue, stopEnqueue, null, finaluser);
+    finalTicket.queue = queue != null
         ? queue
-        : await Queue.fromJson(
-            json.decode(await rest.getQueue(pjson['queue'])), finaluser);
-    return Ticket.all(number, startEnqueue, stopEnqueue, finalqueue, finaluser);
+        : Queue.fromJson(pjson['queue'], finaluser, finalTicket);
+    return finalTicket;
   }
 
   void close() {
@@ -51,6 +51,10 @@ class Ticket {
   DateTime get startQueue => _startEnqueue;
 
   String get numberId => _numberId;
+
+  set queue(Queue value) {
+    _queue = value;
+  }
 
   Map<String, dynamic> toMap() => {
         'numberid': _numberId,

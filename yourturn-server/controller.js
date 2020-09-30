@@ -4,6 +4,7 @@ const user = require('./model/user');
 const queue = require('./model/queue');
 const ticket = require('./model/ticket');
 const convert = require('./model/ticketnumber_converter');
+const e = require('express');
 
 async function createUser(req,res) {
     var _user = user.fromJson(req.body.uid, req.body.tokenid, req.body.nome, req.body.cognome
@@ -17,6 +18,18 @@ async function createUser(req,res) {
 
 async function getUser(req,res) {
     var value = await db.getUser(req.body);
+    for (var i = 0; i < value.myqueues.length; i++) {
+        value.myqueues[i] = await db.getQueue({'id': value.myqueues[i]});
+        for (var j = 0; j < value.myqueues[i].tickets.length; j++) {
+            value.myqueues[i].tickets[j] = await db.getTicket({'numberid': value.myqueues[i].tickets[j]});
+            value.myqueues[i].tickets[j].user = await db.getUser({'uid': value.myqueues[i].tickets[j].user});
+        }
+    }
+    for (var i = 0; i < value.tickets.length; i++) {
+        value.tickets[i] = await db.getTicket({'numberid': value.tickets[i]});
+        value.tickets[i].queue = await db.getQueue({'id': value.tickets[i].queue});
+        value.tickets[i].queue.admin = await db.getUser({'uid':  value.tickets[i].queue.admin});
+    }
     res.send(value);
     //log
     console.log('User getted ['+new Date().toLocaleString()+']');
@@ -28,7 +41,7 @@ async function setUser(req,res) {
     res.send(value);
     //log
     console.log('User setted ['+new Date().toLocaleString()+']');
-    console.log(value);
+    console.log(req.body);
 }
 
 async function createQueue(req,res) {
