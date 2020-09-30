@@ -1,9 +1,5 @@
-import 'dart:collection';
 import 'dart:convert';
 import 'package:http/http.dart';
-import 'package:yourturn_client/model/queue.dart';
-import 'package:yourturn_client/model/ticket.dart';
-import 'package:yourturn_client/model/user.dart' as myuser;
 import '../main.dart';
 
 class Rest {
@@ -22,7 +18,7 @@ class Rest {
       String telefono) async {
     return await _requestByPost('createuser', {
       'uid': uid,
-      'tokenid': tokenid,
+      'tokenid': [tokenid],
       'nome': nome,
       'cognome': cognome,
       'annonascita': annonascita,
@@ -36,8 +32,18 @@ class Rest {
     return await _requestByPost('getuser', {'uid': uid});
   }
 
-  Future<dynamic> setUser(myuser.User user) async {
-    return await _requestByPost('setuser', user.toMap());
+  Future<dynamic> addTokenidUser(String uid, String tokenid) async {
+    return await _requestByPost('addtokeniduser', {
+      'uid': uid,
+      'tokenid': tokenid,
+    });
+  }
+
+  Future<dynamic> removeTokenidUser(String uid, String tokenid) async {
+    return await _requestByPost('removetokeniduser', {
+      'uid': uid,
+      'tokenid': tokenid,
+    });
   }
 
   Future<String> createQueue(String id, String luogo, String uid) async {
@@ -53,20 +59,20 @@ class Rest {
     return await _requestByPost('getqueue', {'id': id});
   }
 
-  Future<void> setQueue(Queue queue) async {
-    await _requestByPost('setqueue', queue.toMap());
+  Future<String> closeQueue(String id) async {
+    return await _requestByPost('closequeue', {'id': id});
   }
 
   Future<String> getTicket(String number) async {
     return await _requestByPost('getticket', {'numberid': number});
   }
 
-  Future<void> setTicket(Ticket ticket) async {
-    await _requestByPost('setticket', ticket.toMap());
+  Future<String> closeTicket(String numberid) async {
+    return await _requestByPost('closeticket', {'numberid': numberid});
   }
 
-  Future<void> next(String id) async {
-    await _requestByPost('next', {'id': id});
+  Future<String> next(String id) async {
+    return await _requestByPost('next', {'id': id});
   }
 
   Future<String> _requestByPost(String url, Map el) async {

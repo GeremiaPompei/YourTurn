@@ -1,6 +1,5 @@
 import 'package:yourturn_client/model/queue.dart';
 import 'package:yourturn_client/model/user.dart';
-
 import 'cache.dart';
 
 class Ticket {
@@ -22,10 +21,6 @@ class Ticket {
         : DateTime.parse(pjson['stopenqueue']);
     Queue finalQueue = cache.findQueue(pjson['queue']);
     return Ticket.all(number, startEnqueue, stopEnqueue, finalQueue, finaluser);
-  }
-
-  void close() {
-    _stopEnqueue = DateTime.now();
   }
 
   String get numberCode => _numberId.substring(_numberId.length - 3);

@@ -40,81 +40,84 @@ class _TicketListViewState extends State<TicketListView> {
         padding: EdgeInsets.all(8),
         scrollDirection: Axis.vertical,
         shrinkWrap: true,
-        itemBuilder: (context, i) => ListTile(
-          onTap: () {
-            setState(() {
-              showDialog(
-                  context: context,
-                  builder: (context) {
-                    return AlertDialog(
-                      content: DetailedTicketView(widget._ticket[i]),
-                    );
-                  });
-            });
-          },
-          leading: Container(
-            width: 60,
-            height: 60,
-            alignment: Alignment.center,
-            decoration: new BoxDecoration(
-              color: Colore.back1,
-              shape: BoxShape.circle,
-            ),
-            child: Text(
-              widget._ticket[i].numberCode,
-              style: StileText.sottotitolo,
-            ),
-          ),
-          title: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Text(
-                widget._ticket[i].queue.id.toString(),
+        itemBuilder: (context, i) {
+          i = widget._ticket.length - 1 - i;
+          return ListTile(
+            onTap: () {
+              setState(() {
+                showDialog(
+                    context: context,
+                    builder: (context) {
+                      return AlertDialog(
+                        content: DetailedTicketView(widget._ticket[i]),
+                      );
+                    });
+              });
+            },
+            leading: Container(
+              width: 60,
+              height: 60,
+              alignment: Alignment.center,
+              decoration: new BoxDecoration(
+                color: Colore.back1,
+                shape: BoxShape.circle,
+              ),
+              child: Text(
+                widget._ticket[i].numberCode,
                 style: StileText.sottotitolo,
               ),
-              Text(
-                widget._ticket[i].queue.luogo.toString(),
-                style: StileText.corpoMini1,
-              ),
-              Text(
-                DateFormat('yyyy:MM:dd HH:mm')
-                    .format(widget._ticket[i].startQueue),
-                style: StileText.corpoMini2,
-              ),
-            ],
-          ),
-          trailing: Container(
-            width: 60,
-            height: 60,
-            alignment: Alignment.center,
-            child: FloatingActionButton(
-              backgroundColor: TicketNumberConverter()
-                              .fromString(widget._ticket[i].numberCode) <
-                          widget._ticket[i].queue.index ||
-                      widget._ticket[i].queue.isClosed
-                  ? Colors.green
-                  : Colors.red,
-              child: widget._ticket[i].queue.isClosed
-                  ? Icon(Icons.done)
-                  : Text(
-                      TicketNumberConverter()
-                          .fromInt(widget._ticket[i].queue.index),
-                      style: StileText.sottotitoloWhite,
-                    ),
-              onPressed: () {
-                setState(() {
-                  showDialog(
-                      context: context,
-                      builder: (context) {
-                        return AlertDialog(
-                          content: DetailedQueueView(widget._ticket[i].queue),
-                        );
-                      });
-                });
-              },
             ),
-          ),
-        ),
+            title: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Text(
+                  widget._ticket[i].queue.id.toString(),
+                  style: StileText.sottotitolo,
+                ),
+                Text(
+                  widget._ticket[i].queue.luogo.toString(),
+                  style: StileText.corpoMini1,
+                ),
+                Text(
+                  DateFormat('yyyy:MM:dd HH:mm')
+                      .format(widget._ticket[i].startQueue),
+                  style: StileText.corpoMini2,
+                ),
+              ],
+            ),
+            trailing: Container(
+              width: 60,
+              height: 60,
+              alignment: Alignment.center,
+              child: FloatingActionButton(
+                backgroundColor: TicketNumberConverter()
+                                .fromString(widget._ticket[i].numberCode) <
+                            widget._ticket[i].queue.index ||
+                        widget._ticket[i].queue.isClosed
+                    ? Colors.green
+                    : Colors.red,
+                child: widget._ticket[i].queue.isClosed
+                    ? Icon(Icons.done)
+                    : Text(
+                        TicketNumberConverter()
+                            .fromInt(widget._ticket[i].queue.index),
+                        style: StileText.sottotitoloWhite,
+                      ),
+                onPressed: () {
+                  setState(() {
+                    showDialog(
+                        context: context,
+                        builder: (context) {
+                          return AlertDialog(
+                            content: DetailedQueueView(widget._ticket[i].queue),
+                          );
+                        });
+                  });
+                },
+              ),
+            ),
+          );
+        },
         separatorBuilder: (context, i) => Divider(),
         itemCount: widget._ticket.length,
       ),

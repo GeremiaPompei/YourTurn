@@ -48,6 +48,15 @@ class _DetailedQueueViewState extends State<DetailedQueueView> {
                     TicketNumberConverter().fromInt(widget._queue.index),
                     style: StileText.titolo,
                   )),
+          widget._queue.isClosed
+              ? Container()
+              : CellView(
+                  'Persone prima di te se partecipi ora',
+                  Text(
+                      (widget._queue.tickets.length - widget._queue.index)
+                          .toString(),
+                      style: StileText.titolo),
+                ),
           Center(
             child: Container(
               width: 100,
@@ -81,8 +90,9 @@ class _DetailedQueueViewState extends State<DetailedQueueView> {
                     style: StileText.corpo),
           ),
           CellView(
-            'Persone in coda',
-            Text(widget._queue.tickets.length.toString(), style: StileText.corpo),
+            'Persone totali in coda',
+            Text(widget._queue.tickets.length.toString(),
+                style: StileText.corpo),
           ),
           CellView(
             'Admin',

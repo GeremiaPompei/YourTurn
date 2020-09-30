@@ -1,5 +1,3 @@
-import 'dart:convert';
-import 'package:yourturn_client/model/rest.dart';
 import 'package:yourturn_client/model/ticket.dart';
 import 'package:yourturn_client/model/user.dart';
 
@@ -12,11 +10,10 @@ class Queue {
   List<Ticket> _tickets;
   DateTime _startDateTime;
   DateTime _stopDateTime;
-  bool _isClosed;
   int _index;
 
   Queue.all(this._id, this._luogo, this._admin, this._tickets,
-      this._startDateTime, this._stopDateTime, this._isClosed, this._index);
+      this._startDateTime, this._stopDateTime, this._index);
 
   static Queue fromJson(dynamic pjson, Cache cache) {
     Queue finalQueue;
@@ -25,36 +22,21 @@ class Queue {
     String luogo = pjson['luogo'];
     User admin = cache.findUser(pjson['admin']);
     DateTime startDateTime = DateTime.parse(pjson['startdatetime']);
-    DateTime stopDateTime;
-    bool isClosed = true;
-    _initStopDate(pjson['stopdatetime'], stopDateTime, isClosed);
-    finalQueue = Queue.all(
-        id, luogo, admin, [], startDateTime, stopDateTime, isClosed, index);
+    DateTime stopDateTime = pjson['stopdatetime'] != null
+        ? DateTime.parse(pjson['stopdatetime'])
+        : null;
+    finalQueue =
+        Queue.all(id, luogo, admin, [], startDateTime, stopDateTime, index);
     _initTicket(pjson['tickets'], finalQueue.tickets, cache.findTicket);
     return finalQueue;
   }
 
-  static void _initTicket(dynamic lstr, List lt,
-      Ticket Function(dynamic) func) {
+  static void _initTicket(
+      dynamic lstr, List lt, Ticket Function(dynamic) func) {
     if (lstr != null)
       lstr.forEach((element) {
         lt.add(func(element));
       });
-  }
-
-  static void _initStopDate(String el, DateTime stopDateTime, bool isClosed) {
-    if (el == null) {
-      stopDateTime = null;
-      isClosed = false;
-    } else {
-      stopDateTime = DateTime.parse(el);
-      isClosed = true;
-    }
-  }
-
-  void close() {
-    _isClosed = true;
-    _stopDateTime = DateTime.now();
   }
 
   List<Ticket> get tickets => _tickets;
@@ -69,7 +51,7 @@ class Queue {
 
   DateTime get stopDateTime => _stopDateTime;
 
-  bool get isClosed => _isClosed;
+  bool get isClosed => _stopDateTime != null;
 
   int get index => _index;
 

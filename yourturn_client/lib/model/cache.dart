@@ -13,66 +13,40 @@ class Cache {
     this._listTickets = {};
   }
 
-  User findUser(dynamic pjson) {
+  T _findElement<T>(dynamic pjson, Set<T> resultElements, List<T> searched,
+      T Function(dynamic, Cache) fromJson) {
     try {
-      List<User> searched;
-      try {
-        searched = this
-            ._listUsers
-            .where((element) => element.uid == pjson['uid'])
-            .toList();
-      } catch (e) {
-        searched = this
-            ._listUsers
-            .where((element) => element.uid == pjson)
-            .toList();
-      }
       if (searched.isNotEmpty) {
         return searched.first;
       } else {
-        User user = User.fromJson(pjson, this);
-        listUsers.add(user);
-        return user;
+        T element = fromJson(pjson, this);
+        resultElements.add(element);
+        return element;
       }
-    } catch (e) {
-      return null;
-    }
+    } catch (e) {}
+  }
+
+  User findUser(dynamic pjson) {
+    String txt = pjson.runtimeType == String ? pjson : pjson['uid'];
+    List<User> searched =
+        this._listUsers.where((element) => element.uid == txt).toList();
+    return _findElement<User>(pjson, this._listUsers, searched, User.fromJson);
   }
 
   Queue findQueue(dynamic pjson) {
-    try {
-      List<Queue> searched = this
-          ._listQueues
-          .where((element) => element.id == pjson['id'])
-          .toList();
-      if (searched.isNotEmpty) {
-        return searched.first;
-      } else {
-        Queue queue = Queue.fromJson(pjson, this);
-        listQueues.add(queue);
-        return queue;
-      }
-    } catch (e) {
-      return null;
-    }
+    String txt = pjson.runtimeType == String ? pjson : pjson['id'];
+    List<Queue> searched =
+        this._listQueues.where((element) => element.id == txt).toList();
+    return _findElement<Queue>(
+        pjson, this._listQueues, searched, Queue.fromJson);
   }
 
   Ticket findTicket(dynamic pjson) {
-    try {
-      List<Ticket> searched = this
-          ._listTickets
-          .where((element) => element.numberId == pjson['numberid'])
-          .toList();
-      if (searched.isNotEmpty) {
-        return searched.first;
-      } else {
-        Ticket ticket = Ticket.fromJson(pjson, this);
-        listTickets.add(ticket);
-        return ticket;
-      }
-    } catch (e) {
-      return null;
-    }
+    String txt = pjson.runtimeType == String ? pjson : pjson['numberid'];
+    List<Ticket> searched =
+        this._listTickets.where((element) => element.numberId == txt).toList();
+    return _findElement<Ticket>(
+        pjson, this._listTickets, searched, Ticket.fromJson);
   }
 
   Set<Ticket> get listTickets => _listTickets;

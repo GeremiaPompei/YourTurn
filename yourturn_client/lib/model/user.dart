@@ -1,12 +1,10 @@
-import 'dart:convert';
 import 'package:yourturn_client/model/queue.dart';
-import 'package:yourturn_client/model/rest.dart';
 import 'cache.dart';
 import 'ticket.dart';
 
 class User {
   String _uid;
-  String _tokenid;
+  List<String> _tokenid;
   String _nome;
   String _cognome;
   String _anno_nascita;
@@ -28,7 +26,7 @@ class User {
       this._myQueues,
       this._tickets);
 
-  static User fromJson(Map<String, dynamic> pjson, Cache cache) {
+  static User fromJson(dynamic pjson, Cache cache) {
     String uid = pjson['uid'];
     String nome = pjson['nome'];
     String cognome = pjson['cognome'];
@@ -36,14 +34,17 @@ class User {
     String sesso = pjson['sesso'];
     String email = pjson['email'];
     String telefono = pjson['telefono'];
-    String tokenid = pjson['tokenid'];
+    List<String> tokenid = [];
+    pjson['tokenid'].forEach((el) {
+      tokenid.add(el);
+    });
     List<Queue> myQueues = [];
     List<Ticket> tickets = [];
     return User.all(uid, tokenid, nome, cognome, annonascita, sesso, email,
         telefono, myQueues, tickets);
   }
 
-  static User fromJsonAdmin(Map<String, dynamic> pjson, Cache cache) {
+  static User fromJsonAdmin(dynamic pjson, Cache cache) {
     User user = User.fromJson(pjson, cache);
     cache.listUsers.add(user);
     _initQueue(pjson['myqueues'], user.myQueues, cache.findQueue);
@@ -79,15 +80,11 @@ class User {
 
   String get sesso => _sesso;
 
-  String get tokenid => _tokenid;
+  List<String> get tokenid => _tokenid;
 
   List<Queue> get myQueues => _myQueues;
 
   List<Ticket> get tickets => _tickets;
-
-  set tokenid(String value) {
-    _tokenid = value;
-  }
 
   Map<String, dynamic> toMap() => {
         'uid': uid,
