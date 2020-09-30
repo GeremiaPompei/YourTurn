@@ -7,7 +7,7 @@ class Authentication {
       await _auth.createUserWithEmailAndPassword(
           email: email, password: password);
 
-  Future<UserCredential> logIn(String email, String password) async =>
+  Future<UserCredential> logInEmailPassword(String email, String password) async =>
       await _auth.signInWithEmailAndPassword(email: email, password: password);
 
   Future<UserCredential> logInToken(String token) async =>

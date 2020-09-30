@@ -86,7 +86,7 @@ class _LogInViewState extends State<LogInView> {
                         _indexButton = 1;
                         if (_email.isNotEmpty && _password.isNotEmpty) {
                           widget._controller
-                              .logIn(_email, _password)
+                              .logInEmailPassword(_email, _password)
                               .then((value) =>
                           {
                             if (value != null)

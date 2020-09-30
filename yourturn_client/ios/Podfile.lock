@@ -387,6 +387,8 @@ PODS:
     - nanopb/encode (= 1.30905.0)
   - nanopb/decode (1.30905.0)
   - nanopb/encode (1.30905.0)
+  - path_provider (0.0.1):
+    - Flutter
   - platform_device_id (0.0.1):
     - Flutter
   - PromisesObjC (1.2.10)
@@ -407,6 +409,7 @@ DEPENDENCIES:
   - Flutter (from `Flutter`)
   - flutter_phone_direct_caller (from `.symlinks/plugins/flutter_phone_direct_caller/ios`)
   - libphonenumber (from `.symlinks/plugins/libphonenumber/ios`)
+  - path_provider (from `.symlinks/plugins/path_provider/ios`)
   - platform_device_id (from `.symlinks/plugins/platform_device_id/ios`)
   - share (from `.symlinks/plugins/share/ios`)
   - url_launcher (from `.symlinks/plugins/url_launcher/ios`)
@@ -462,6 +465,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/flutter_phone_direct_caller/ios"
   libphonenumber:
     :path: ".symlinks/plugins/libphonenumber/ios"
+  path_provider:
+    :path: ".symlinks/plugins/path_provider/ios"
   platform_device_id:
     :path: ".symlinks/plugins/platform_device_id/ios"
   share:
@@ -504,6 +509,7 @@ SPEC CHECKSUMS:
   libPhoneNumber-iOS: 0a32a9525cf8744fe02c5206eb30d571e38f7d75
   MTBBarcodeScanner: f453b33c4b7dfe545d8c6484ed744d55671788cb
   nanopb: c43f40fadfe79e8b8db116583945847910cbabc9
+  path_provider: abfe2b5c733d04e238b0d8691db0cfd63a27a93c
   platform_device_id: 81b3e2993881f87d0c82ef151dc274df4869aef5
   PromisesObjC: b14b1c6b68e306650688599de8a45e49fae81151
   Protobuf: 3dac39b34a08151c6d949560efe3f86134a3f748

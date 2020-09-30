@@ -1,8 +1,11 @@
 import 'dart:convert';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:yourturn_client/model/authentication.dart';
+import 'package:yourturn_client/model/cache.dart';
 import 'package:yourturn_client/model/messaging.dart';
 import 'package:yourturn_client/model/queue.dart';
 import 'package:yourturn_client/model/rest.dart';
+import 'package:yourturn_client/model/storemanager.dart';
 import 'package:yourturn_client/model/ticket.dart';
 import 'package:yourturn_client/model/user.dart' as myuser;
 
@@ -12,12 +15,16 @@ class MainController {
   Authentication _authentication;
   Rest _rest;
   Messaging _messaging;
+  StoreManager _storeManager;
+  Cache _cache;
 
   MainController() {
     this._authenticate = false;
     this._authentication = new Authentication();
     this._rest = new Rest();
     this._messaging = new Messaging();
+    this._storeManager = new StoreManager();
+    this._cache = new Cache();
   }
 
   List<Map<String, dynamic>> get messages => this._messaging.messages;
@@ -33,31 +40,55 @@ class MainController {
   Future<myuser.User> signIn(String nome, String cognome, String annonascita,
       String sesso, String email, String telefono, String password) async {
     await testConnection();
-    var credential = await this._authentication.signIn(email, password);
-    this._user = await myuser.User.fromJsonAdmin(json.decode(
-        await _rest.createUser(credential.user.uid, _messaging.token, nome,
-            cognome, annonascita, sesso, email, telefono)));
+    UserCredential userCredential =
+        await this._authentication.signIn(email, password);
+    this._user = myuser.User.fromJsonAdmin(
+        json.decode(await _rest.createUser(
+            userCredential.user.uid,
+            _messaging.token,
+            nome,
+            cognome,
+            annonascita,
+            sesso,
+            email,
+            telefono)),
+        _cache);
     this._authenticate = true;
+    saveToken();
     return _user;
   }
 
-  Future<myuser.User> logIn(String email, String password) async {
-    await testConnection();
-    var credential = await this._authentication.logIn(email, password);
-    var response = await _rest.getUser(credential.user.uid);
-    this._user = myuser.User.fromJsonAdmin(json.decode(response));
+  Future<void> _logIn(UserCredential userCredential) async {
+    var response = await _rest.getUser(userCredential.user.uid);
+    this._user = myuser.User.fromJsonAdmin(json.decode(response), _cache);
     if (this._user.tokenid != _messaging.token) {
       this._user.tokenid = _messaging.token;
       _rest.setUser(this._user);
     }
     this._authenticate = true;
-    return _user;
+    saveToken();
+  }
+
+  Future<myuser.User> logInEmailPassword(String email, String password) async {
+    await testConnection();
+    UserCredential userCredential =
+        await this._authentication.logInEmailPassword(email, password);
+    await _logIn(userCredential);
+    return this._user;
+  }
+
+  Future<myuser.User> _logInToken(String token) async {
+    await testConnection();
+    UserCredential userCredential =
+        await this._authentication.logInToken(token);
+    await _logIn(userCredential);
+    return this._user;
   }
 
   Future<myuser.User> update() async {
     await testConnection();
     var response = await _rest.getUser(this._user.uid);
-    this._user = myuser.User.fromJsonAdmin(json.decode(response));
+    this._user = myuser.User.fromJsonAdmin(json.decode(response), _cache);
     this._authenticate = true;
     return this._user;
   }
@@ -65,8 +96,9 @@ class MainController {
   Future<void> logOut() async {
     await this._authentication.logOut();
     _user.tokenid = null;
-    _rest.setUser(_user);
+    await _rest.setUser(_user);
     _authenticate = false;
+    (await _storeManager.localFile('uid.txt')).delete();
   }
 
   Future<Queue> createQueue(String id, String luogo) async {
@@ -75,14 +107,14 @@ class MainController {
       _rest.setQueue(element);
     });
     this._user.myQueues.add(Queue.fromJson(
-        json.decode(await _rest.createQueue(id, luogo, _user.uid)), _user, null));
+        json.decode(await _rest.createQueue(id, luogo, _user.uid)), _cache));
     return this._user.myQueues.last;
   }
 
   Future<Ticket> enqueueToOther(Queue queue, myuser.User user) async {
     Map<String, dynamic> map =
         json.decode(await _rest.enqueue(queue.id, user.uid));
-    return await Ticket.fromJson(map, user, queue);
+    return Ticket.fromJson(map, _cache);
   }
 
   Future<bool> checkQueue(String id) async {
@@ -98,7 +130,7 @@ class MainController {
     dynamic res = await _rest.getQueue(id);
     if (res.toString() == '') return null;
     Map<String, dynamic> queue = json.decode(res);
-    return Queue.fromJson(queue, _user, null);
+    return Queue.fromJson(queue, _cache);
   }
 
   Future<void> next() async {
@@ -124,4 +156,17 @@ class MainController {
   List<Ticket> get tickets => _user.tickets;
 
   bool get authenticate => _authenticate;
+
+  Future<void> saveToken() async {
+    await _storeManager.store(_user.uid, 'uid.txt');
+  }
+
+  Future<void> loadToken() async {
+    try {
+      this._user = myuser.User.fromJsonAdmin(
+          json.decode(await _rest.getUser(await _storeManager.load('uid.txt'))),
+          _cache);
+      this._authenticate = true;
+    } catch (e) {}
+  }
 }

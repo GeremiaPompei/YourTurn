@@ -1,9 +1,7 @@
-import 'dart:convert';
-import 'package:intl/intl.dart';
 import 'package:yourturn_client/model/queue.dart';
-import 'package:yourturn_client/model/rest.dart';
 import 'package:yourturn_client/model/user.dart';
-import 'package:yourturn_client/utility/ticketnumber_converter.dart';
+
+import 'cache.dart';
 
 class Ticket {
   String _numberId;
@@ -15,25 +13,15 @@ class Ticket {
   Ticket.all(this._numberId, this._startEnqueue, this._stopEnqueue, this._queue,
       this._user);
 
-  static Ticket fromJson(
-      Map<String, dynamic> pjson, User user, Queue queue) {
-    Ticket finalTicket;
-    User finaluser = user != null && pjson['user'] == user.uid
-        ? user
-        : User.fromJsonUser(pjson['user']);
+  static Ticket fromJson(dynamic pjson, Cache cache) {
+    User finaluser = cache.findUser(pjson['user']);
     String number = pjson['numberid'];
     DateTime startEnqueue = DateTime.parse(pjson['startenqueue']);
-    DateTime stopEnqueue;
-    if (pjson['stopenqueue'] == null) {
-      stopEnqueue = null;
-    } else {
-      stopEnqueue = DateTime.parse(pjson['stopenqueue']);
-    }
-    finalTicket = Ticket.all(number, startEnqueue, stopEnqueue, null, finaluser);
-    finalTicket.queue = queue != null
-        ? queue
-        : Queue.fromJson(pjson['queue'], finaluser, finalTicket);
-    return finalTicket;
+    DateTime stopEnqueue = pjson['stopenqueue'] == null
+        ? null
+        : DateTime.parse(pjson['stopenqueue']);
+    Queue finalQueue = cache.findQueue(pjson['queue']);
+    return Ticket.all(number, startEnqueue, stopEnqueue, finalQueue, finaluser);
   }
 
   void close() {
@@ -51,10 +39,6 @@ class Ticket {
   DateTime get startQueue => _startEnqueue;
 
   String get numberId => _numberId;
-
-  set queue(Queue value) {
-    _queue = value;
-  }
 
   Map<String, dynamic> toMap() => {
         'numberid': _numberId,

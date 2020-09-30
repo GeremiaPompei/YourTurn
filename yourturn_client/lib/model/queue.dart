@@ -3,6 +3,8 @@ import 'package:yourturn_client/model/rest.dart';
 import 'package:yourturn_client/model/ticket.dart';
 import 'package:yourturn_client/model/user.dart';
 
+import 'cache.dart';
+
 class Queue {
   String _id;
   String _luogo;
@@ -16,34 +18,37 @@ class Queue {
   Queue.all(this._id, this._luogo, this._admin, this._tickets,
       this._startDateTime, this._stopDateTime, this._isClosed, this._index);
 
-  static Queue fromJson(Map<String, dynamic> pjson, User user, Ticket ticket) {
+  static Queue fromJson(dynamic pjson, Cache cache) {
     Queue finalQueue;
     String id = pjson['id'];
     int index = pjson['index'];
     String luogo = pjson['luogo'];
-    User admin = _initUser(pjson['admin'], user);
+    User admin = cache.findUser(pjson['admin']);
     DateTime startDateTime = DateTime.parse(pjson['startdatetime']);
     DateTime stopDateTime;
-    bool isClosed;
-    if (pjson['stopdatetime'] == null) {
-      stopDateTime = null;
-      isClosed = false;
-    } else {
-      stopDateTime = DateTime.parse(pjson['stopdatetime']);
-      isClosed = true;
-    }
+    bool isClosed = true;
+    _initStopDate(pjson['stopdatetime'], stopDateTime, isClosed);
     finalQueue = Queue.all(
         id, luogo, admin, [], startDateTime, stopDateTime, isClosed, index);
-    if(ticket != null)
-      finalQueue.tickets.forEach((element) {element = ticket;});
+    _initTicket(pjson['tickets'], finalQueue.tickets, cache.findTicket);
     return finalQueue;
   }
 
-  static User _initUser(dynamic value, User user) {
-    if (user != null && user.uid == value)
-      return user;
-    else {
-      return User.fromJsonUser(value);
+  static void _initTicket(dynamic lstr, List lt,
+      Ticket Function(dynamic) func) {
+    if (lstr != null)
+      lstr.forEach((element) {
+        lt.add(func(element));
+      });
+  }
+
+  static void _initStopDate(String el, DateTime stopDateTime, bool isClosed) {
+    if (el == null) {
+      stopDateTime = null;
+      isClosed = false;
+    } else {
+      stopDateTime = DateTime.parse(el);
+      isClosed = true;
     }
   }
 

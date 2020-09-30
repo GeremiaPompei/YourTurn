@@ -12,12 +12,18 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   MainController _controller = MainController();
+  await _controller.loadToken();
+  Widget _varWidget;
+  if(_controller.authenticate)
+    _varWidget = MainView(_controller);
+  else
+    _varWidget = AuthenticateView(_controller);
   runApp(MaterialApp(
     routes: {
       '/authenticate': (context) => AuthenticateView(_controller),
       '/body': (context) => MainView(_controller),
       '/service': (context) => ServiceView(_controller),
     },
-    home: AuthenticateView(_controller),
+    home: _varWidget,
   ));
 }

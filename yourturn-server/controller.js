@@ -22,7 +22,6 @@ async function getUser(req,res) {
         value.myqueues[i] = await db.getQueue({'id': value.myqueues[i]});
         for (var j = 0; j < value.myqueues[i].tickets.length; j++) {
             value.myqueues[i].tickets[j] = await db.getTicket({'numberid': value.myqueues[i].tickets[j]});
-            value.myqueues[i].tickets[j].user = await db.getUser({'uid': value.myqueues[i].tickets[j].user});
         }
     }
     for (var i = 0; i < value.tickets.length; i++) {
@@ -111,7 +110,8 @@ async function next(req,res) {
 async function notify(ticketid,title,body) {
   var ticket = await db.getTicket({'numberid': ticketid});
   var user = await db.getUser({'uid': ticket.user});
-  return await messaging.notify(user.tokenid, title, body);
+  if(user.tokenid != null)
+      return await messaging.notify(user.tokenid, title, body);
 }
 
 function test(req,res) {

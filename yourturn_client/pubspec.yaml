@@ -44,6 +44,7 @@ dependencies:
   firebase_messaging: ^7.0.0
   platform_device_id: ^0.1.1
   intl_phone_number_input: ^0.5.1
+  path_provider: ^1.2.0
 
 flutter_icons:
   android: true

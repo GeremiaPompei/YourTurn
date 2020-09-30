@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:yourturn_client/model/queue.dart';
 import 'package:yourturn_client/model/rest.dart';
+import 'cache.dart';
 import 'ticket.dart';
 
 class User {
@@ -27,7 +28,7 @@ class User {
       this._myQueues,
       this._tickets);
 
-  static User fromJsonUser(Map<String, dynamic> pjson) {
+  static User fromJson(Map<String, dynamic> pjson, Cache cache) {
     String uid = pjson['uid'];
     String nome = pjson['nome'];
     String cognome = pjson['cognome'];
@@ -42,24 +43,26 @@ class User {
         telefono, myQueues, tickets);
   }
 
-  static User fromJsonAdmin(Map<String, dynamic> pjson) {
-    User user = User.fromJsonUser(pjson);
-    Function funcQueue = (str) =>
-        Queue.fromJson(str, user, null);
-    _initT(pjson['myqueues'], user.myQueues, user, funcQueue);
-    Function funcTicket = (str) => Ticket.fromJson(
-        str, user, null);
-    _initT(pjson['tickets'], user.tickets, user, funcTicket);
+  static User fromJsonAdmin(Map<String, dynamic> pjson, Cache cache) {
+    User user = User.fromJson(pjson, cache);
+    cache.listUsers.add(user);
+    _initQueue(pjson['myqueues'], user.myQueues, cache.findQueue);
+    _initTicket(pjson['tickets'], user.tickets, cache.findTicket);
     return user;
   }
 
-  static void _initT(
-      List<dynamic> lstr, List lt, User user, Function func) {
-    if (lstr != null) {
-      for (dynamic value in lstr) {
-        lt.add(func(value));
-      }
-    }
+  static void _initQueue(dynamic lstr, List lt, Queue Function(dynamic) func) {
+    if (lstr != null)
+      lstr.forEach((element) {
+        lt.add(func(element));
+      });
+  }
+
+  static void _initTicket(List lstr, List lt, Ticket Function(dynamic) func) {
+    if (lstr != null)
+      lstr.forEach((element) {
+        lt.add(func(element));
+      });
   }
 
   String get uid => _uid;
