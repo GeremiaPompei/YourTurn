@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -5,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:share/share.dart';
 import 'package:yourturn_client/controller/main_controller.dart';
+import 'package:yourturn_client/model/queue.dart';
 import 'package:yourturn_client/utility/colore.dart';
 import 'package:yourturn_client/utility/stile_text.dart';
 import 'package:yourturn_client/utility/ticketnumber_converter.dart';
@@ -25,6 +28,7 @@ class ServiceView extends StatefulWidget {
 }
 
 class _ServiceViewState extends State<ServiceView> {
+  Queue _queue;
   Ticket _ticket;
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
@@ -36,12 +40,17 @@ class _ServiceViewState extends State<ServiceView> {
   ];
   int _indexProssimo = 0;
 
+  @override
+  void initState() {
+    this._queue = widget._controller.last;
+  }
+
   void set() {
     setState(() {
-      _ticket = widget._controller.last.tickets
+      _ticket = _queue.tickets
           .where((element) =>
               element.numberCode ==
-              TicketNumberConverter().fromInt(widget._controller.last.index))
+              TicketNumberConverter().fromInt(_queue.index))
           .first;
     });
   }
@@ -69,7 +78,7 @@ class _ServiceViewState extends State<ServiceView> {
           shrinkWrap: true,
           children: [
             CellView(
-              widget._controller.last.id,
+              _queue.id,
               Center(
                 child: Container(
                   width: MediaQuery.of(context).size.width - 220,
@@ -77,13 +86,13 @@ class _ServiceViewState extends State<ServiceView> {
                   alignment: Alignment.center,
                   child: FlatButton(
                     child: QRGenerator(
-                      widget._controller.last.id,
+                      _queue.id,
                     ),
                     onPressed: () {
                       final RenderBox box = context.findRenderObject();
-                      Share.share(widget._controller.last.id,
+                      Share.share(_queue.id,
                           subject: 'Your Turn [' +
-                              widget._controller.last.id +
+                              _queue.id +
                               ']'.replaceAll(indirizzoRoot, ''),
                           sharePositionOrigin:
                               box.localToGlobal(Offset.zero) & box.size);
@@ -95,15 +104,15 @@ class _ServiceViewState extends State<ServiceView> {
             Container(
               alignment: Alignment.center,
               child: Text(
-                TicketNumberConverter().fromInt(widget._controller.last.index),
+                TicketNumberConverter().fromInt(_queue.index),
                 style: StileText.superTitolo,
               ),
             ),
             CellView(
               'Persone in coda totali',
               Text(
-                (widget._controller.last.tickets.length -
-                        widget._controller.last.index)
+                (_queue.tickets.length -
+                    _queue.index)
                     .toString(),
                 style: StileText.titolo,
               ),
@@ -111,7 +120,7 @@ class _ServiceViewState extends State<ServiceView> {
             CellView(
               'Persone in coda totali',
               Text(
-                widget._controller.last.tickets.length.toString(),
+                _queue.tickets.length.toString(),
                 style: StileText.sottotitolo,
               ),
             ),
@@ -146,12 +155,17 @@ class _ServiceViewState extends State<ServiceView> {
                     setState(() {
                       _indexProssimo = 1;
                     });
-                    if (widget._controller.last.index ==
-                        widget._controller.last.tickets.length)
+                    if (_queue.index ==
+                        _queue.tickets.length)
                       await widget._controller.update();
-                    if (widget._controller.last.index <
-                        widget._controller.last.tickets.length) {
-                      await widget._controller.next();
+                    if (_queue.index <
+                        _queue.tickets.length) {
+                      /* TODO aggiungere seguente riga e rimuovere update e
+                       * quella prima provando se funziona
+                       * _queue = await widget._controller.next(_queue);
+                       * */
+                      await widget._controller.next(_queue);
+                      await widget._controller.update();
                       set();
                     }
                     setState(() {
@@ -169,7 +183,7 @@ class _ServiceViewState extends State<ServiceView> {
               color: Colors.red,
               child: Text('Termina', style: StileText.sottotitolo),
               onPressed: () {
-                widget._controller.closeQueue(widget._controller.last);
+                widget._controller.closeQueue(_queue);
                 Navigator.pushNamedAndRemoveUntil(
                     context, '/body', (route) => route.popped == null);
               },

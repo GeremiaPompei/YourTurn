@@ -23,7 +23,7 @@ async function getUser(req,res) {
     res.send(value);
     //log
     console.log('User getted ['+new Date().toLocaleString()+']');
-    console.log(value);
+    //console.log(value);
 }
 
 async function createJsonChainQueues(value) {

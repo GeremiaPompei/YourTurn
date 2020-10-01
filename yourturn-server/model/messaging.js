@@ -8,7 +8,7 @@ async function notify (token, title, body) {
     },
     token: token,
   });
-  console.log('Success '+res.results);
+  console.log('Success');
 }
 
 module.exports = {

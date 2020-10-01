@@ -118,14 +118,12 @@ class MainController {
     return Ticket.fromJson(map, _cache);
   }
 
-  Future<void> next() async {
-    await _rest.next(last.id);
-    await update();
+  Future<void> next(Queue queue) async {
+    await _rest.next(queue.id);
   }
 
   Future<void> closeQueue(Queue queue) async {
     await _rest.closeQueue(queue.id);
-    await update();
   }
 
   Map<String, dynamic> get messages => this._messaging.messages;
