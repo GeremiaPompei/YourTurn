@@ -25,8 +25,6 @@ class MainController {
     this._cache = new Cache();
   }
 
-  List<Map<String, dynamic>> get messages => this._messaging.messages;
-
   Future<bool> testConnection() async {
     var res = await _rest.test();
     if (res == 200)
@@ -122,7 +120,6 @@ class MainController {
 
   Future<void> next() async {
     await _rest.next(last.id);
-    await update();
   }
 
   Future<void> closeQueue(Queue queue) async {
@@ -134,6 +131,8 @@ class MainController {
     await _rest.closeTicket(ticket.numberId);
     await update();
   }
+
+  Map<String, dynamic> get messages => this._messaging.messages;
 
   Queue get last => _user.myQueues.last;
 

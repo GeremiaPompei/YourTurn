@@ -137,8 +137,11 @@ class _ServiceViewState extends State<ServiceView> {
                     setState(() {
                       _indexProssimo = 1;
                     });
-                    if (widget._controller.last.index <=
-                        widget._controller.last.tickets.length) {
+                    if (widget._controller.last.index ==
+                        widget._controller.last.tickets.length - 1)
+                      await widget._controller.update();
+                    if (widget._controller.last.index <
+                        widget._controller.last.tickets.length - 1) {
                       await widget._controller.next();
                       set();
                       await widget._controller.closeTicket(_ticket);

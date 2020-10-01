@@ -12,8 +12,8 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   MainController _controller = MainController();
-  await _controller.load();
   Widget _varWidget;
+  await _controller.load();
   if(_controller.authenticate)
     _varWidget = MainView(_controller);
   else

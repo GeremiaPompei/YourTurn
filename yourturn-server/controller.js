@@ -129,9 +129,9 @@ async function next(req,res) {
     var queue = await db.next(req.body);
     res.send(queue);
     //notifica
-    if(queue.index < queue.tickets.length) notify(queue.tickets[queue.index],queue.id,'E\' il tuo turno');
-    if(queue.index + 1 < queue.tickets.length) notify(queue.tickets[queue.index + 1],queue.id,'Manca una persona prima di te');
-    if(queue.index + 2 < queue.tickets.length) notify(queue.tickets[queue.index + 2],queue.id,'Mancano due persone prima di te');
+    if(queue.index - 1 < queue.tickets.length) notify(queue.tickets[queue.index - 1],queue.id,'E\' il tuo turno');
+    if(queue.index  < queue.tickets.length) notify(queue.tickets[queue.index],queue.id,'Manca una persona prima di te');
+    if(queue.index + 1 < queue.tickets.length) notify(queue.tickets[queue.index + 1],queue.id,'Mancano due persone prima di te');
     //log
     console.log('User next ['+new Date().toLocaleString()+']');
     console.log(queue);
