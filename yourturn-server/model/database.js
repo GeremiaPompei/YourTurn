@@ -47,6 +47,9 @@ async function closeQueue(map) {
   await doc.update({
     'stopdatetime': new Date().toISOString(),
   });
+  var queue = (await doc.get()).data();
+  for (var i = queue.index; i < queue.tickets.length; i++)
+    await closeTicket({'numberid': queue.tickets[i]});
   return (await doc.get()).data();
 }
   
@@ -59,7 +62,15 @@ async function next(map) {
       'index': queue.index + 1,
     });
   }
-  closeTicket(queue.tickets[queue.index + 1]);
+  await closeTicket({'numberid': queue.tickets[queue.index]});
+  return (await doc.get()).data();
+}
+  
+async function closeTicket(map) {
+  var doc = db.collection(tabTickets).doc(map.numberid);
+  await doc.update({
+    'stopenqueue': new Date().toISOString(),
+  });
   return (await doc.get()).data();
 }
   
@@ -82,14 +93,6 @@ async function getTicket(map) {
 
 async function setTicket(map) {
   await (db.collection(tabTickets).doc(map.numberid).set(map));
-}
-  
-async function closeTicket(map) {
-  var doc = db.collection(tabTickets).doc(map.numberid);
-  await doc.update({
-    'stopenqueue': new Date().toISOString(),
-  });
-  return (await doc.get()).data();
 }
   
 module.exports = {

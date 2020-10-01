@@ -89,9 +89,8 @@ async function closeQueue(req,res) {
     var value = await db.closeQueue(req.body);
     res.send(value);
     //notifica
-    for (var i = value.index; i < value.tickets.length; i++) {
+    for (var i = value.index; i < value.tickets.length; i++)
         notify(value.tickets[i],value.id,'La coda è terminata');
-    }
     //log
     console.log('Queue setted ['+new Date().toLocaleString()+']');
     console.log(value);
