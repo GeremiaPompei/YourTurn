@@ -18,43 +18,39 @@ async function createUser(req,res) {
 
 async function getUser(req,res) {
     var value = await db.getUser(req.body);
-    for (var i = 0; i < value.myqueues.length; i++) {
-        value.myqueues[i] = await db.getQueue({'id': value.myqueues[i]});
-        if(i != value.myqueues.length-1) {
-            if(value.myqueues[i].stopdatetime==null) {
-                value.myqueues[i].stopdatetime=new Date().toISOString();
-                db.closeQueue(value.myqueues[i]);
-            }
-        }
-        for (var j = 0; j < value.myqueues[i].tickets.length; j++) {
-            value.myqueues[i].tickets[j] = await db.getTicket({'numberid': value.myqueues[i].tickets[j]});
-            if(j != value.myqueues[i].tickets.length-1) {
-                if(value.myqueues[i].tickets[j].stopenqueue==null) {
-                    value.myqueues[i].tickets[j].stopenqueue=value.myqueues[i].stopdatetime;
-                    db.setTicket(value.myqueues[i].tickets[j]);
-                }
-            }
-        }
-    }
-    for (var i = 0; i < value.tickets.length; i++) {
-        value.tickets[i] = await db.getTicket({'numberid': value.tickets[i]});
-        value.tickets[i].queue = await db.getQueue({'id': value.tickets[i].queue});
-        value.tickets[i].queue.admin = await db.getUser({'uid':  value.tickets[i].queue.admin});
-        if(i != value.tickets.length-1) {
-            if(value.tickets[i].queue.stopdatetime==null) {
-                value.tickets[i].queue.stopdatetime=new Date().toISOString();
-                db.setQueue(value.tickets[i].queue);
-            }
-            if(value.tickets[i].stopenqueue==null) {
-                value.tickets[i].stopenqueue=value.tickets[i].queue.stopdatetime;
-                db.setTicket(value.tickets[i]);
-            }
-        }
-    }
+    await createJsonChainQueues(value.myqueues);
+    await createJsonChainTickets(value.tickets);
     res.send(value);
     //log
     console.log('User getted ['+new Date().toLocaleString()+']');
     console.log(value);
+}
+
+async function createJsonChainQueues(value) {
+    for (var i = 0; i < value.length; i++) {
+        value[i] = await db.getQueue({'id': value[i]});
+        close(i != value.length-1, value[i], 'stopdatetime', db.closeQueue);
+        for (var j = 0; j < value[i].tickets.length; j++) {
+            value[i].tickets[j] = await db.getTicket({'numberid': value[i].tickets[j]});
+            value[i].tickets[j].user = await db.getUser({'uid': value[i].tickets[j].user});
+            close(j != value[i].tickets.length-1, value[i].tickets[j], 'stopenqueue', db.closeTicket);
+        }
+    }
+}
+
+async function createJsonChainTickets(value) {
+    for (var i = 0; i < value.length; i++) {
+        value[i] = await db.getTicket({'numberid': value[i]});
+        value[i].queue = await db.getQueue({'id': value[i].queue});
+        value[i].queue.admin = await db.getUser({'uid':  value[i].queue.admin});
+    }
+}
+
+function close(notlast, element, stopdate, closefunc) {
+    if(notlast && element[stopdate] == null) {
+        element[stopdate] = new Date().toISOString();
+        closefunc(element);
+    }
 }
 
 async function addTokenidUser(req,res) {
@@ -82,6 +78,34 @@ async function createQueue(req,res) {
     console.log(value);
 }
 
+async function getQueue(req,res) {
+    var value = await db.getQueue(req.body);
+    res.send(value);
+    //log
+    console.log('Queue getted ['+new Date().toLocaleString()+']');
+    console.log(value);
+}
+
+async function closeQueue(req,res) {
+    var value = await db.closeQueue(req.body);
+    res.send(value);
+    //notifica
+    for (var i = value.index; i < value.tickets.length; i++) {
+        notify(value.tickets[i],value.id,'La coda è terminata');
+    }
+    //log
+    console.log('Queue setted ['+new Date().toLocaleString()+']');
+    console.log(value);
+}
+
+async function closeTicket(req,res) {
+    var value = await db.closeTicket(req.body);
+    res.send(value);
+     //log
+    console.log('Ticket closed ['+new Date().toLocaleString()+']');
+    console.log(value);
+}
+
 async function enqueue(req,res) {
     var _queue = await db.getQueue({'id': req.body.id});
     var _ticket = ticket.fromJson(req.body.uid, req.body.id, req.body.id + '-' + convert.fromInt(_queue.tickets.length + 1));
@@ -99,38 +123,6 @@ async function getTicket(req,res) {
     //log
     console.log('Ticket getted ['+new Date().toLocaleString()+']');
     console.log(value);
-}
-
-async function closeQueue(req,res) {
-    var value = await db.closeQueue(req.body);
-    res.send(value);
-    //log
-    console.log('Queue setted ['+new Date().toLocaleString()+']');
-    console.log(value);
-}
-
-async function closeTicket(req,res) {
-    var value = await db.closeTicket(req.body);
-    res.send(value);
-     //log
-    console.log('Ticket closed ['+new Date().toLocaleString()+']');
-    console.log(value);
-}
-
-async function getQueue(req,res) {
-    var value = await db.getQueue(req.body);
-    res.send(value);
-    //log
-    console.log('Queue getted ['+new Date().toLocaleString()+']');
-    console.log(value);
-}
-
-async function setQueue(req,res) {
-    var value = await db.closeQueue(req.body);
-    res.send(value);
-    //log
-    console.log('Queue closed ['+new Date().toLocaleString()+']');
-    console.log(req.body);
 }
 
 async function next(req,res) {

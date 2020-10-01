@@ -132,16 +132,22 @@ class _ServiceViewState extends State<ServiceView> {
               color: Colors.green,
               child: _prossimoW[_indexProssimo],
               onPressed: () async {
-                if (_indexProssimo == 0) {
-                  setState(() {
-                    _indexProssimo = 1;
-                  });
-                  if (widget._controller.last.index <=
-                      widget._controller.last.tickets.length) {
-                    await widget._controller.next();
-                    set();
-                    await widget._controller.closeTicket(_ticket);
+                try {
+                  if (_indexProssimo == 0) {
+                    setState(() {
+                      _indexProssimo = 1;
+                    });
+                    if (widget._controller.last.index <=
+                        widget._controller.last.tickets.length) {
+                      await widget._controller.next();
+                      set();
+                      await widget._controller.closeTicket(_ticket);
+                    }
+                    setState(() {
+                      _indexProssimo = 0;
+                    });
                   }
+                } catch (e) {
                   setState(() {
                     _indexProssimo = 0;
                   });

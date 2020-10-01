@@ -40,18 +40,11 @@ class MainController {
     await testConnection();
     UserCredential userCredential =
         await this._authentication.signIn(email, password);
-    this._user = myuser.User.fromJsonAdmin(
-        json.decode(await _rest.createUser(
-            userCredential.user.uid,
-            _messaging.token,
-            nome,
-            cognome,
-            annonascita,
-            sesso,
-            email,
-            telefono)),
-        _cache);
-    saveUid();
+    var response = await _rest.createUser(userCredential.user.uid,
+        _messaging.token, nome, cognome, annonascita, sesso, email, telefono);
+    this._user = myuser.User.fromJsonAdmin(json.decode(response), _cache);
+    _saveUid();
+    _saveLocal(response);
     return _user;
   }
 
@@ -62,7 +55,8 @@ class MainController {
       this._user.tokenid.add(_messaging.token);
       _rest.addTokenidUser(_user.uid, _messaging.token);
     }
-    saveUid();
+    _saveUid();
+    _saveLocal(response);
   }
 
   Future<myuser.User> logInEmailPassword(String email, String password) async {
@@ -86,6 +80,7 @@ class MainController {
     _cache = new Cache();
     var response = await _rest.getUser(this._user.uid);
     this._user = myuser.User.fromJsonAdmin(json.decode(response), _cache);
+    _saveLocal(response);
     return this._user;
   }
 
@@ -94,6 +89,7 @@ class MainController {
     _user.tokenid.remove(_messaging.token);
     await _rest.removeTokenidUser(_user.uid, _messaging.token);
     (await _storeManager.localFile('uid.txt')).delete();
+    (await _storeManager.localFile('local.json')).delete();
   }
 
   Future<Queue> createQueue(String id, String luogo) async {
@@ -149,15 +145,34 @@ class MainController {
 
   bool get authenticate => _user != null;
 
-  Future<void> saveUid() async {
+  Future<void> load() async {
+    try {
+      await _loadUid();
+    } catch (e) {
+      await _loadLocal();
+    }
+  }
+
+  Future<void> _saveUid() async {
     await _storeManager.store(_user.uid, 'uid.txt');
   }
 
-  Future<void> loadUid() async {
+  Future<void> _loadUid() async {
+    this._user = myuser.User.fromJsonAdmin(
+        json.decode(await _rest.getUser(await _storeManager.load('uid.txt'))),
+        _cache);
+  }
+
+  Future<void> _saveLocal(response) async {
     try {
-      this._user = myuser.User.fromJsonAdmin(
-          json.decode(await _rest.getUser(await _storeManager.load('uid.txt'))),
-          _cache);
+      await this._storeManager.store(response, 'local.json');
+    } catch (e) {}
+  }
+
+  Future<void> _loadLocal() async {
+    try {
+      var response = await this._storeManager.load('local.json');
+      this._user = myuser.User.fromJsonAdmin(json.decode(response), _cache);
     } catch (e) {}
   }
 }
