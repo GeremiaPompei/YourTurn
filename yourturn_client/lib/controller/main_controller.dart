@@ -120,15 +120,11 @@ class MainController {
 
   Future<void> next() async {
     await _rest.next(last.id);
+    await update();
   }
 
   Future<void> closeQueue(Queue queue) async {
     await _rest.closeQueue(queue.id);
-    await update();
-  }
-
-  Future<void> closeTicket(Ticket ticket) async {
-    await _rest.closeTicket(ticket.numberId);
     await update();
   }
 

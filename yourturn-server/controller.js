@@ -33,7 +33,6 @@ async function createJsonChainQueues(value) {
         for (var j = 0; j < value[i].tickets.length; j++) {
             value[i].tickets[j] = await db.getTicket({'numberid': value[i].tickets[j]});
             value[i].tickets[j].user = await db.getUser({'uid': value[i].tickets[j].user});
-            close(j != value[i].tickets.length-1, value[i].tickets[j], 'stopenqueue', db.closeTicket);
         }
     }
 }
@@ -98,18 +97,10 @@ async function closeQueue(req,res) {
     console.log(value);
 }
 
-async function closeTicket(req,res) {
-    var value = await db.closeTicket(req.body);
-    res.send(value);
-     //log
-    console.log('Ticket closed ['+new Date().toLocaleString()+']');
-    console.log(value);
-}
-
 async function enqueue(req,res) {
     var _queue = await db.getQueue({'id': req.body.id});
     var _ticket = ticket.fromJson(req.body.uid, req.body.id, req.body.id + '-' + convert.fromInt(_queue.tickets.length + 1));
-    var value = await db.enqueue(_ticket)
+    var value = await db.enqueue(_ticket);
     res.send(value);
     //notifica
     //log
@@ -173,7 +164,6 @@ module.exports = {
     getQueue,
     closeQueue,
     getTicket,
-    closeTicket,
     next,
     test,
     error

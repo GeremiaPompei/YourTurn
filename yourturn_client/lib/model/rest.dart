@@ -67,10 +67,6 @@ class Rest {
     return await _requestByPost('getticket', {'numberid': number});
   }
 
-  Future<String> closeTicket(String numberid) async {
-    return await _requestByPost('closeticket', {'numberid': numberid});
-  }
-
   Future<String> next(String id) async {
     return await _requestByPost('next', {'id': id});
   }

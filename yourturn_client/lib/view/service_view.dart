@@ -100,10 +100,19 @@ class _ServiceViewState extends State<ServiceView> {
               ),
             ),
             CellView(
-              'Persone in coda',
+              'Persone in coda totali',
+              Text(
+                (widget._controller.last.tickets.length -
+                        widget._controller.last.index)
+                    .toString(),
+                style: StileText.titolo,
+              ),
+            ),
+            CellView(
+              'Persone in coda totali',
               Text(
                 widget._controller.last.tickets.length.toString(),
-                style: StileText.titolo,
+                style: StileText.sottotitolo,
               ),
             ),
             FlatButton(
@@ -138,13 +147,12 @@ class _ServiceViewState extends State<ServiceView> {
                       _indexProssimo = 1;
                     });
                     if (widget._controller.last.index ==
-                        widget._controller.last.tickets.length - 1)
+                        widget._controller.last.tickets.length)
                       await widget._controller.update();
                     if (widget._controller.last.index <
-                        widget._controller.last.tickets.length - 1) {
+                        widget._controller.last.tickets.length) {
                       await widget._controller.next();
                       set();
-                      await widget._controller.closeTicket(_ticket);
                     }
                     setState(() {
                       _indexProssimo = 0;

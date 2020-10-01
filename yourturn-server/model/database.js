@@ -59,6 +59,7 @@ async function next(map) {
       'index': queue.index + 1,
     });
   }
+  closeTicket(queue.tickets[queue.index + 1]);
   return (await doc.get()).data();
 }
   
@@ -102,6 +103,5 @@ module.exports = {
   closeQueue,
   getTicket,
   setTicket,
-  closeTicket,
   next
 };

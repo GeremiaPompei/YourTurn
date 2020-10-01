@@ -12,7 +12,6 @@ router.post('/enqueue', bodyParser.json(), controller.enqueue);
 router.post('/getqueue', bodyParser.json(), controller.getQueue);
 router.post('/closequeue', bodyParser.json(), controller.closeQueue);
 router.post('/getticket', bodyParser.json(), controller.getTicket);
-router.post('/closeticket', bodyParser.json(), controller.closeTicket);
 router.post('/next', bodyParser.json(), controller.next);
 router.get('/test', controller.test)
 router.use(controller.error);
