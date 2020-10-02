@@ -42,7 +42,8 @@ class _MainViewState extends State<MainView> {
 
   @override
   Widget build(BuildContext context) {
-      return Scaffold(
+    widget._controller.configMessaging(context);
+    return Scaffold(
       appBar: AppBar(
         title: Text(
           NavigationBar.titles[this._indexItem],

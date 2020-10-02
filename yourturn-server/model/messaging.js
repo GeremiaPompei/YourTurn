@@ -6,6 +6,10 @@ async function notify (token, title, body) {
       title: title,
       body: body,
     },
+    data: {
+      title: title,
+      body: body,
+    },
     token: token,
   });
   console.log('Success');

@@ -83,11 +83,15 @@ class MainController {
   }
 
   Future<void> logOut() async {
-    await this._authentication.logOut();
-    _user.tokenid.remove(_messaging.token);
-    await _rest.removeTokenidUser(_user.uid, _messaging.token);
-    (await _storeManager.localFile('uid.txt')).delete();
-    (await _storeManager.localFile('local.json')).delete();
+    try {
+      await this._authentication.logOut();
+      _user.tokenid.remove(_messaging.token);
+      await _rest.removeTokenidUser(_user.uid, _messaging.token);
+    }catch(e){
+    }finally{
+      (await _storeManager.localFile('uid.txt')).delete();
+      (await _storeManager.localFile('local.json')).delete();
+    }
   }
 
   Future<Queue> createQueue(String id, String luogo) async {
@@ -118,12 +122,17 @@ class MainController {
     return Ticket.fromJson(map, _cache);
   }
 
-  Future<void> next(Queue queue) async {
-    await _rest.next(queue.id);
+  Future<Queue> next(Queue queue) async {
+    Map<String, dynamic> map = json.decode(await _rest.next(queue.id));
+    return Queue.fromJson(map, _cache);
   }
 
   Future<void> closeQueue(Queue queue) async {
     await _rest.closeQueue(queue.id);
+  }
+
+  void configMessaging(context) {
+    this._messaging.config(context);
   }
 
   Map<String, dynamic> get messages => this._messaging.messages;

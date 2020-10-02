@@ -157,15 +157,10 @@ class _ServiceViewState extends State<ServiceView> {
                     });
                     if (_queue.index ==
                         _queue.tickets.length)
-                      await widget._controller.update();
+                      _queue = await widget._controller.getQueue(_queue.id);
                     if (_queue.index <
                         _queue.tickets.length) {
-                      /* TODO aggiungere seguente riga e rimuovere update e
-                       * quella prima provando se funziona
-                       * _queue = await widget._controller.next(_queue);
-                       * */
-                      await widget._controller.next(_queue);
-                      await widget._controller.update();
+                      _queue = await widget._controller.next(_queue);
                       set();
                     }
                     setState(() {

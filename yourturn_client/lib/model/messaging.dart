@@ -9,28 +9,25 @@ class Messaging {
 
   Messaging() {
     _firebaseMessaging.getToken().then((value) => _token = value);
-    //TODO Staccare config e aggiungere context dopo aver visualizzato le notifiche in console
-    _config();
   }
 
   String get token => _token;
 
   Map<String, String> get messages => _messages;
 
-  void _config() {
+  void config(context) {
     _firebaseMessaging.configure(
       onMessage: (Map<String, dynamic> message) async {
-        print(message.toString());
-        /*showDialog(
+        showDialog(
             context: context,
             builder: (context) {
               return AlertDialog(
-                title: Text(message['notification']['title'],
+                title: Text(message['title'],
                     style: StileText.sottotitolo),
-                content: Text(message['notification']['body'],
+                content: Text(message['body'],
                     style: StileText.corpo),
               );
-            });*/
+            });
       },
     );
     _firebaseMessaging
