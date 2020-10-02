@@ -5,7 +5,6 @@ function fromJson(id, luogo, uid) {
         'admin': uid,
         'tickets': [],
         'startdatetime': new Date().toISOString(),
-        'stopdatetime': null,
         'index': 0,
     };
 };
