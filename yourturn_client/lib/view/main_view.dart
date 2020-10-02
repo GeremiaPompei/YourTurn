@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:yourturn_client/controller/main_controller.dart';
 import 'package:yourturn_client/utility/colore.dart';
 import 'package:yourturn_client/utility/stile_text.dart';
-import 'package:yourturn_client/view/myqueues_view.dart';
+import 'package:yourturn_client/view/createqueue_view.dart';
+import 'package:yourturn_client/view/removeuser_view.dart';
 import 'package:yourturn_client/view/tickets_view.dart';
 import 'package:yourturn_client/view/navigation_bar.dart';
 import 'package:yourturn_client/view/detaileduser_view.dart';
@@ -34,7 +35,7 @@ class _MainViewState extends State<MainView> {
           this._bodyWidget = TicketsView(widget._controller);
           break;
         case 1:
-          this._bodyWidget = MyQueuesView(widget._controller);
+          this._bodyWidget = CreateQueueView(widget._controller);
           break;
       }
     });
@@ -59,18 +60,53 @@ class _MainViewState extends State<MainView> {
                   builder: (context) {
                     return AlertDialog(
                       content: DetailedUserView(widget._controller.user),
-                      title: FloatingActionButton(
-                        backgroundColor: Colore.back1,
-                        child: Icon(Icons.exit_to_app, color: Colore.front1),
-                        onPressed: () {
-                          setState(() {
-                            widget._controller.logOut().then((value) =>
-                                Navigator.pushNamedAndRemoveUntil(
-                                    context,
-                                    '/authenticate',
-                                    (route) => route.popped == null));
-                          });
-                        },
+                      title: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          FloatingActionButton(
+                            backgroundColor: Colore.back1,
+                            child: Icon(Icons.clear, color: Colore.front1),
+                            onPressed: () {
+                              setState(() {
+                                showDialog(
+                                    context: context,
+                                    builder: (context) {
+                                      return AlertDialog(
+                                        title: Text(
+                                          'RIMUOVI UTENTE',
+                                          style: StileText.titolo,
+                                        ),
+                                        content: Container(
+                                          padding: EdgeInsets.all(10),
+                                          width:
+                                              MediaQuery.of(context).size.width,
+                                          height:
+                                              MediaQuery.of(context).size.width,
+                                          alignment: Alignment.center,
+                                          color: Colore.back2,
+                                          child: RemoveUserView(
+                                              widget._controller),
+                                        ),
+                                      );
+                                    });
+                              });
+                            },
+                          ),
+                          FloatingActionButton(
+                            backgroundColor: Colore.back1,
+                            child:
+                                Icon(Icons.exit_to_app, color: Colore.front1),
+                            onPressed: () {
+                              setState(() {
+                                widget._controller.logOut().then((value) =>
+                                    Navigator.pushNamedAndRemoveUntil(
+                                        context,
+                                        '/authenticate',
+                                        (route) => route.popped == null));
+                              });
+                            },
+                          ),
+                        ],
                       ),
                     );
                   });

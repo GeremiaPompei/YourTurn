@@ -87,11 +87,20 @@ class MainController {
       await this._authentication.logOut();
       _user.tokenid.remove(_messaging.token);
       await _rest.removeTokenidUser(_user.uid, _messaging.token);
-    }catch(e){
-    }finally{
+    } catch (e) {} finally {
       (await _storeManager.localFile('uid.txt')).delete();
       (await _storeManager.localFile('local.json')).delete();
     }
+  }
+
+  Future<void> removeUser(String email, String password) async {
+    await testConnection();
+    UserCredential userCredential =
+        await this._authentication.logInEmailPassword(email, password);
+    await this._rest.removeUser(this._user.uid);
+    await this._authentication.removeUser(userCredential);
+    (await _storeManager.localFile('uid.txt')).delete();
+    (await _storeManager.localFile('local.json')).delete();
   }
 
   Future<Queue> createQueue(String id, String luogo) async {
@@ -106,14 +115,6 @@ class MainController {
     if (res.toString() == '') return null;
     Map<String, dynamic> queue = json.decode(res);
     return Queue.fromJson(queue, _cache);
-  }
-
-  Future<bool> checkQueue(String id) async {
-    Queue queue = await getQueue(id);
-    if (queue == null || queue.isClosed)
-      return false;
-    else
-      return true;
   }
 
   Future<Ticket> enqueueToOther(Queue queue, myuser.User user) async {

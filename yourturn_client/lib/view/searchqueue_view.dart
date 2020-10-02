@@ -3,10 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:yourturn_client/controller/main_controller.dart';
 import 'package:yourturn_client/model/queue.dart';
 import 'package:yourturn_client/utility/colore.dart';
-import 'package:yourturn_client/utility/stile_text.dart';
 import 'package:yourturn_client/view/partecipaqueue_view.dart';
 import 'cell_view.dart';
-import 'detailedqueue_view.dart';
 
 class SearchQueueView extends StatefulWidget {
   MainController _controller;
@@ -36,15 +34,15 @@ class _SearchQueueViewState extends State<SearchQueueView> {
       () {
         _text = input;
         _varWidget = CircularProgressIndicator();
-        widget._controller.checkQueue(_text).then(
+        widget._controller.getQueue(_text).then(
               (value) => {
                 setState(() {
                   _varWidget = FloatingActionButton(
                     backgroundColor: Colore.back1,
-                    child: Icon(value ? Icons.done : Icons.close,
+                    child: Icon(value != null ? Icons.done : Icons.close,
                         color: Colore.front1),
                     onPressed: () async {
-                      if (value) {
+                      if (value != null) {
                         setState(() {
                           _varWidget = CircularProgressIndicator();
                         });

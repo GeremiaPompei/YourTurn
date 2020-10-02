@@ -10,22 +10,22 @@ import 'package:yourturn_client/utility/errmessagesmanager.dart';
 
 import 'cell_view.dart';
 
-class LogInView extends StatefulWidget {
+class RemoveUserView extends StatefulWidget {
   MainController _controller;
 
-  LogInView(this._controller);
+  RemoveUserView(this._controller);
 
   @override
-  _LogInViewState createState() => _LogInViewState();
+  _RemoveUserViewState createState() => _RemoveUserViewState();
 }
 
-class _LogInViewState extends State<LogInView> {
+class _RemoveUserViewState extends State<RemoveUserView> {
   String _email = '';
   String _password = '';
   List<Widget> _childButton = [
     Text(
-      'LogIn',
-      style: StileText.sottotitolo,
+      'Rimuovi Utente',
+      style: StileText.sottotitoloWhite,
     ),
     LinearProgressIndicator(
       backgroundColor: Colore.front1,
@@ -76,7 +76,7 @@ class _LogInViewState extends State<LogInView> {
                     ),
                   ),
                   FlatButton(
-                    color: Colore.back1,
+                    color: Colors.red,
                     child: _childButton[_indexButton],
                     onPressed: () async {
                       _indexButton == 1
@@ -85,11 +85,11 @@ class _LogInViewState extends State<LogInView> {
                               _indexButton = 1;
                               if (_email.isNotEmpty && _password.isNotEmpty) {
                                 widget._controller
-                                    .logInEmailPassword(_email, _password)
+                                    .removeUser(_email, _password)
                                     .then((value) => {
                                           Navigator.pushNamedAndRemoveUntil(
                                               context,
-                                              '/body',
+                                              '/authenticate',
                                               (route) => route.popped == null),
                                           _indexButton = 0
                                         })

@@ -32,6 +32,10 @@ class Rest {
     return await _requestByPost('getuser', {'uid': uid});
   }
 
+  Future<String> removeUser(String uid) async {
+    return await _requestByPost('removeuser', {'uid': uid});
+  }
+
   Future<dynamic> addTokenidUser(String uid, String tokenid) async {
     return await _requestByPost('addtokeniduser', {
       'uid': uid,

@@ -9,11 +9,10 @@ class Queue {
   User _admin;
   List<Ticket> _tickets;
   DateTime _startDateTime;
-  DateTime _stopDateTime;
   int _index;
 
   Queue.all(this._id, this._luogo, this._admin, this._tickets,
-      this._startDateTime, this._stopDateTime, this._index);
+      this._startDateTime, this._index);
 
   static Queue fromJson(dynamic pjson, Cache cache) {
     Queue finalQueue;
@@ -22,11 +21,7 @@ class Queue {
     String luogo = pjson['luogo'];
     User admin = cache.findUser(pjson['admin']);
     DateTime startDateTime = DateTime.parse(pjson['startdatetime']);
-    DateTime stopDateTime = pjson['stopdatetime'] != null
-        ? DateTime.parse(pjson['stopdatetime'])
-        : null;
-    finalQueue =
-        Queue.all(id, luogo, admin, [], startDateTime, stopDateTime, index);
+    finalQueue = Queue.all(id, luogo, admin, [], startDateTime, index);
     _initTicket(pjson['tickets'], finalQueue.tickets, cache.findTicket);
     return finalQueue;
   }
@@ -49,10 +44,6 @@ class Queue {
 
   DateTime get startDateTime => _startDateTime;
 
-  DateTime get stopDateTime => _stopDateTime;
-
-  bool get isClosed => _stopDateTime != null;
-
   int get index => _index;
 
   Map<String, dynamic> toMap() => {
@@ -61,7 +52,6 @@ class Queue {
         'admin': _admin.uid,
         'tickets': _tickets.map((element) => element.numberId).toList(),
         'startdatetime': _startDateTime.toString(),
-        'stopdatetime': _stopDateTime == null ? null : _stopDateTime.toString(),
         'index': _index,
       };
 }

@@ -111,9 +111,7 @@ class _ServiceViewState extends State<ServiceView> {
             CellView(
               'Persone in coda totali',
               Text(
-                (_queue.tickets.length -
-                    _queue.index)
-                    .toString(),
+                (_queue.tickets.length - _queue.index).toString(),
                 style: StileText.titolo,
               ),
             ),
@@ -129,11 +127,13 @@ class _ServiceViewState extends State<ServiceView> {
               child: Text(
                 _ticket == null
                     ? 'Vuoto'
-                    : (_ticket.user.nome + ' ' + _ticket.user.cognome),
+                    : _ticket == null
+                        ? 'Utente Eliminato'
+                        : (_ticket.user.nome + ' ' + _ticket.user.cognome),
                 style: StileText.sottotitolo,
               ),
               onPressed: () {
-                _ticket == null
+                _ticket == null || _ticket.user == null
                     ? null
                     : setState(() {
                         showDialog(
@@ -155,11 +155,9 @@ class _ServiceViewState extends State<ServiceView> {
                     setState(() {
                       _indexProssimo = 1;
                     });
-                    if (_queue.index ==
-                        _queue.tickets.length)
+                    if (_queue.index == _queue.tickets.length)
                       _queue = await widget._controller.getQueue(_queue.id);
-                    if (_queue.index <
-                        _queue.tickets.length) {
+                    if (_queue.index < _queue.tickets.length) {
                       _queue = await widget._controller.next(_queue);
                       set();
                     }

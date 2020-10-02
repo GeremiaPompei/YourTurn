@@ -50,33 +50,28 @@ class _DetailedTicketViewState extends State<DetailedTicketView> {
                     .format(widget._ticket.startQueue),
                 style: StileText.corpo),
           ),
-          CellView(
-            'Data e Ora fine coda',
-            widget._ticket.stopQueue == null
-                ? Text('In corso...', style: StileText.corpo)
-                : Text(
-                DateFormat('yyyy:MM:dd HH:mm')
-                    .format(widget._ticket.stopQueue),
-                style: StileText.corpo),
-          ),
-          CellView(
-            'Coda',
-            FloatingActionButton(
-              backgroundColor: Colore.back1,
-              child: Icon(Icons.people, color: Colore.front1),
-              onPressed: () {
-                setState(() {
-                  showDialog(
-                      context: context,
-                      builder: (context) {
-                        return AlertDialog(
-                          content: DetailedQueueView(widget._ticket.queue),
-                        );
+
+          widget._ticket.queue == null
+              ? CellView('Coda Eliminata', Container())
+              : CellView(
+                  'Coda',
+                  FloatingActionButton(
+                    backgroundColor: Colore.back1,
+                    child: Icon(Icons.people, color: Colore.front1),
+                    onPressed: () {
+                      setState(() {
+                        showDialog(
+                            context: context,
+                            builder: (context) {
+                              return AlertDialog(
+                                content:
+                                    DetailedQueueView(widget._ticket.queue),
+                              );
+                            });
                       });
-                });
-              },
-            ),
-          ),
+                    },
+                  ),
+                ),
           Container(
             height: 20,
           ),

@@ -29,7 +29,6 @@ async function getUser(req,res) {
 async function createJsonChainQueues(value) {
     for (var i = 0; i < value.length; i++) {
         value[i] = await db.getQueue({'id': value[i]});
-        close(i != value.length-1, value[i], 'stopdatetime', db.closeQueue);
         for (var j = 0; j < value[i].tickets.length; j++) {
             value[i].tickets[j] = await db.getTicket({'numberid': value[i].tickets[j]});
             value[i].tickets[j].user = await db.getUser({'uid': value[i].tickets[j].user});
@@ -42,13 +41,6 @@ async function createJsonChainTickets(value) {
         value[i] = await db.getTicket({'numberid': value[i]});
         value[i].queue = await db.getQueue({'id': value[i].queue});
         value[i].queue.admin = await db.getUser({'uid':  value[i].queue.admin});
-    }
-}
-
-function close(notlast, element, stopdate, closefunc) {
-    if(notlast && element[stopdate] == null) {
-        element[stopdate] = new Date().toISOString();
-        closefunc(element);
     }
 }
 
@@ -86,11 +78,12 @@ async function getQueue(req,res) {
 }
 
 async function closeQueue(req,res) {
-    var value = await db.closeQueue(req.body);
-    res.send(value);
+    var value = await db.getQueue(req.body);
     //notifica
     for (var i = value.index; i < value.tickets.length; i++)
         notify(value.tickets[i],value.id,'La coda è terminata');
+    value = await db.removeQueue(req.body);
+    res.send(value);
     //log
     console.log('Queue setted ['+new Date().toLocaleString()+']');
     console.log(value);
@@ -101,7 +94,6 @@ async function enqueue(req,res) {
     var _ticket = ticket.fromJson(req.body.uid, req.body.id, req.body.id + '-' + convert.fromInt(_queue.tickets.length + 1));
     var value = await db.enqueue(_ticket);
     res.send(value);
-    //notifica
     //log
     console.log('Enqueued ['+new Date().toLocaleString()+']');
     console.log(value);

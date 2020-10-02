@@ -42,15 +42,15 @@ async function getQueue(map) {
   return result;
 }
   
-async function closeQueue(map) {
+async function removeQueue(map) {
   var doc = db.collection(tabQueues).doc(map.id);
-  await doc.update({
-    'stopdatetime': new Date().toISOString(),
+  var _queue = (await doc.get()).data();
+  await db.collection(tabUsers).doc(_queue.admin).update({
+    'myqueues': admin.firestore.FieldValue.arrayRemove(_queue.id),
   });
-  var queue = (await doc.get()).data();
-  for (var i = queue.index; i < queue.tickets.length; i++)
-    await closeTicket({'numberid': queue.tickets[i]});
-  return (await doc.get()).data();
+  for (var i = 0; i < _queue.tickets.length; i++)
+    await removeTicket({'numberid': _queue.tickets[i]});
+  return await doc.delete();
 }
   
 async function next(map) {
@@ -62,16 +62,17 @@ async function next(map) {
       'index': queue.index + 1,
     });
   }
-  await closeTicket({'numberid': queue.tickets[queue.index]});
+  await removeTicket({'numberid': queue.tickets[queue.index]});
   return (await doc.get()).data();
 }
   
-async function closeTicket(map) {
+async function removeTicket(map) {
   var doc = db.collection(tabTickets).doc(map.numberid);
-  await doc.update({
-    'stopenqueue': new Date().toISOString(),
+  var _ticket = (await doc.get()).data();
+  await db.collection(tabUsers).doc(_ticket.user).update({
+    'tickets': admin.firestore.FieldValue.arrayRemove(_ticket.numberid),
   });
-  return (await doc.get()).data();
+  return await doc.delete();
 }
   
 async function enqueue(map) {
@@ -103,7 +104,7 @@ module.exports = {
   createQueue,
   enqueue,
   getQueue,
-  closeQueue,
+  removeQueue,
   getTicket,
   setTicket,
   next

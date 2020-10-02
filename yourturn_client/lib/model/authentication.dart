@@ -7,12 +7,15 @@ class Authentication {
       await _auth.createUserWithEmailAndPassword(
           email: email, password: password);
 
-  Future<UserCredential> logInEmailPassword(String email, String password) async =>
+  Future<UserCredential> logInEmailPassword(
+          String email, String password) async =>
       await _auth.signInWithEmailAndPassword(email: email, password: password);
 
   Future<UserCredential> logInToken(String token) async =>
       await _auth.signInWithCustomToken(token);
 
-  Future<void> logOut() async =>
-      await _auth.signOut();
+  Future<void> logOut() async => await _auth.signOut();
+
+  Future<void> removeUser(UserCredential userCredential) async =>
+      await userCredential.user.delete();
 }

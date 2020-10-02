@@ -40,23 +40,18 @@ class _DetailedQueueViewState extends State<DetailedQueueView> {
               ),
             ),
           ),
-          widget._queue.isClosed
-              ? Container()
-              : CellView(
-                  'Stiamo servendo il numero',
-                  Text(
-                    TicketNumberConverter().fromInt(widget._queue.index),
-                    style: StileText.titolo,
-                  )),
-          widget._queue.isClosed
-              ? Container()
-              : CellView(
-                  'Persone prima di te se partecipi ora',
-                  Text(
-                      (widget._queue.tickets.length - widget._queue.index)
-                          .toString(),
-                      style: StileText.titolo),
-                ),
+          CellView(
+              'Stiamo servendo il numero',
+              Text(
+                TicketNumberConverter().fromInt(widget._queue.index),
+                style: StileText.titolo,
+              )),
+          CellView(
+            'Persone prima di te se partecipi ora',
+            Text(
+                (widget._queue.tickets.length - widget._queue.index).toString(),
+                style: StileText.titolo),
+          ),
           Center(
             child: Container(
               width: 100,
@@ -81,37 +76,30 @@ class _DetailedQueueViewState extends State<DetailedQueueView> {
                 style: StileText.corpo),
           ),
           CellView(
-            'Data e Ora fine',
-            widget._queue.stopDateTime == null
-                ? Text('In corso...', style: StileText.corpo)
-                : Text(
-                    DateFormat('yyyy:MM:dd HH:mm')
-                        .format(widget._queue.stopDateTime),
-                    style: StileText.corpo),
-          ),
-          CellView(
             'Persone totali in coda',
             Text(widget._queue.tickets.length.toString(),
                 style: StileText.corpo),
           ),
-          CellView(
-            'Admin',
-            FloatingActionButton(
-              backgroundColor: Colore.back1,
-              child: Icon(Icons.person, color: Colore.front1),
-              onPressed: () {
-                setState(() {
-                  showDialog(
-                      context: context,
-                      builder: (context) {
-                        return AlertDialog(
-                          content: DetailedUserView(widget._queue.admin),
-                        );
+          widget._queue.admin == null
+              ? CellView('Utente Eliminato', Container())
+              : CellView(
+                  'Admin',
+                  FloatingActionButton(
+                    backgroundColor: Colore.back1,
+                    child: Icon(Icons.person, color: Colore.front1),
+                    onPressed: () {
+                      setState(() {
+                        showDialog(
+                            context: context,
+                            builder: (context) {
+                              return AlertDialog(
+                                content: DetailedUserView(widget._queue.admin),
+                              );
+                            });
                       });
-                });
-              },
-            ),
-          ),
+                    },
+                  ),
+                ),
           Container(
             height: 20,
           ),
