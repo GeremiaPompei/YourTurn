@@ -68,10 +68,16 @@ async function removeQueue(map) {
 async function next(map) {
   var txt = map.id.replace('/');
   var doc = await db.collection(tabQueues).doc(txt);
-  var queue = (await doc.get()).data();
-  if(queue.index < queue.tickets.length) {
+  var _queue = (await doc.get()).data();
+  if(_queue.index < _queue.tickets.length) {
     await doc.update({
-      'index': queue.index + 1,
+      'index': _queue.index + 1,
+    });
+  }
+  if(_queue.index>0){
+    var _ticket = (await db.collection(tabTickets).doc(_queue.tickets[_queue.index-1]).get()).data();
+    await db.collection(tabUsers).doc(_ticket.user).update({
+      'tickets': admin.firestore.FieldValue.arrayRemove(_ticket.numberid),
     });
   }
   return (await doc.get()).data();

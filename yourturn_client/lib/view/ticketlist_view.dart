@@ -90,12 +90,16 @@ class _TicketListViewState extends State<TicketListView> {
               height: 60,
               alignment: Alignment.center,
               child: FloatingActionButton(
-                backgroundColor: Colors.red,
-                child: Text(
+                backgroundColor: widget._ticket[i].queue.index ==
                         TicketNumberConverter()
-                            .fromInt(widget._ticket[i].queue.index),
-                        style: StileText.sottotitoloWhite,
-                      ),
+                            .fromString(widget._ticket[i].numberCode)
+                    ? Colors.green
+                    : Colors.red,
+                child: Text(
+                  TicketNumberConverter()
+                      .fromInt(widget._ticket[i].queue.index),
+                  style: StileText.sottotitoloWhite,
+                ),
                 onPressed: () {
                   setState(() {
                     showDialog(
