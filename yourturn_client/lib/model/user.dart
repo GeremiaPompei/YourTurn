@@ -7,11 +7,11 @@ class User {
   List<String> _tokenid;
   String _nome;
   String _cognome;
-  String _anno_nascita;
+  String _annonascita;
   String _sesso;
   String _email;
   String _telefono;
-  List<Queue> _myQueues;
+  Queue _queue;
   List<Ticket> _tickets;
 
   User.all(
@@ -19,11 +19,11 @@ class User {
       this._tokenid,
       this._nome,
       this._cognome,
-      this._anno_nascita,
+      this._annonascita,
       this._sesso,
       this._email,
       this._telefono,
-      this._myQueues,
+      this._queue,
       this._tickets);
 
   static User fromJson(dynamic pjson, Cache cache) {
@@ -34,41 +34,28 @@ class User {
     String sesso = pjson['sesso'];
     String email = pjson['email'];
     String telefono = pjson['telefono'];
+    Queue queue = cache.findQueue(pjson['queue']);
     List<String> tokenid = [];
     pjson['tokenid'].forEach((el) {
       tokenid.add(el);
     });
-    List<Queue> myQueues = [];
     List<Ticket> tickets = [];
     return User.all(uid, tokenid, nome, cognome, annonascita, sesso, email,
-        telefono, myQueues, tickets);
+        telefono, queue, tickets);
   }
 
   static User fromJsonAdmin(dynamic pjson, Cache cache) {
     User user = User.fromJson(pjson, cache);
     cache.listUsers.add(user);
-    _initQueue(pjson['myqueues'], user.myQueues, cache.findQueue);
-    _initTicket(pjson['tickets'], user.tickets, cache.findTicket);
+    pjson['tickets'].forEach((element) {
+      user.tickets.add(cache.findTicket(element));
+    });
     return user;
-  }
-
-  static void _initQueue(dynamic lstr, List lt, Queue Function(dynamic) func) {
-    if (lstr != null)
-      lstr.forEach((element) {
-        lt.add(func(element));
-      });
-  }
-
-  static void _initTicket(List lstr, List lt, Ticket Function(dynamic) func) {
-    if (lstr != null)
-      lstr.forEach((element) {
-        lt.add(func(element));
-      });
   }
 
   String get uid => _uid;
 
-  String get anno_nascita => _anno_nascita;
+  String get annonascita => _annonascita;
 
   String get cognome => _cognome;
 
@@ -82,7 +69,7 @@ class User {
 
   List<String> get tokenid => _tokenid;
 
-  List<Queue> get myQueues => _myQueues;
+  Queue get queue => _queue;
 
   List<Ticket> get tickets => _tickets;
 
@@ -91,11 +78,11 @@ class User {
         'tokenid': tokenid,
         'nome': nome,
         'cognome': cognome,
-        'annonascita': anno_nascita,
+        'annonascita': annonascita,
         'sesso': sesso,
         'email': email,
         'telefono': telefono,
-        'myqueues': myQueues.map((e) => e.id).toList(),
+        'queue': queue.id,
         'tickets': tickets.map((e) => e.numberId).toList(),
       };
 }

@@ -35,7 +35,6 @@ class _PartecipaQueueViewState extends State<PartecipaQueueView> {
         setState(() {
           _actionWidget = CircularProgressIndicator();
         });
-        //TODO inviare coda oltre a ticket
         Ticket ticket = await widget._controller
             .enqueueToOther(widget._queue, widget._controller.user);
         setState(() {

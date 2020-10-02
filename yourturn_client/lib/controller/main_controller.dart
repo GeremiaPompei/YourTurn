@@ -104,9 +104,8 @@ class MainController {
   }
 
   Future<Queue> createQueue(String id, String luogo) async {
-    this._user.myQueues.add(Queue.fromJson(
-        json.decode(await _rest.createQueue(id, luogo, _user.uid)), _cache));
-    return this._user.myQueues.last;
+    return Queue.fromJson(
+        json.decode(await _rest.createQueue(id, luogo, _user.uid)), _cache);
   }
 
   Future<Queue> getQueue(String id) async {
@@ -138,22 +137,21 @@ class MainController {
 
   Map<String, dynamic> get messages => this._messaging.messages;
 
-  Queue get last => _user.myQueues.last;
-
   myuser.User get user => _user;
 
-  List<Queue> get myQueues => _user.myQueues;
+  Queue get queue => _user.queue;
 
   List<Ticket> get tickets => _user.tickets;
 
   bool get authenticate => _user != null;
 
-  Future<void> load() async {
+  Future<bool> load() async {
     try {
       await _loadUid();
     } catch (e) {
       await _loadLocal();
     }
+    return authenticate;
   }
 
   Future<void> _saveUid() async {

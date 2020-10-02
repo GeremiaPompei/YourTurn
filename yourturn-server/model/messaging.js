@@ -1,7 +1,7 @@
 const admin = require('./firebase');
 
 async function notify (token, title, body) {
-  var res = await admin.messaging().send({
+  var notification = {
     notification: {
       title: title,
       body: body,
@@ -11,8 +11,10 @@ async function notify (token, title, body) {
       body: body,
     },
     token: token,
-  });
+  };
+  await admin.messaging().send(notification);
   console.log('Success');
+  console.log(notification);
 }
 
 module.exports = {

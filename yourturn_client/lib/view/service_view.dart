@@ -42,7 +42,7 @@ class _ServiceViewState extends State<ServiceView> {
 
   @override
   void initState() {
-    this._queue = widget._controller.last;
+    this._queue = widget._controller.queue;
   }
 
   void set() {

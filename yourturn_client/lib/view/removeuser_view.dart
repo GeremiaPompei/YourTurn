@@ -43,7 +43,7 @@ class _RemoveUserViewState extends State<RemoveUserView> {
     return Container(
       color: Colore.back2,
       child: Padding(
-        padding: EdgeInsets.all(40),
+        padding: EdgeInsets.all(10),
         child: Flex(
           direction: Axis.vertical,
           children: <Widget>[
@@ -83,7 +83,9 @@ class _RemoveUserViewState extends State<RemoveUserView> {
                           ? null
                           : setState(() {
                               _indexButton = 1;
-                              if (_email.isNotEmpty && _password.isNotEmpty) {
+                              if (_email.isNotEmpty &&
+                                  _password.isNotEmpty &&
+                                  _email == widget._controller.user.email) {
                                 widget._controller
                                     .removeUser(_email, _password)
                                     .then((value) => {
@@ -124,6 +126,13 @@ class _RemoveUserViewState extends State<RemoveUserView> {
                                           }),
                                           _indexButton = 0
                                         });
+                              } else if (_email !=
+                                  widget._controller.user.email) {
+                                _errMexM.manage({
+                                  'general':
+                                      'Inserisci la stessa email del tuo profilo'
+                                });
+                                _indexButton = 0;
                               } else {
                                 _errMexM.checkEmpty(
                                     {'email': _email, 'password': _password});

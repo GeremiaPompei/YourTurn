@@ -17,31 +17,25 @@ async function createUser(req,res) {
 }
 
 async function getUser(req,res) {
-    var value = await db.getUser(req.body);
-    await createJsonChainQueues(value.myqueues);
-    await createJsonChainTickets(value.tickets);
-    res.send(value);
+    var _user = await db.getUser(req.body);
+    for (var i = 0; i < _user.tickets.length; i++) {
+        _user.tickets[i] = await db.getTicket({'numberid': _user.tickets[i]});
+        _user.tickets[i].queue = await db.getQueue({'id': _user.tickets[i].queue});
+        _user.tickets[i].queue.admin = await db.getUser({'uid':  _user.tickets[i].queue.admin});
+    }
+    res.send(_user);
     //log
     console.log('User getted ['+new Date().toLocaleString()+']');
-    //console.log(value);
+    console.log(_user);
 }
 
-async function createJsonChainQueues(value) {
-    for (var i = 0; i < value.length; i++) {
-        value[i] = await db.getQueue({'id': value[i]});
-        for (var j = 0; j < value[i].tickets.length; j++) {
-            value[i].tickets[j] = await db.getTicket({'numberid': value[i].tickets[j]});
-            value[i].tickets[j].user = await db.getUser({'uid': value[i].tickets[j].user});
-        }
-    }
-}
+async function removeUser(req,res) {
+    var _user = await db.removeUser(req.body);
 
-async function createJsonChainTickets(value) {
-    for (var i = 0; i < value.length; i++) {
-        value[i] = await db.getTicket({'numberid': value[i]});
-        value[i].queue = await db.getQueue({'id': value[i].queue});
-        value[i].queue.admin = await db.getUser({'uid':  value[i].queue.admin});
-    }
+    res.send(_user);
+    //log
+    console.log('User removed ['+new Date().toLocaleString()+']');
+    //console.log(_user);
 }
 
 async function addTokenidUser(req,res) {
@@ -85,14 +79,16 @@ async function closeQueue(req,res) {
     value = await db.removeQueue(req.body);
     res.send(value);
     //log
-    console.log('Queue setted ['+new Date().toLocaleString()+']');
-    console.log(value);
+    console.log('Queue closed ['+new Date().toLocaleString()+']');
+    console.log(req.body);
 }
 
 async function enqueue(req,res) {
     var _queue = await db.getQueue({'id': req.body.id});
     var _ticket = ticket.fromJson(req.body.uid, req.body.id, req.body.id + '-' + convert.fromInt(_queue.tickets.length + 1));
     var value = await db.enqueue(_ticket);
+    value.queue = await db.getQueue({'id': value.queue});
+    value.queue.admin = await db.getUser({'uid': value.queue.admin});
     res.send(value);
     //log
     console.log('Enqueued ['+new Date().toLocaleString()+']');
@@ -100,33 +96,36 @@ async function enqueue(req,res) {
 }
 
 async function getTicket(req,res) {
-    var value = await db.getTicket(req.body);
-    res.send(value);
+    var _ticket = await db.getTicket(req.body);
+    res.send(_ticket);
     //log
     console.log('Ticket getted ['+new Date().toLocaleString()+']');
-    console.log(value);
+    console.log(_ticket);
 }
 
 async function next(req,res) {
-    var queue = await db.next(req.body);
-    res.send(queue);
+    var _queue = await db.next(req.body);
+    res.send(_queue);
     //notifica
-    if(queue.index - 1 < queue.tickets.length) notify(queue.tickets[queue.index - 1],queue.id,'E\' il tuo turno');
-    if(queue.index  < queue.tickets.length) notify(queue.tickets[queue.index],queue.id,'Manca una persona prima di te');
-    if(queue.index + 1 < queue.tickets.length) notify(queue.tickets[queue.index + 1],queue.id,'Mancano due persone prima di te');
+    if(_queue.index - 1 < _queue.tickets.length) 
+    notify(_queue.tickets[_queue.index - 1],_queue.id,'E\' il tuo turno');
+    if(_queue.index  < _queue.tickets.length) 
+    notify(_queue.tickets[_queue.index],_queue.id,'Manca una persona prima di te');
+    if(_queue.index + 1 < _queue.tickets.length) 
+    notify(_queue.tickets[_queue.index + 1],_queue.id,'Mancano due persone prima di te');
     //log
     console.log('User next ['+new Date().toLocaleString()+']');
-    console.log(queue);
+    console.log(_queue);
 }
   
 async function notify(ticketid,title,body) {
-  var ticket = await db.getTicket({'numberid': ticketid});
-  var user = await db.getUser({'uid': ticket.user});
-  for (var i = 0; i < user.tokenid.length; i++) {
+  var _ticket = await db.getTicket({'numberid': ticketid});
+  var _user = await db.getUser({'uid': _ticket.user});
+  for (var i = 0; i < _user.tokenid.length; i++) {
     try {
-        await messaging.notify(user.tokenid[i], title, body);
+        await messaging.notify(_user.tokenid[i], title, body);
     } catch(e) {
-        db.removeTokenidUser({'uid': user.uid,'tokenid': user.tokenid[i]});
+        db.removeTokenidUser({'uid': _user.uid,'tokenid': _user.tokenid[i]});
     }
   }
 }
@@ -148,6 +147,7 @@ function error(req,res) {
 module.exports = {
     createUser,
     getUser,
+    removeUser,
     addTokenidUser,
     removeTokenidUser,
     createQueue,

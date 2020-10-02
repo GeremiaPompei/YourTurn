@@ -47,7 +47,7 @@ class _DetailedUserViewState extends State<DetailedUserView> {
           ),
           CellView(
             'Anno di Nascita',
-            Text(widget._user.anno_nascita, style: StileText.corpo),
+            Text(widget._user.annonascita, style: StileText.corpo),
           ),
           CellView(
             'Sesso',

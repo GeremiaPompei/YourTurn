@@ -34,11 +34,13 @@ class Cache {
   }
 
   Queue findQueue(dynamic pjson) {
-    String txt = pjson.runtimeType == String ? pjson : pjson['id'];
-    List<Queue> searched =
-        this._listQueues.where((element) => element.id == txt).toList();
-    return _findElement<Queue>(
-        pjson, this._listQueues, searched, Queue.fromJson);
+    if (pjson != null) {
+      String txt = pjson.runtimeType == String ? pjson : pjson['id'];
+      List<Queue> searched =
+          this._listQueues.where((element) => element.id == txt).toList();
+      return _findElement<Queue>(
+          pjson, this._listQueues, searched, Queue.fromJson);
+    }
   }
 
   Ticket findTicket(dynamic pjson) {
