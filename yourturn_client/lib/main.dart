@@ -24,8 +24,12 @@ void main() async {
       builder: (context, snapshot) {
         Widget tmpWidget;
         if (snapshot.hasData) {
-          if (snapshot.data) {
-            tmpWidget = MainView(_controller);
+          if (snapshot.data != null) {
+            if (snapshot.data.queue == null) {
+              tmpWidget = MainView(_controller);
+            } else {
+              tmpWidget = ServiceView(_controller);
+            }
           } else {
             tmpWidget = AuthenticateView(_controller);
           }

@@ -73,6 +73,10 @@ class User {
 
   List<Ticket> get tickets => _tickets;
 
+  set queue(Queue value) {
+    _queue = value;
+  }
+
   Map<String, dynamic> toMap() => {
         'uid': uid,
         'tokenid': tokenid,

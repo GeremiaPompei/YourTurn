@@ -18,6 +18,8 @@ async function createUser(req,res) {
 
 async function getUser(req,res) {
     var _user = await db.getUser(req.body);
+    if(_user.queue!=null)
+    _user.queue = await db.getQueue({'id': _user.queue});
     for (var i = 0; i < _user.tickets.length; i++) {
         _user.tickets[i] = await db.getTicket({'numberid': _user.tickets[i]});
         _user.tickets[i].queue = await db.getQueue({'id': _user.tickets[i].queue});
@@ -105,14 +107,17 @@ async function getTicket(req,res) {
 
 async function next(req,res) {
     var _queue = await db.next(req.body);
+    console.log(_queue);
+    _queue.tickets[_queue.index-1] = await db.getTicket({'numberid': _queue.tickets[_queue.index-1]});
+    _queue.tickets[_queue.index-1].user = await db.getUser({'uid': _queue.tickets[_queue.index-1].user});
     res.send(_queue);
     //notifica
     if(_queue.index - 1 < _queue.tickets.length) 
-    notify(_queue.tickets[_queue.index - 1],_queue.id,'E\' il tuo turno');
+    notify(_queue.tickets[_queue.index - 1].numberid,_queue.id,'E\' il tuo turno');
     if(_queue.index  < _queue.tickets.length) 
-    notify(_queue.tickets[_queue.index],_queue.id,'Manca una persona prima di te');
+    notify(_queue.tickets[_queue.index].numberid,_queue.id,'Manca una persona prima di te');
     if(_queue.index + 1 < _queue.tickets.length) 
-    notify(_queue.tickets[_queue.index + 1],_queue.id,'Mancano due persone prima di te');
+    notify(_queue.tickets[_queue.index + 1].numberid,_queue.id,'Mancano due persone prima di te');
     //log
     console.log('User next ['+new Date().toLocaleString()+']');
     console.log(_queue);

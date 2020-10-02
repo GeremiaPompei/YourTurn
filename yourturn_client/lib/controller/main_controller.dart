@@ -104,8 +104,9 @@ class MainController {
   }
 
   Future<Queue> createQueue(String id, String luogo) async {
-    return Queue.fromJson(
+    this._user.queue = Queue.fromJson(
         json.decode(await _rest.createQueue(id, luogo, _user.uid)), _cache);
+    return this._user.queue;
   }
 
   Future<Queue> getQueue(String id) async {
@@ -135,23 +136,13 @@ class MainController {
     this._messaging.config(context);
   }
 
-  Map<String, dynamic> get messages => this._messaging.messages;
-
-  myuser.User get user => _user;
-
-  Queue get queue => _user.queue;
-
-  List<Ticket> get tickets => _user.tickets;
-
-  bool get authenticate => _user != null;
-
-  Future<bool> load() async {
+  Future<myuser.User> load() async {
     try {
       await _loadUid();
     } catch (e) {
       await _loadLocal();
     }
-    return authenticate;
+    return this._user;
   }
 
   Future<void> _saveUid() async {
@@ -176,4 +167,12 @@ class MainController {
       this._user = myuser.User.fromJsonAdmin(json.decode(response), _cache);
     } catch (e) {}
   }
+
+  Map<String, dynamic> get messages => this._messaging.messages;
+
+  myuser.User get user => _user;
+
+  Queue get queue => _user.queue;
+
+  List<Ticket> get tickets => _user.tickets;
 }

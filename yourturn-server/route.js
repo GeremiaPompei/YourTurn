@@ -5,6 +5,7 @@ const router = express.Router();
 
 router.post('/createuser', bodyParser.json(), controller.createUser);
 router.post('/getuser', bodyParser.json(), controller.getUser);
+router.post('/removeuser', bodyParser.json(), controller.removeUser);
 router.post('/addtokeniduser', bodyParser.json(), controller.addTokenidUser);
 router.post('/removetokeniduser', bodyParser.json(), controller.removeTokenidUser);
 router.post('/createqueue', bodyParser.json(), controller.createQueue);

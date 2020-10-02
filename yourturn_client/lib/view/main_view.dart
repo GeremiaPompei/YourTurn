@@ -24,7 +24,7 @@ class _MainViewState extends State<MainView> {
 
   @override
   void initState() {
-    _onItemTapped(1);
+    _onItemTapped(0);
   }
 
   void _onItemTapped(int index) {
@@ -32,10 +32,10 @@ class _MainViewState extends State<MainView> {
       this._indexItem = index;
       switch (index) {
         case 0:
-          this._bodyWidget = TicketsView(widget._controller);
+          this._bodyWidget = CreateQueueView(widget._controller);
           break;
         case 1:
-          this._bodyWidget = CreateQueueView(widget._controller);
+          this._bodyWidget = TicketsView(widget._controller);
           break;
       }
     });
