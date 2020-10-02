@@ -41,11 +41,12 @@ async function removeTokenidUser(map) {
 }
   
 async function createQueue(map) {
-  await db.collection(tabQueues).doc(map.id).set(map);
+  var doc = db.collection(tabQueues).doc(map.id);
+  await doc.set(map);
   await db.collection(tabUsers).doc(map.admin).update({
     'queue': map.id,
   });
-  return map;
+  return (await doc.get()).data();
 }
   
 async function getQueue(map) {
@@ -57,11 +58,11 @@ async function getQueue(map) {
 async function removeQueue(map) {
   var doc = db.collection(tabQueues).doc(map.id);
   var _queue = (await doc.get()).data();
+  for (var i = 0; i < _queue.tickets.length; i++)
+    await removeTicket({'numberid': _queue.tickets[i]});
   await db.collection(tabUsers).doc(_queue.admin).update({
     'queue': null,
   });
-  for (var i = 0; i < _queue.tickets.length; i++)
-    await removeTicket({'numberid': _queue.tickets[i]});
   return await doc.delete();
 }
   

@@ -4,7 +4,10 @@ const user = require('./model/user');
 const queue = require('./model/queue');
 const ticket = require('./model/ticket');
 const convert = require('./model/ticketnumber_converter');
-const e = require('express');
+const qrgenerator = require('./model/qrgenerator');
+const pdfconverter = require('./model/pdfconverter');
+const fs = require('fs');
+const pathQrFiles = __dirname+'/qrfiles/';
 
 async function createUser(req,res) {
     var _user = user.fromJson(req.body.uid, req.body.tokenid, req.body.nome, req.body.cognome
@@ -60,6 +63,12 @@ async function createQueue(req,res) {
     var _queue = queue.fromJson(req.body.id, req.body.luogo, req.body.uid);
     var value = await db.createQueue(_queue);
     res.send(value);
+    //invia qr per email
+    fs.mkdirSync(pathQrFiles, { recursive: true });
+    console.log(req.body);
+    var _path = await qrgenerator.generate(pathQrFiles+value.id, req.body.qrpath);
+    pdfconverter.convert(_path, req.body.qrpath);
+    fs.unlinkSync(_path);
     //log
     console.log('Queue created ['+new Date().toLocaleString()+']');
     console.log(value);
@@ -75,6 +84,7 @@ async function getQueue(req,res) {
 
 async function closeQueue(req,res) {
     var value = await db.getQueue(req.body);
+    fs.unlinkSync(pathQrFiles+value.id+'.pdf');
     //notifica
     for (var i = value.index; i < value.tickets.length; i++)
         notify(value.tickets[i],value.id,'La coda è terminata');

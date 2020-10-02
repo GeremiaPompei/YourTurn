@@ -51,8 +51,12 @@ class Rest {
   }
 
   Future<String> createQueue(String id, String luogo, String uid) async {
-    return await _requestByPost(
-        'createqueue', {'id': id, 'luogo': luogo, 'uid': uid});
+    return await _requestByPost('createqueue', {
+      'id': id,
+      'luogo': luogo,
+      'uid': uid,
+      'qrpath': indirizzoRoot + indirizzoCoda + id
+    });
   }
 
   Future<String> enqueue(String id, String uid) async {
