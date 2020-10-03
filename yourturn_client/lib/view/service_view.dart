@@ -90,7 +90,7 @@ class _ServiceViewState extends State<ServiceView> {
                     ),
                     onPressed: () {
                       final RenderBox box = context.findRenderObject();
-                      Share.share(_queue.id,
+                      Share.share(indirizzoRoot + indirizzoCoda + _queue.id,
                           subject: 'Your Turn [' +
                               _queue.id +
                               ']'.replaceAll(indirizzoRoot, ''),

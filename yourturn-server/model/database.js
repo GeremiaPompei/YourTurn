@@ -126,5 +126,5 @@ module.exports = {
   removeQueue,
   getTicket,
   setTicket,
-  next
+  next,
 };
