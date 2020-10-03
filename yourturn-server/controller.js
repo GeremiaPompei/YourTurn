@@ -63,12 +63,10 @@ async function createQueue(req,res) {
     var _queue = queue.fromJson(req.body.id, req.body.luogo, req.body.uid);
     var value = await db.createQueue(_queue);
     res.send(value);
-    //invia qr per email
     fs.mkdirSync(pathQrFiles, { recursive: true });
-    console.log(req.body);
-    var _path = await qrgenerator.generate(pathQrFiles+value.id, req.body.qrpath);
-    pdfconverter.convert(_path, req.body.qrpath);
-    fs.unlinkSync(_path);
+    var _pathJpg = await qrgenerator.generate(pathQrFiles+value.id, req.body.qrpath);
+    var _pathPdf = pdfconverter.convert(_pathJpg, req.body.id);
+    fs.unlinkSync(_pathJpg);
     //log
     console.log('Queue created ['+new Date().toLocaleString()+']');
     console.log(value);
@@ -145,6 +143,10 @@ async function notify(ticketid,title,body) {
   }
 }
 
+async function getQueuePdf(req,res) {
+    res.sendFile(pathQrFiles+req.params.id+'.pdf');
+}
+
 function test(req,res) {
     res.send('Success');
     //log
@@ -171,6 +173,7 @@ module.exports = {
     closeQueue,
     getTicket,
     next,
+    getQueuePdf,
     test,
     error
 }
