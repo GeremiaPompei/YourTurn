@@ -22,15 +22,6 @@ class LogInView extends StatefulWidget {
 class _LogInViewState extends State<LogInView> {
   String _email = '';
   String _password = '';
-  List<Widget> _childButton = [
-    Text(
-      'LogIn',
-      style: StileText.sottotitolo,
-    ),
-    LinearProgressIndicator(
-      backgroundColor: Colore.front1,
-    )
-  ];
   int _indexButton = 0;
   ErrMessagesManager _errMexM = ErrMessagesManager.fromList([
     'email',
@@ -77,7 +68,14 @@ class _LogInViewState extends State<LogInView> {
                   ),
                   FlatButton(
                     color: Colore.back1,
-                    child: _childButton[_indexButton],
+                    child: _indexButton == 0
+                        ? Text(
+                            'LogIn',
+                            style: StileText.sottotitolo,
+                          )
+                        : LinearProgressIndicator(
+                            backgroundColor: Colore.front1,
+                          ),
                     onPressed: () async {
                       _indexButton == 1
                           ? null
@@ -131,6 +129,40 @@ class _LogInViewState extends State<LogInView> {
                               }
                             });
                     },
+                  ),
+                  FlatButton(
+                    color: Colors.red,
+                    child: _indexButton == 0
+                        ? Text(
+                            'Google',
+                            style: StileText.sottotitoloWhite,
+                          )
+                        : LinearProgressIndicator(
+                            backgroundColor: Colore.front1,
+                          ),
+                    onPressed: (() async {
+                      if (_indexButton == 0) {
+                        setState(() {
+                          _indexButton = 1;
+                        });
+                        try {
+                          await widget._controller.googleLogIn();
+                          Navigator.pushNamedAndRemoveUntil(context, '/body',
+                              (route) => route.popped == null);
+                          setState(() {
+                            _indexButton = 0;
+                          });
+                        } catch (e) {
+                          _errMexM.manage({
+                            'general':
+                                'Non sei registrato, prima di eseguire il LogIn registrati con Google in SignIn'
+                          });
+                          setState(() {
+                            _indexButton = 0;
+                          });
+                        }
+                      }
+                    }),
                   ),
                   Text(
                     _errMexM.allMex['general'] == null

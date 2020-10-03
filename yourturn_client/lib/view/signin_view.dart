@@ -42,15 +42,6 @@ class _SignInViewState extends State<SignInView> {
     'password nuovamente',
     'general',
   ]);
-  List<Widget> _childButton = [
-    Text(
-      'SignIn',
-      style: StileText.sottotitolo,
-    ),
-    LinearProgressIndicator(
-      backgroundColor: Colore.front1,
-    )
-  ];
   int _indexButton = 0;
 
   @override
@@ -179,119 +170,168 @@ class _SignInViewState extends State<SignInView> {
                   ),
                   FlatButton(
                     color: Colore.back1,
-                    child: _childButton[_indexButton],
+                    child: _indexButton == 0
+                        ? Text(
+                            'SignIn',
+                            style: StileText.sottotitolo,
+                          )
+                        : LinearProgressIndicator(
+                            backgroundColor: Colore.front1,
+                          ),
                     onPressed: () async {
-                      _indexButton == 1
-                          ? null
-                          : setState(() {
-                              _indexButton = 1;
-                              if (_nome.isNotEmpty &&
-                                  _cognome.isNotEmpty &&
-                                  _email.isNotEmpty &&
-                                  _telefono.isNotEmpty &&
-                                  _password.isNotEmpty &&
-                                  _ripetiPassword.isNotEmpty &&
-                                  _validateNumber) {
-                                if (_password == _ripetiPassword) {
-                                  try {
-                                    widget._controller
-                                        .signIn(
-                                            _nome,
-                                            _cognome,
-                                            _lAnnoN[_vAnnoN],
-                                            _lSesso[_vSesso],
-                                            _email,
-                                            _telefono,
-                                            _password)
-                                        .then((value) {
-                                      Navigator.pushNamedAndRemoveUntil(
-                                          context,
-                                          '/body',
-                                          (route) => route.popped == null);
-                                      _indexButton = 0;
-                                    }).catchError((err) => {
-                                              if (err.runtimeType ==
-                                                  SocketException)
-                                                {
-                                                  _errMexM.manage({
-                                                    'general':
-                                                        'Errore di connessione al server: ' +
-                                                            indirizzoRoot
-                                                  })
-                                                }
-                                              else if (err.code ==
-                                                  'weak-password')
-                                                {
-                                                  setState(() {
-                                                    _errMexM.manage({
-                                                      'password':
-                                                          'Password debole, minimo 6 caratteri'
-                                                    });
-                                                  })
-                                                }
-                                              else if (err.code ==
-                                                  'invalid-email')
-                                                {
-                                                  setState(() {
-                                                    _errMexM.manage({
-                                                      'email':
-                                                          'Email non valida'
-                                                    });
-                                                  })
-                                                }
-                                              else if (err.code ==
-                                                  'email-already-in-use')
-                                                {
-                                                  setState(() {
-                                                    _errMexM.manage({
-                                                      'email':
-                                                          'Email gia esistente'
-                                                    });
-                                                  })
-                                                }
-                                              else
-                                                {
-                                                  _errMexM.manage(
-                                                      {'general': 'Error'})
-                                                },
-                                              _indexButton = 0
-                                            });
-                                  } catch (e) {
-                                    _errMexM.manage({'general': 'Error'});
-                                    _indexButton = 0;
-                                  }
-                                } else {
-                                  setState(() {
-                                    _errMexM.manage({
-                                      'password nuovamente':
-                                          'Password differenti'
-                                    });
-                                  });
+                      if (_indexButton == 0) {
+                        setState(() {
+                          _indexButton = 1;
+                          if (_nome.isNotEmpty &&
+                              _cognome.isNotEmpty &&
+                              _email.isNotEmpty &&
+                              _telefono.isNotEmpty &&
+                              _password.isNotEmpty &&
+                              _ripetiPassword.isNotEmpty &&
+                              _validateNumber) {
+                            if (_password == _ripetiPassword) {
+                              try {
+                                widget._controller
+                                    .signInEmailPassword(
+                                        _nome,
+                                        _cognome,
+                                        _lAnnoN[_vAnnoN],
+                                        _lSesso[_vSesso],
+                                        _email,
+                                        _telefono,
+                                        _password)
+                                    .then((value) {
+                                  Navigator.pushNamedAndRemoveUntil(context,
+                                      '/body', (route) => route.popped == null);
                                   _indexButton = 0;
-                                }
-                              } else if (_nome.isEmpty ||
-                                  _cognome.isEmpty ||
-                                  _email.isEmpty ||
-                                  _telefono.isEmpty ||
-                                  _password.isEmpty ||
-                                  _ripetiPassword.isEmpty) {
-                                _errMexM.checkEmpty({
-                                  'nome': _nome,
-                                  'cognome': _cognome,
-                                  'telefono': _telefono,
-                                  'email': _email,
-                                  'password': _password,
-                                  'password nuovamente': _ripetiPassword,
-                                });
+                                }).catchError((err) => {
+                                          if (err.runtimeType ==
+                                              SocketException)
+                                            {
+                                              _errMexM.manage({
+                                                'general':
+                                                    'Errore di connessione al server: ' +
+                                                        indirizzoRoot
+                                              })
+                                            }
+                                          else if (err.code == 'weak-password')
+                                            {
+                                              setState(() {
+                                                _errMexM.manage({
+                                                  'password':
+                                                      'Password debole, minimo 6 caratteri'
+                                                });
+                                              })
+                                            }
+                                          else if (err.code == 'invalid-email')
+                                            {
+                                              setState(() {
+                                                _errMexM.manage({
+                                                  'email': 'Email non valida'
+                                                });
+                                              })
+                                            }
+                                          else if (err.code ==
+                                              'email-already-in-use')
+                                            {
+                                              setState(() {
+                                                _errMexM.manage({
+                                                  'email': 'Email gia esistente'
+                                                });
+                                              })
+                                            }
+                                          else
+                                            {
+                                              _errMexM
+                                                  .manage({'general': 'Error'})
+                                            },
+                                          _indexButton = 0
+                                        });
+                              } catch (e) {
+                                _errMexM.manage({'general': 'Error'});
                                 _indexButton = 0;
-                              } else {
-                                _errMexM.manage({
-                                  'telefono': 'Numero di telefono non valido'
-                                });
-                                _indexButton = 0;
-                                print(_validateNumber);
                               }
+                            } else {
+                              setState(() {
+                                _errMexM.manage({
+                                  'password nuovamente': 'Password differenti'
+                                });
+                              });
+                              _indexButton = 0;
+                            }
+                          } else if (_nome.isEmpty ||
+                              _cognome.isEmpty ||
+                              _email.isEmpty ||
+                              _telefono.isEmpty ||
+                              _password.isEmpty ||
+                              _ripetiPassword.isEmpty) {
+                            _errMexM.checkEmpty({
+                              'nome': _nome,
+                              'cognome': _cognome,
+                              'telefono': _telefono,
+                              'email': _email,
+                              'password': _password,
+                              'password nuovamente': _ripetiPassword,
                             });
+                            _indexButton = 0;
+                          } else {
+                            _errMexM.manage(
+                                {'telefono': 'Numero di telefono non valido'});
+                            _indexButton = 0;
+                          }
+                        });
+                      }
+                    },
+                  ),
+                  FlatButton(
+                    color: Colors.red,
+                    child: _indexButton == 0
+                        ? Text(
+                            'Google',
+                            style: StileText.sottotitoloWhite,
+                          )
+                        : LinearProgressIndicator(
+                            backgroundColor: Colore.front1,
+                          ),
+                    onPressed: () async {
+                      if (_indexButton == 0) {
+                        setState(() {
+                          _indexButton = 1;
+                          if (_telefono.isNotEmpty && _validateNumber) {
+                            if (_password == _ripetiPassword) {
+                              try {
+                                widget._controller
+                                    .googleSignIn(_lAnnoN[_vAnnoN],
+                                        _lSesso[_vSesso], _telefono)
+                                    .then((value) {
+                                  Navigator.pushNamedAndRemoveUntil(context,
+                                      '/body', (route) => route.popped == null);
+                                  _indexButton = 0;
+                                });
+                              } catch (e) {
+                                _errMexM.manage({'general': 'Error'});
+                                _indexButton = 0;
+                              }
+                            } else {
+                              setState(() {
+                                _errMexM.manage({
+                                  'password nuovamente': 'Password differenti'
+                                });
+                              });
+                              _indexButton = 0;
+                            }
+                          } else if (_telefono.isEmpty ) {
+                            _errMexM.checkEmpty({
+                              'telefono': _telefono,
+                            });
+                            _indexButton = 0;
+                          } else {
+                            _errMexM.manage(
+                                {'telefono': 'Numero di telefono non valido'});
+                            _indexButton = 0;
+                          }
+                        });
+                      }
                     },
                   ),
                   Text(

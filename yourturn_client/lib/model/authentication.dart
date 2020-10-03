@@ -1,7 +1,14 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class Authentication {
   FirebaseAuth _auth = FirebaseAuth.instance;
+  GoogleSignIn _googleSignIn = GoogleSignIn(
+    scopes: [
+      'email',
+      'https://www.googleapis.com/auth/contacts.readonly',
+    ],
+  );
 
   Future<UserCredential> signIn(String email, String password) async =>
       await _auth.createUserWithEmailAndPassword(
@@ -11,11 +18,15 @@ class Authentication {
           String email, String password) async =>
       await _auth.signInWithEmailAndPassword(email: email, password: password);
 
-  Future<UserCredential> logInToken(String token) async =>
-      await _auth.signInWithCustomToken(token);
+  Future<UserCredential> signInWithCredential(AuthCredential credential) async =>
+      await _auth.signInWithCredential(credential);
 
   Future<void> logOut() async => await _auth.signOut();
 
   Future<void> removeUser(UserCredential userCredential) async =>
       await userCredential.user.delete();
+
+  Future<GoogleSignInAccount> googleSignIn() async{
+    return await _googleSignIn.signIn();
+  }
 }

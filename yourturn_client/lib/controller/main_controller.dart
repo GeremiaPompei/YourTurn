@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:yourturn_client/model/authentication.dart';
 import 'package:yourturn_client/model/cache.dart';
 import 'package:yourturn_client/model/messaging.dart';
@@ -33,17 +34,60 @@ class MainController {
       return false;
   }
 
-  Future<myuser.User> signIn(String nome, String cognome, String annonascita,
-      String sesso, String email, String telefono, String password) async {
+  Future<Map> googleCedential() async {
+    await testConnection();
+    GoogleSignInAccount account = await this._authentication.googleSignIn();
+    GoogleSignInAuthentication authentication = await account.authentication;
+    GoogleAuthCredential googleAuth = GoogleAuthProvider.credential(
+      accessToken: authentication.accessToken,
+      idToken: authentication.idToken,
+    );
+    return {'credential': googleAuth, 'account': account};
+  }
+
+  Future<myuser.User> googleSignIn(
+      String annonascita, String sesso, String telefono) async {
+    Map authCredential = await googleCedential();
+    UserCredential userCredential = await this
+        ._authentication
+        .signInWithCredential(authCredential['credential']);
+    String name = authCredential['account']
+        .displayName
+        .substring(0, authCredential['account'].displayName.indexOf(' '));
+    await _signIn(
+        userCredential.user.uid,
+        name,
+        authCredential['account'].displayName.replaceAll(name, ''),
+        annonascita,
+        sesso,
+        authCredential['account'].email,
+        telefono);
+    return _user;
+  }
+
+  Future<myuser.User> signInEmailPassword(
+      String nome,
+      String cognome,
+      String annonascita,
+      String sesso,
+      String email,
+      String telefono,
+      String password) async {
     await testConnection();
     UserCredential userCredential =
         await this._authentication.signIn(email, password);
-    var response = await _rest.createUser(userCredential.user.uid,
-        _messaging.token, nome, cognome, annonascita, sesso, email, telefono);
+    await _signIn(userCredential.user.uid, nome, cognome, annonascita, sesso,
+        email, telefono);
+    return _user;
+  }
+
+  Future<void> _signIn(String uid, String nome, String cognome,
+      String annonascita, String sesso, String email, String telefono) async {
+    var response = await _rest.createUser(uid, _messaging.token, nome, cognome,
+        annonascita, sesso, email, telefono);
     this._user = myuser.User.fromJsonAdmin(json.decode(response), _cache);
     _saveUid();
     _saveLocal(response);
-    return _user;
   }
 
   Future<void> _logIn(UserCredential userCredential) async {
@@ -57,18 +101,19 @@ class MainController {
     _saveLocal(response);
   }
 
-  Future<myuser.User> logInEmailPassword(String email, String password) async {
-    await testConnection();
-    UserCredential userCredential =
-        await this._authentication.logInEmailPassword(email, password);
+  Future<myuser.User> googleLogIn() async {
+    Map authCredential = await googleCedential();
+    UserCredential userCredential = await this
+        ._authentication
+        .signInWithCredential(authCredential['credential']);
     await _logIn(userCredential);
     return this._user;
   }
 
-  Future<myuser.User> _logInToken(String token) async {
+  Future<myuser.User> logInEmailPassword(String email, String password) async {
     await testConnection();
     UserCredential userCredential =
-        await this._authentication.logInToken(token);
+        await this._authentication.logInEmailPassword(email, password);
     await _logIn(userCredential);
     return this._user;
   }
@@ -162,10 +207,10 @@ class MainController {
   }
 
   Future<void> _loadLocal() async {
-    try {
+    if ((await this._storeManager.localFile('local.json')) != null) {
       var response = await this._storeManager.load('local.json');
       this._user = myuser.User.fromJsonAdmin(json.decode(response), _cache);
-    } catch (e) {}
+    }
   }
 
   Map<String, dynamic> get messages => this._messaging.messages;
