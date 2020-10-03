@@ -92,6 +92,7 @@ class MainController {
 
   Future<void> _logIn(UserCredential userCredential) async {
     var response = await _rest.getUser(userCredential.user.uid);
+
     this._user = myuser.User.fromJsonAdmin(json.decode(response), _cache);
     if (!this._user.tokenid.contains(_messaging.token)) {
       this._user.tokenid.add(_messaging.token);

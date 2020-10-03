@@ -21,6 +21,8 @@ async function createUser(req,res) {
 
 async function getUser(req,res) {
     var _user = await db.getUser(req.body);
+    if(_user == null)
+        res.send(null);
     if(_user.queue!=null)
         _user.queue = await db.getQueue({'id': _user.queue});
     for (var i = 0; i < _user.tickets.length; i++) {
