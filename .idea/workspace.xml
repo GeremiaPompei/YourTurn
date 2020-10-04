@@ -19,7 +19,7 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="3f1a1f3b-27fa-4a3e-84ba-1b49cb8dc486" name="Default Changelist" comment="README.md" />
+    <list default="true" id="3f1a1f3b-27fa-4a3e-84ba-1b49cb8dc486" name="Default Changelist" comment="README.md aggiornato" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -127,7 +127,14 @@
       <option name="project" value="LOCAL" />
       <updated>1601690134227</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="README.md aggiornato">
+      <created>1601837905087</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1601837905087</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -152,7 +159,8 @@
     <MESSAGE value="Restanti file server" />
     <MESSAGE value="Miglioramento interazione client e server. Delegata creazione queue a server" />
     <MESSAGE value="README.md" />
-    <option name="LAST_COMMIT_MESSAGE" value="README.md" />
+    <MESSAGE value="README.md aggiornato" />
+    <option name="LAST_COMMIT_MESSAGE" value="README.md aggiornato" />
   </component>
   <component name="WindowStateProjectService">
     <state x="57" y="14" width="1071" height="786" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1600450741124">
@@ -187,10 +195,10 @@
       <screen x="0" y="0" width="1280" height="800" />
     </state>
     <state x="94" y="38" key="SettingsEditor/0.0.1280.800@0.0.1280.800" timestamp="1600450561374" />
-    <state x="56" y="132" key="Vcs.Push.Dialog.v2" timestamp="1601690136756">
+    <state x="56" y="132" key="Vcs.Push.Dialog.v2" timestamp="1601837920901">
       <screen x="0" y="0" width="1280" height="800" />
     </state>
-    <state x="56" y="132" key="Vcs.Push.Dialog.v2/0.0.1280.800@0.0.1280.800" timestamp="1601690136756" />
+    <state x="56" y="132" key="Vcs.Push.Dialog.v2/0.0.1280.800@0.0.1280.800" timestamp="1601837920901" />
     <state x="56" y="151" key="Vcs.Push.Dialog.v2/0.23.1280.777@0.23.1280.777" timestamp="1600975205365" />
     <state x="200" y="152" key="com.intellij.openapi.vcs.changes.SpecificFilesViewDialog" timestamp="1600887648781">
       <screen x="0" y="23" width="1280" height="777" />

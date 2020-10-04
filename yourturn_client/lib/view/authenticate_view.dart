@@ -29,7 +29,7 @@ class _AuthenticateViewState extends State<AuthenticateView> {
     this._varWidget = LogInView(widget._controller);
     this._tmpWs = [
       Text(
-        'Your Turn',
+        'YourTurn',
         style: StileText.titolo,
       ),
       TextField(
