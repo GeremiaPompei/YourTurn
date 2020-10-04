@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 class Authentication {
@@ -9,6 +10,7 @@ class Authentication {
       'https://www.googleapis.com/auth/contacts.readonly',
     ],
   );
+  final _facebookLogin = FacebookLogin();
 
   Future<UserCredential> signIn(String email, String password) async =>
       await _auth.createUserWithEmailAndPassword(
@@ -28,5 +30,9 @@ class Authentication {
 
   Future<GoogleSignInAccount> googleSignIn() async{
     return await _googleSignIn.signIn();
+  }
+
+  Future<FacebookLoginResult> facebookSignIn() async {
+    return (await _facebookLogin.logIn(['email']));
   }
 }

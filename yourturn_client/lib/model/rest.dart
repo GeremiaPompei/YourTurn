@@ -4,7 +4,7 @@ import '../main.dart';
 
 class Rest {
   Future<dynamic> test() async {
-    return await _requestByGet('test');
+    return (await requestByGet('test')).statusCode;
   }
 
   Future<String> createUser(
@@ -16,7 +16,7 @@ class Rest {
       String sesso,
       String email,
       String telefono) async {
-    return await _requestByPost('createuser', {
+    return await requestByPost('createuser', {
       'uid': uid,
       'tokenid': [tokenid],
       'nome': nome,
@@ -29,29 +29,29 @@ class Rest {
   }
 
   Future<String> getUser(String uid) async {
-    return await _requestByPost('getuser', {'uid': uid});
+    return await requestByPost('getuser', {'uid': uid});
   }
 
   Future<String> removeUser(String uid) async {
-    return await _requestByPost('removeuser', {'uid': uid});
+    return await requestByPost('removeuser', {'uid': uid});
   }
 
   Future<dynamic> addTokenidUser(String uid, String tokenid) async {
-    return await _requestByPost('addtokeniduser', {
+    return await requestByPost('addtokeniduser', {
       'uid': uid,
       'tokenid': tokenid,
     });
   }
 
   Future<dynamic> removeTokenidUser(String uid, String tokenid) async {
-    return await _requestByPost('removetokeniduser', {
+    return await requestByPost('removetokeniduser', {
       'uid': uid,
       'tokenid': tokenid,
     });
   }
 
   Future<String> createQueue(String id, String luogo, String uid) async {
-    return await _requestByPost('createqueue', {
+    return await requestByPost('createqueue', {
       'id': id,
       'luogo': luogo,
       'uid': uid,
@@ -60,26 +60,26 @@ class Rest {
   }
 
   Future<String> enqueue(String id, String uid) async {
-    return await _requestByPost('enqueue', {'id': id, 'uid': uid});
+    return await requestByPost('enqueue', {'id': id, 'uid': uid});
   }
 
   Future<String> getQueue(String id) async {
-    return await _requestByPost('getqueue', {'id': id});
+    return await requestByPost('getqueue', {'id': id});
   }
 
   Future<String> closeQueue(String id) async {
-    return await _requestByPost('closequeue', {'id': id});
+    return await requestByPost('closequeue', {'id': id});
   }
 
   Future<String> getTicket(String number) async {
-    return await _requestByPost('getticket', {'numberid': number});
+    return await requestByPost('getticket', {'numberid': number});
   }
 
   Future<String> next(String id) async {
-    return await _requestByPost('next', {'id': id});
+    return await requestByPost('next', {'id': id});
   }
 
-  Future<String> _requestByPost(String url, Map el) async {
+  Future<String> requestByPost(String url, Map el) async {
     String element;
     Map<String, String> header = {"Content-Type": "application/json"};
     dynamic body = json.encode(el);
@@ -91,8 +91,7 @@ class Rest {
     return element;
   }
 
-  Future<int> _requestByGet(String url) async {
-    final response = await Client().get(Uri.parse(indirizzoRoot + url));
-    return response.statusCode;
+  Future<Response> requestByGet(String url) async {
+    return await Client().get(Uri.parse(indirizzoRoot + url));
   }
 }

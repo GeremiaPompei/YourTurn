@@ -298,29 +298,62 @@ class _SignInViewState extends State<SignInView> {
                         setState(() {
                           _indexButton = 1;
                           if (_telefono.isNotEmpty && _validateNumber) {
-                            if (_password == _ripetiPassword) {
-                              try {
-                                widget._controller
-                                    .googleSignIn(_lAnnoN[_vAnnoN],
-                                        _lSesso[_vSesso], _telefono)
-                                    .then((value) {
-                                  Navigator.pushNamedAndRemoveUntil(context,
-                                      '/body', (route) => route.popped == null);
-                                  _indexButton = 0;
-                                });
-                              } catch (e) {
-                                _errMexM.manage({'general': 'Error'});
+                            try {
+                              widget._controller
+                                  .googleSignIn(_lAnnoN[_vAnnoN],
+                                      _lSesso[_vSesso], _telefono)
+                                  .then((value) {
+                                Navigator.pushNamedAndRemoveUntil(context,
+                                    '/body', (route) => route.popped == null);
                                 _indexButton = 0;
-                              }
-                            } else {
-                              setState(() {
-                                _errMexM.manage({
-                                  'password nuovamente': 'Password differenti'
-                                });
                               });
+                            } catch (e) {
+                              _errMexM.manage({'general': 'Error'});
                               _indexButton = 0;
                             }
-                          } else if (_telefono.isEmpty ) {
+                          } else if (_telefono.isEmpty) {
+                            _errMexM.checkEmpty({
+                              'telefono': _telefono,
+                            });
+                            _indexButton = 0;
+                          } else {
+                            _errMexM.manage(
+                                {'telefono': 'Numero di telefono non valido'});
+                            _indexButton = 0;
+                          }
+                        });
+                      }
+                    },
+                  ),
+                  FlatButton(
+                    color: Colors.blueAccent,
+                    child: _indexButton == 0
+                        ? Text(
+                            'Facebook',
+                            style: StileText.sottotitoloWhite,
+                          )
+                        : LinearProgressIndicator(
+                            backgroundColor: Colore.front1,
+                          ),
+                    onPressed: () async {
+                      if (_indexButton == 0) {
+                        setState(() {
+                          _indexButton = 1;
+                          if (_telefono.isNotEmpty && _validateNumber) {
+                            try {
+                              //TODO aggiungi eccezioni
+                              widget._controller
+                                  .facebookSignIn(_lAnnoN[_vAnnoN],
+                                      _lSesso[_vSesso], _telefono)
+                                  .then((value) {
+                                Navigator.pushNamedAndRemoveUntil(context,
+                                    '/body', (route) => route.popped == null);
+                                _indexButton = 0;
+                              });
+                            } catch (e) {
+                              _indexButton = 0;
+                            }
+                          } else if (_telefono.isEmpty) {
                             _errMexM.checkEmpty({
                               'telefono': _telefono,
                             });

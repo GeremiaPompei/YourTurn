@@ -164,6 +164,40 @@ class _LogInViewState extends State<LogInView> {
                       }
                     }),
                   ),
+                  FlatButton(
+                    color: Colors.blueAccent,
+                    child: _indexButton == 0
+                        ? Text(
+                            'Facebook',
+                            style: StileText.sottotitoloWhite,
+                          )
+                        : LinearProgressIndicator(
+                            backgroundColor: Colore.front1,
+                          ),
+                    onPressed: (() async {
+                      if (_indexButton == 0) {
+                        setState(() {
+                          _indexButton = 1;
+                        });
+                        try {
+                          await widget._controller.facebookLogIn();
+                          Navigator.pushNamedAndRemoveUntil(context, '/body',
+                              (route) => route.popped == null);
+                          setState(() {
+                            _indexButton = 0;
+                          });
+                        } catch (e) {
+                          _errMexM.manage({
+                            'general':
+                                'Non sei registrato, prima di eseguire il LogIn registrati con Facebook in SignIn'
+                          });
+                          setState(() {
+                            _indexButton = 0;
+                          });
+                        }
+                      }
+                    }),
+                  ),
                   Text(
                     _errMexM.allMex['general'] == null
                         ? ''

@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:http/http.dart';
 import 'package:yourturn_client/model/authentication.dart';
 import 'package:yourturn_client/model/cache.dart';
 import 'package:yourturn_client/model/messaging.dart';
@@ -65,6 +67,21 @@ class MainController {
     return _user;
   }
 
+  Future<myuser.User> facebookSignIn(
+      String annonascita, String sesso, String telefono) async {
+    FacebookLoginResult result = await this._authentication.facebookSignIn();
+    final token = result.accessToken.token;
+    final graphResponse = await Client().get(
+        'https://graph.facebook.com/v2.12/me?fields=name,first_name,last_name,email&access_token=${token}');
+    final profile = json.decode(graphResponse.body);
+    final facebookAuthCred = FacebookAuthProvider.getCredential(token);
+    UserCredential userCredential =
+        await this._authentication.signInWithCredential(facebookAuthCred);
+    await _signIn(userCredential.user.uid, profile['first_name'],
+        profile['last_name'], annonascita, sesso, profile['email'], telefono);
+    return _user;
+  }
+
   Future<myuser.User> signInEmailPassword(
       String nome,
       String cognome,
@@ -107,6 +124,16 @@ class MainController {
     UserCredential userCredential = await this
         ._authentication
         .signInWithCredential(authCredential['credential']);
+    await _logIn(userCredential);
+    return this._user;
+  }
+
+  Future<myuser.User> facebookLogIn() async {
+    FacebookLoginResult result = await this._authentication.facebookSignIn();
+    final token = result.accessToken.token;
+    final facebookAuthCred = FacebookAuthProvider.getCredential(token);
+    UserCredential userCredential =
+        await this._authentication.signInWithCredential(facebookAuthCred);
     await _logIn(userCredential);
     return this._user;
   }
