@@ -15,10 +15,9 @@ Creata la coda si entra nella schermata di Servizio.
 La Schermata di Servizio è dove vi sono le informazioni principali riguardantila fila al momento dell'esecuzione: 
 - __Nome__ della coda
 - __Qr__ corrispondente al link del pdf da condividere
-- Pulsante per la condivisione del __documento pdf__ con qr (il Qr centrale è il pulsante)
+- Pulsante per la condivisione del __documento pdf__ con qr
 - __Numero del ticket__ corrispondente all'utente servito al momento
 - __Utenti rimanenti__ in coda
-- __Utenti totali__ in coda
 - Bottone per visualizzare il profilo dell'__utente che si sta servendo__ al momento che apre una schermata con le sue relative informazioni tra le quali numero di telefono e email.
 - Bottone per proseguire in __avanti__ passando al prossimo utente
 - Bottone per __interrompere__ la fila e ritornare alla schermata principale
