@@ -283,6 +283,10 @@ class _SignInViewState extends State<SignInView> {
                       }
                     },
                   ),
+                  Text(
+                    'Per registrarsi con Google o Facebook basta completare solamente i campi Anno di Nascita, Sesso e Telefono',
+                    style: StileText.corpo,
+                  ),
                   FlatButton(
                     color: Colors.red,
                     child: _indexButton == 0
@@ -306,6 +310,22 @@ class _SignInViewState extends State<SignInView> {
                                 Navigator.pushNamedAndRemoveUntil(context,
                                     '/body', (route) => route.popped == null);
                                 _indexButton = 0;
+                              }).catchError((err) {
+                                try {
+                                  if (err.code ==
+                                      'account-exists-with-different-credential') {
+                                    setState(() {
+                                      _errMexM.manage(
+                                          {'general': 'Email gia utilizzata'});
+                                      _indexButton = 0;
+                                    });
+                                  }
+                                } catch (e) {
+                                  setState(() {
+                                    _errMexM.manage({'general': 'Error'});
+                                    _indexButton = 0;
+                                  });
+                                }
                               });
                             } catch (e) {
                               _errMexM.manage({'general': 'Error'});
@@ -341,7 +361,6 @@ class _SignInViewState extends State<SignInView> {
                           _indexButton = 1;
                           if (_telefono.isNotEmpty && _validateNumber) {
                             try {
-                              //TODO aggiungi eccezioni
                               widget._controller
                                   .facebookSignIn(_lAnnoN[_vAnnoN],
                                       _lSesso[_vSesso], _telefono)
@@ -349,6 +368,22 @@ class _SignInViewState extends State<SignInView> {
                                 Navigator.pushNamedAndRemoveUntil(context,
                                     '/body', (route) => route.popped == null);
                                 _indexButton = 0;
+                              }).catchError((err) {
+                                try {
+                                  if (err.code ==
+                                      'account-exists-with-different-credential') {
+                                    setState(() {
+                                      _errMexM.manage(
+                                          {'general': 'Email gia utilizzata'});
+                                      _indexButton = 0;
+                                    });
+                                  }
+                                } catch (e) {
+                                  setState(() {
+                                    _errMexM.manage({'general': 'Error'});
+                                    _indexButton = 0;
+                                  });
+                                }
                               });
                             } catch (e) {
                               _indexButton = 0;
