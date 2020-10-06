@@ -90,34 +90,35 @@ class _LogInViewState extends State<LogInView> {
                                           (route) => route.popped == null),
                                       _indexButton = 0
                                     })
-                                .catchError((err) => {
-                                      setState(() {
-                                        if (err.runtimeType ==
-                                            SocketException) {
-                                          _errMexM.manage({
-                                            'general':
-                                                'Errore di connessione al server: ' +
-                                                    indirizzoRoot
-                                          });
-                                        } else if (err.code ==
-                                            'user-not-found') {
-                                          _errMexM.manage(
-                                              {'email': 'Utente non trovato'});
-                                        } else if (err.code ==
-                                            'wrong-password') {
-                                          _errMexM.manage(
-                                              {'password': 'Password errata'});
-                                        } else if (err.code ==
-                                            'invalid-email') {
-                                          _errMexM.manage(
-                                              {'email': 'Email non valida'});
-                                        } else {
-                                          _errMexM
-                                              .manage({'general': 'Errore'});
-                                        }
-                                      }),
-                                      _indexButton = 0
+                                .catchError((err) {
+                              setState(() {
+                                try {
+                                  if (err.code == 'user-not-found') {
+                                    _errMexM.manage(
+                                        {'email': 'Utente non trovato'});
+                                  } else if (err.code == 'wrong-password') {
+                                    _errMexM.manage(
+                                        {'password': 'Password errata'});
+                                  } else if (err.code == 'invalid-email') {
+                                    _errMexM
+                                        .manage({'email': 'Email non valida'});
+                                  } else {
+                                    _errMexM.manage({'general': 'Errore'});
+                                  }
+                                } catch (e) {
+                                  if (err.runtimeType == SocketException) {
+                                    _errMexM.manage({
+                                      'general':
+                                          'Errore di connessione al server: ' +
+                                              indirizzoRoot
                                     });
+                                  } else {
+                                    _errMexM.manage({'general': 'Errore'});
+                                  }
+                                }
+                                _indexButton = 0;
+                              });
+                            });
                           } else {
                             _errMexM.checkEmpty(
                                 {'email': _email, 'password': _password});
@@ -150,7 +151,6 @@ class _LogInViewState extends State<LogInView> {
                             _indexButton = 0;
                           });
                         } catch (e) {
-                          print(e);
                           _errMexM.manage({
                             'general':
                                 'Non sei registrato, prima di eseguire il LogIn registrati con Google in SignIn'

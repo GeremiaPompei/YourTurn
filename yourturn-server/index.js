@@ -1,8 +1,8 @@
 const express = require('express');
-const route = require('./route')
+const route = require('./route');
 const app = express();
-const port = 3000;
+const network = require('./model/network');
 
-app.use(route);
+app.use(route.router);
 
-app.listen(port,()=>console.log('You are connected to port: '+port));
+app.listen(network.port,()=>console.log('You are connected: '+network.address+':'+network.port));

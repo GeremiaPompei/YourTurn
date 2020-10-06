@@ -54,8 +54,7 @@ class Rest {
     return await requestByPost('createqueue', {
       'id': id,
       'luogo': luogo,
-      'uid': uid,
-      'qrpath': indirizzoRoot + indirizzoCoda + id
+      'uid': uid
     });
   }
 

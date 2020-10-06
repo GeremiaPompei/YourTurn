@@ -28,7 +28,7 @@ class MainController {
     this._cache = new Cache();
   }
 
-  Future<bool> testConnection() async {
+  Future<bool> _testConnection() async {
     var res = await _rest.test();
     if (res == 200)
       return true;
@@ -37,7 +37,7 @@ class MainController {
   }
 
   Future<Map> googleCedential() async {
-    await testConnection();
+    await _testConnection();
     GoogleSignInAccount account = await this._authentication.googleSignIn();
     GoogleSignInAuthentication authentication = await account.authentication;
     GoogleAuthCredential googleAuth = GoogleAuthProvider.credential(
@@ -47,7 +47,45 @@ class MainController {
     return {'credential': googleAuth, 'account': account};
   }
 
-  Future<myuser.User> googleSignIn(
+  Future<void> _signIn(
+      UserCredential userCredential,
+      String nome,
+      String cognome,
+      String annonascita,
+      String sesso,
+      String email,
+      String telefono) async {
+    var response = await _rest.createUser(userCredential.user.uid,
+        _messaging.token, nome, cognome, annonascita, sesso, email, telefono);
+    if (response.isEmpty) {
+      await this._authentication.removeUser(userCredential);
+      throw new Exception();
+    }
+    this._user = myuser.User.fromJsonAdmin(json.decode(response), _cache);
+    _saveUid();
+    _saveLocal(response);
+  }
+
+  Future<void> _logIn(UserCredential userCredential) async {
+    var response = await _rest.getUser(userCredential.user.uid);
+    if (response.isEmpty) throw new Exception();
+    this._user = myuser.User.fromJsonAdmin(json.decode(response), _cache);
+    if (!this._user.tokenid.contains(_messaging.token)) {
+      this._user.tokenid.add(_messaging.token);
+      _rest.addTokenidUser(_user.uid, _messaging.token);
+    }
+    _saveUid();
+    _saveLocal(response);
+  }
+
+  Future<void> _removeUser(UserCredential userCredential) async {
+    var response = await this._rest.removeUser(this._user.uid);
+    if (response.isEmpty) throw new Exception();
+    await this._authentication.removeUser(userCredential);
+    _removeFiles();
+  }
+
+  Future<myuser.User> signInGoogle(
       String annonascita, String sesso, String telefono) async {
     Map authCredential = await googleCedential();
     UserCredential userCredential = await this
@@ -57,7 +95,7 @@ class MainController {
         .displayName
         .substring(0, authCredential['account'].displayName.indexOf(' '));
     await _signIn(
-        userCredential.user.uid,
+        userCredential,
         name,
         authCredential['account'].displayName.replaceAll(name, ''),
         annonascita,
@@ -67,7 +105,7 @@ class MainController {
     return _user;
   }
 
-  Future<myuser.User> facebookSignIn(
+  Future<myuser.User> signInFacebook(
       String annonascita, String sesso, String telefono) async {
     FacebookLoginResult result = await this._authentication.facebookSignIn();
     final token = result.accessToken.token;
@@ -77,8 +115,8 @@ class MainController {
     final facebookAuthCred = FacebookAuthProvider.getCredential(token);
     UserCredential userCredential =
         await this._authentication.signInWithCredential(facebookAuthCred);
-    await _signIn(userCredential.user.uid, profile['first_name'],
-        profile['last_name'], annonascita, sesso, profile['email'], telefono);
+    await _signIn(userCredential, profile['first_name'], profile['last_name'],
+        annonascita, sesso, profile['email'], telefono);
     return _user;
   }
 
@@ -90,33 +128,12 @@ class MainController {
       String email,
       String telefono,
       String password) async {
-    await testConnection();
+    await _testConnection();
     UserCredential userCredential =
         await this._authentication.signIn(email, password);
-    await _signIn(userCredential.user.uid, nome, cognome, annonascita, sesso,
-        email, telefono);
+    await _signIn(
+        userCredential, nome, cognome, annonascita, sesso, email, telefono);
     return _user;
-  }
-
-  Future<void> _signIn(String uid, String nome, String cognome,
-      String annonascita, String sesso, String email, String telefono) async {
-    var response = await _rest.createUser(uid, _messaging.token, nome, cognome,
-        annonascita, sesso, email, telefono);
-    this._user = myuser.User.fromJsonAdmin(json.decode(response), _cache);
-    _saveUid();
-    _saveLocal(response);
-  }
-
-  Future<void> _logIn(UserCredential userCredential) async {
-    var response = await _rest.getUser(userCredential.user.uid);
-
-    this._user = myuser.User.fromJsonAdmin(json.decode(response), _cache);
-    if (!this._user.tokenid.contains(_messaging.token)) {
-      this._user.tokenid.add(_messaging.token);
-      _rest.addTokenidUser(_user.uid, _messaging.token);
-    }
-    _saveUid();
-    _saveLocal(response);
   }
 
   Future<myuser.User> googleLogIn() async {
@@ -139,7 +156,7 @@ class MainController {
   }
 
   Future<myuser.User> logInEmailPassword(String email, String password) async {
-    await testConnection();
+    await _testConnection();
     UserCredential userCredential =
         await this._authentication.logInEmailPassword(email, password);
     await _logIn(userCredential);
@@ -147,7 +164,7 @@ class MainController {
   }
 
   Future<myuser.User> update() async {
-    await testConnection();
+    await _testConnection();
     _cache = new Cache();
     var response = await _rest.getUser(this._user.uid);
     this._user = myuser.User.fromJsonAdmin(json.decode(response), _cache);
@@ -165,25 +182,43 @@ class MainController {
     }
   }
 
-  Future<void> _removeFiles() async{
+  Future<void> _removeFiles() async {
     var uidTxt = await _storeManager.localFile('uid.txt');
     if (uidTxt != null) uidTxt.delete();
     var localTxt = await _storeManager.localFile('local.json');
     if (localTxt != null) localTxt.delete();
   }
 
-  Future<void> removeUser(String email, String password) async {
-    await testConnection();
+  Future<void> removeUserFacebook() async {
+    await _testConnection();
+    FacebookLoginResult result = await this._authentication.facebookSignIn();
+    final token = result.accessToken.token;
+    final facebookAuthCred = FacebookAuthProvider.credential(token);
+    UserCredential userCredential =
+        await this._authentication.signInWithCredential(facebookAuthCred);
+    _removeUser(userCredential);
+  }
+
+  Future<void> removeUserGoogle() async {
+    await _testConnection();
+    Map authCredential = await googleCedential();
+    UserCredential userCredential = await this
+        ._authentication
+        .signInWithCredential(authCredential['credential']);
+    _removeUser(userCredential);
+  }
+
+  Future<void> removeUserEmailPassword(String email, String password) async {
+    await _testConnection();
     UserCredential userCredential =
         await this._authentication.logInEmailPassword(email, password);
-    await this._rest.removeUser(this._user.uid);
-    await this._authentication.removeUser(userCredential);
-    _removeFiles();
+    _removeUser(userCredential);
   }
 
   Future<Queue> createQueue(String id, String luogo) async {
-    this._user.queue = Queue.fromJson(
-        json.decode(await _rest.createQueue(id, luogo, _user.uid)), _cache);
+    var queue = await _rest.createQueue(id, luogo, _user.uid);
+    if (queue.isEmpty) throw new Exception();
+    this._user.queue = Queue.fromJson(json.decode(queue), _cache);
     return this._user.queue;
   }
 

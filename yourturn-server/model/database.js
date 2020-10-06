@@ -23,19 +23,22 @@ async function removeUser(map) {
       'user': null,
     });
   }
-  return await doc.delete();
+  await doc.delete();
+  return 'Deleted';
 }
   
 async function addTokenidUser(map) {
   await db.collection(tabUsers).doc(map.uid).update({
     'tokenid': admin.firestore.FieldValue.arrayUnion(map.tokenid),
   });
+  return 'Token added';
 }
   
 async function removeTokenidUser(map) {
   await db.collection(tabUsers).doc(map.uid).update({
     'tokenid': admin.firestore.FieldValue.arrayRemove(map.tokenid),
   });
+  return 'Token Removed';
 }
   
 async function createQueue(map) {
@@ -60,7 +63,8 @@ async function removeQueue(map) {
   await db.collection(tabUsers).doc(_queue.admin).update({
     'queue': null,
   });
-  return await doc.delete();
+  await doc.delete();
+  return 'Queue removed';
 }
   
 async function next(map) {
@@ -86,7 +90,8 @@ async function removeTicket(map) {
   await db.collection(tabUsers).doc(_ticket.user).update({
     'tickets': admin.firestore.FieldValue.arrayRemove(_ticket.numberid),
   });
-  return await doc.delete();
+  await doc.delete();
+  return 'Ticket removed';
 }
   
 async function enqueue(map) {
@@ -106,7 +111,9 @@ async function getTicket(map) {
 }
 
 async function setTicket(map) {
-  await (db.collection(tabTickets).doc(map.numberid).set(map));
+  var doc = db.collection(tabTickets).doc(map.numberid);
+  await doc.set(map);
+  return (await doc.get()).data();
 }
   
 module.exports = {

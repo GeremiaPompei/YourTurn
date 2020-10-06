@@ -204,49 +204,44 @@ class _SignInViewState extends State<SignInView> {
                                   Navigator.pushNamedAndRemoveUntil(context,
                                       '/body', (route) => route.popped == null);
                                   _indexButton = 0;
-                                }).catchError((err) => {
-                                          if (err.runtimeType ==
-                                              SocketException)
-                                            {
-                                              _errMexM.manage({
-                                                'general':
-                                                    'Errore di connessione al server: ' +
-                                                        indirizzoRoot
-                                              })
-                                            }
-                                          else if (err.code == 'weak-password')
-                                            {
-                                              setState(() {
-                                                _errMexM.manage({
-                                                  'password':
-                                                      'Password debole, minimo 6 caratteri'
-                                                });
-                                              })
-                                            }
-                                          else if (err.code == 'invalid-email')
-                                            {
-                                              setState(() {
-                                                _errMexM.manage({
-                                                  'email': 'Email non valida'
-                                                });
-                                              })
-                                            }
-                                          else if (err.code ==
-                                              'email-already-in-use')
-                                            {
-                                              setState(() {
-                                                _errMexM.manage({
-                                                  'email': 'Email gia esistente'
-                                                });
-                                              })
-                                            }
-                                          else
-                                            {
-                                              _errMexM
-                                                  .manage({'general': 'Error'})
-                                            },
-                                          _indexButton = 0
+                                }).catchError((err) {
+                                  setState(() {
+                                    try {
+                                      if (err.code == 'weak-password') {
+                                        setState(() {
+                                          _errMexM.manage({
+                                            'password':
+                                                'Password debole, minimo 6 caratteri'
+                                          });
                                         });
+                                      } else if (err.code == 'invalid-email') {
+                                        setState(() {
+                                          _errMexM.manage(
+                                              {'email': 'Email non valida'});
+                                        });
+                                      } else if (err.code ==
+                                          'email-already-in-use') {
+                                        setState(() {
+                                          _errMexM.manage(
+                                              {'email': 'Email gia esistente'});
+                                        });
+                                      } else {
+                                        _errMexM.manage({'general': 'Error'});
+                                      }
+                                    } catch (e) {
+                                      if (err.runtimeType == SocketException) {
+                                        _errMexM.manage({
+                                          'general':
+                                              'Errore di connessione al server: ' +
+                                                  indirizzoRoot
+                                        });
+                                      } else {
+                                        _errMexM.manage({'general': 'Error'});
+                                      }
+                                    }
+                                    _indexButton = 0;
+                                  });
+                                });
                               } catch (e) {
                                 _errMexM.manage({'general': 'Error'});
                                 _indexButton = 0;
@@ -274,7 +269,7 @@ class _SignInViewState extends State<SignInView> {
                               'password nuovamente': _ripetiPassword,
                             });
                             _indexButton = 0;
-                          } else if(!_validateNumber) {
+                          } else if (!_validateNumber) {
                             _errMexM.manage(
                                 {'telefono': 'Numero di telefono non valido'});
                             _indexButton = 0;
@@ -307,7 +302,7 @@ class _SignInViewState extends State<SignInView> {
                           if (_telefono.isNotEmpty && _validateNumber) {
                             try {
                               widget._controller
-                                  .googleSignIn(_lAnnoN[_vAnnoN],
+                                  .signInGoogle(_lAnnoN[_vAnnoN],
                                       _lSesso[_vSesso], _telefono)
                                   .then((value) {
                                 Navigator.pushNamedAndRemoveUntil(context,
@@ -365,7 +360,7 @@ class _SignInViewState extends State<SignInView> {
                           if (_telefono.isNotEmpty && _validateNumber) {
                             try {
                               widget._controller
-                                  .facebookSignIn(_lAnnoN[_vAnnoN],
+                                  .signInFacebook(_lAnnoN[_vAnnoN],
                                       _lSesso[_vSesso], _telefono)
                                   .then((value) {
                                 Navigator.pushNamedAndRemoveUntil(context,

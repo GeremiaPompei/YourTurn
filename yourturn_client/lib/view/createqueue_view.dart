@@ -22,6 +22,7 @@ class _CreateQueueViewState extends State<CreateQueueView> {
   ErrMessagesManager _errMexM = ErrMessagesManager.fromList([
     'id',
     'luogo',
+    'general',
   ]);
   List<Widget> _childButton = [
     Text(
@@ -95,9 +96,15 @@ class _CreateQueueViewState extends State<CreateQueueView> {
                               });
                             });
                           } else {
-                            await widget._controller.createQueue(_id, _luogo);
-                            Navigator.pushNamedAndRemoveUntil(context,
-                                '/service', (route) => route.popped == null);
+                            try {
+                              await widget._controller.createQueue(_id, _luogo);
+                              Navigator.pushNamedAndRemoveUntil(context,
+                                  '/service', (route) => route.popped == null);
+                            } catch (e) {
+                              setState(() {
+                                _errMexM.manage({'general': 'Error'});
+                              });
+                            }
                           }
                         } else {
                           setState(() {
@@ -112,6 +119,12 @@ class _CreateQueueViewState extends State<CreateQueueView> {
                         });
                       }
                     },
+                  ),
+                  Text(
+                    _errMexM.allMex['general'] == null
+                        ? ''
+                        : _errMexM.allMex['general'],
+                    style: StileText.error,
                   ),
                 ],
               ),
