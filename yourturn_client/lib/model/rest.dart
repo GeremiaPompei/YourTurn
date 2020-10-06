@@ -74,6 +74,10 @@ class Rest {
     return await requestByPost('getticket', {'numberid': number});
   }
 
+  Future<String> getBlackListChars() async {
+    return (await requestByGet('blacklistchars')).body.toString();
+  }
+
   Future<String> next(String id) async {
     return await requestByPost('next', {'id': id});
   }

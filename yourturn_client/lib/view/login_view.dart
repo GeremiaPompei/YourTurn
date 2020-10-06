@@ -34,7 +34,7 @@ class _LogInViewState extends State<LogInView> {
     return Container(
       color: Colore.back2,
       child: Padding(
-        padding: EdgeInsets.all(40),
+        padding: EdgeInsets.fromLTRB(40, 0, 40, 0),
         child: Flex(
           direction: Axis.vertical,
           children: <Widget>[
@@ -43,6 +43,24 @@ class _LogInViewState extends State<LogInView> {
                 shrinkWrap: true,
                 scrollDirection: Axis.vertical,
                 children: [
+                  Container(
+                    height: 40,
+                  ),
+                  Container(
+                    color: Colore.back1,
+                    child: ListTile(
+                      title: Text(
+                        'Non possono essere utilizzati tali caratteri: ',
+                        style: StileText.corpo,
+                        textAlign: TextAlign.center,
+                      ),
+                      subtitle: Text(
+                        widget._controller.blacklistChars.toString(),
+                        style: StileText.sottotitolo,
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ),
                   CellView(
                     'Email',
                     TextField(
@@ -201,6 +219,9 @@ class _LogInViewState extends State<LogInView> {
                         ? ''
                         : _errMexM.allMex['general'],
                     style: TextStyle(color: Colors.red),
+                  ),
+                  Container(
+                    height: 40,
                   ),
                 ],
               ),

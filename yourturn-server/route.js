@@ -16,8 +16,9 @@ router.post('/getqueue', bodyParser.json(), controller.getQueue);
 router.post('/closequeue', bodyParser.json(), controller.closeQueue);
 router.post('/getticket', bodyParser.json(), controller.getTicket);
 router.post('/next', bodyParser.json(), controller.next);
-router.get('/'+pathQueue+'/:id', controller.getQueuePdf)
-router.get('/test', controller.test)
+router.get('/blacklistchars', controller.getBlackListChars);
+router.get('/'+pathQueue+'/:id', controller.getQueuePdf);
+router.get('/test', controller.test);
 router.use(controller.error);
 
 module.exports = {

@@ -178,6 +178,12 @@ async function getQueuePdf(req,res) {
     res.sendFile(pathQrFiles+req.params.id+'.pdf');
 }
 
+function getBlackListChars(req,res) {
+    res.send(blackListChars.toString());
+    //log
+    console.log('BlackListChars getted ['+new Date().toLocaleString()+']');
+}
+
 function test(req,res) {
     res.send('Success');
     //log
@@ -216,6 +222,7 @@ module.exports = {
     getTicket,
     next,
     getQueuePdf,
+    getBlackListChars,
     test,
     error
 }

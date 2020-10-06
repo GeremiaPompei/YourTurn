@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:yourturn_client/controller/main_controller.dart';
 import 'package:yourturn_client/model/queue.dart';
 import 'package:yourturn_client/utility/colore.dart';
+import 'package:yourturn_client/utility/stile_text.dart';
 import 'package:yourturn_client/view/partecipaqueue_view.dart';
 import 'cell_view.dart';
 
@@ -73,9 +74,10 @@ class _SearchQueueViewState extends State<SearchQueueView> {
   Widget build(BuildContext context) {
     return Container(
       width: MediaQuery.of(context).size.width,
-      height: 180,
+      height: MediaQuery.of(context).size.width,
       color: Colore.back2,
-      child: ListView(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           Container(
             child: CellView(
@@ -88,6 +90,21 @@ class _SearchQueueViewState extends State<SearchQueueView> {
                 onChanged: (input) {
                   _futureWidget(input);
                 },
+              ),
+            ),
+          ),
+          Container(
+            color: Colore.back1,
+            child: ListTile(
+              title: Text(
+                'Non possono essere utilizzati tali caratteri: ',
+                style: StileText.corpo,
+                textAlign: TextAlign.center,
+              ),
+              subtitle: Text(
+                widget._controller.blacklistChars.toString(),
+                style: StileText.sottotitolo,
+                textAlign: TextAlign.center,
               ),
             ),
           ),

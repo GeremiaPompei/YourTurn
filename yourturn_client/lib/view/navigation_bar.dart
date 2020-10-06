@@ -4,7 +4,7 @@ import 'package:yourturn_client/utility/colore.dart';
 import 'package:yourturn_client/utility/icona.dart';
 
 class NavigationBar extends StatefulWidget {
-  static const titles = ['Partecipa','Crea'];
+  static const titles = ['Crea','Partecipa'];
   void Function(int) _tap;
   int _index;
 
@@ -26,11 +26,11 @@ class _NavigationBarState extends State<NavigationBar> {
       items: [
         BottomNavigationBarItem(
           icon: Icon(Icona.seconda),
-          title: Text(NavigationBar.titles[1]),
+          title: Text(NavigationBar.titles[0]),
         ),
         BottomNavigationBarItem(
           icon: Icon(Icona.prima),
-          title: Text(NavigationBar.titles[0]),
+          title: Text(NavigationBar.titles[1]),
         ),
       ],
       onTap: widget._tap,

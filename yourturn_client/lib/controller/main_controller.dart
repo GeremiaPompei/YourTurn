@@ -19,6 +19,7 @@ class MainController {
   Messaging _messaging;
   StoreManager _storeManager;
   Cache _cache;
+  String _blacklistChars;
 
   MainController() {
     this._authentication = new Authentication();
@@ -26,7 +27,14 @@ class MainController {
     this._messaging = new Messaging();
     this._storeManager = new StoreManager();
     this._cache = new Cache();
+    this._blacklistChars = '[offline]';
+    _rest.getBlackListChars().then((value) {
+      this._blacklistChars = value;
+      _saveBlackList();
+    });
   }
+
+  String get blacklistChars => _blacklistChars;
 
   Future<bool> _testConnection() async {
     var res = await _rest.test();
@@ -251,6 +259,7 @@ class MainController {
 
   Future<myuser.User> load() async {
     try {
+      await _loadBlackList();
       await _loadUid();
     } catch (e) {
       await _loadLocal();
@@ -272,6 +281,18 @@ class MainController {
     try {
       await this._storeManager.store(response, 'local.json');
     } catch (e) {}
+  }
+
+  Future<void> _saveBlackList() async {
+    try {
+      await this._storeManager.store(this._blacklistChars, 'blacklist.txt');
+    } catch (e) {}
+  }
+
+  Future<void> _loadBlackList() async {
+    if ((await this._storeManager.localFile('blacklist.txt')) != null) {
+      this._blacklistChars = await this._storeManager.load('blacklist.txt');
+    }
   }
 
   Future<void> _loadLocal() async {

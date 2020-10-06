@@ -26,7 +26,7 @@ class _CreateQueueViewState extends State<CreateQueueView> {
   ]);
   List<Widget> _childButton = [
     Text(
-      NavigationBar.titles[1],
+      NavigationBar.titles[0],
       style: StileText.sottotitolo,
     ),
     LinearProgressIndicator(
@@ -38,8 +38,6 @@ class _CreateQueueViewState extends State<CreateQueueView> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: MediaQuery.of(context).size.width,
-      height: MediaQuery.of(context).size.width,
       color: Colore.back2,
       child: Padding(
         padding: EdgeInsets.all(20),
@@ -51,8 +49,26 @@ class _CreateQueueViewState extends State<CreateQueueView> {
                 shrinkWrap: true,
                 scrollDirection: Axis.vertical,
                 children: [
+                  Container(
+                    color: Colore.back1,
+                    child: ListTile(
+                      title: Text(
+                        'Non possono essere utilizzati tali caratteri: ',
+                        style: StileText.corpo,
+                        textAlign: TextAlign.center,
+                      ),
+                      subtitle: Text(
+                        widget._controller.blacklistChars.toString(),
+                        style: StileText.sottotitolo,
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ),
+                  Container(
+                    height: 20,
+                  ),
                   Text(
-                    NavigationBar.titles[1],
+                    NavigationBar.titles[0],
                     style: StileText.sottotitolo,
                   ),
                   CellView(
