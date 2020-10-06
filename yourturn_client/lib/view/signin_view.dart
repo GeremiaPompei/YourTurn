@@ -274,9 +274,12 @@ class _SignInViewState extends State<SignInView> {
                               'password nuovamente': _ripetiPassword,
                             });
                             _indexButton = 0;
-                          } else {
+                          } else if(!_validateNumber) {
                             _errMexM.manage(
                                 {'telefono': 'Numero di telefono non valido'});
+                            _indexButton = 0;
+                          } else {
+                            _errMexM.manage({'general': 'Error'});
                             _indexButton = 0;
                           }
                         });

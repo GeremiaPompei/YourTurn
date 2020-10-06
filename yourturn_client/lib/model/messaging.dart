@@ -22,9 +22,9 @@ class Messaging {
             context: context,
             builder: (context) {
               return AlertDialog(
-                title: Text(message['title'],
+                title: Text(message['notification']['title'],
                     style: StileText.sottotitolo),
-                content: Text(message['body'],
+                content: Text(message['notification']['body'],
                     style: StileText.corpo),
               );
             });

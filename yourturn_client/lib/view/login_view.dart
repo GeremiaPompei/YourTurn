@@ -150,6 +150,7 @@ class _LogInViewState extends State<LogInView> {
                             _indexButton = 0;
                           });
                         } catch (e) {
+                          print(e);
                           _errMexM.manage({
                             'general':
                                 'Non sei registrato, prima di eseguire il LogIn registrati con Google in SignIn'

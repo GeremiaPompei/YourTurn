@@ -6,10 +6,6 @@ async function notify (token, title, body) {
       title: title,
       body: body,
     },
-    data: {
-      title: title,
-      body: body,
-    },
     token: token,
   };
   await admin.messaging().send(notification);
