@@ -163,6 +163,18 @@ function error(req,res) {
     console.log(req.body);
 }
 
+function checkText(map) {
+    var chars = ['/','\'','\"','(',')','[',']','{','}'];
+    for(var key in map.keys()) {
+        for(var char in chars) {
+            if(!key.contains(char)) {
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
 module.exports = {
     createUser,
     getUser,

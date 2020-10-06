@@ -11,14 +11,12 @@ async function createUser(map) {
 }
   
 async function getUser(map) {
-  var txt = map.uid.replace('/');
-  var result = (await (db.collection(tabUsers).doc(txt).get())).data();
+  var result = (await (db.collection(tabUsers).doc(map.uid).get())).data();
   return result;
 }
   
 async function removeUser(map) {
-  var txt = map.uid.replace('/');
-  var doc = db.collection(tabUsers).doc(txt);
+  var doc = db.collection(tabUsers).doc(map.uid);
   var _user = await doc.get();
   for(var _ticket in _user.tickets) {
     await db.collection(tabTickets).doc(_ticket).update({
@@ -50,8 +48,7 @@ async function createQueue(map) {
 }
   
 async function getQueue(map) {
-  var txt = map.id.replace('/');
-  var result = (await (db.collection(tabQueues).doc(txt).get())).data();
+  var result = (await (db.collection(tabQueues).doc(map.id).get())).data();
   return result;
 }
   
@@ -67,8 +64,7 @@ async function removeQueue(map) {
 }
   
 async function next(map) {
-  var txt = map.id.replace('/');
-  var doc = await db.collection(tabQueues).doc(txt);
+  var doc = await db.collection(tabQueues).doc(map.id);
   var _queue = (await doc.get()).data();
   if(_queue.index < _queue.tickets.length) {
     await doc.update({
@@ -105,8 +101,7 @@ async function enqueue(map) {
 }
   
 async function getTicket(map) {
-  var txt = map.numberid.replace('/');
-  var result = (await (db.collection(tabTickets).doc(txt).get())).data();
+  var result = (await (db.collection(tabTickets).doc(map.numberid).get())).data();
   return result;
 }
 

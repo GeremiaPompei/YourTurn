@@ -131,7 +131,7 @@ class MainController {
   Future<myuser.User> facebookLogIn() async {
     FacebookLoginResult result = await this._authentication.facebookSignIn();
     final token = result.accessToken.token;
-    final facebookAuthCred = FacebookAuthProvider.getCredential(token);
+    final facebookAuthCred = FacebookAuthProvider.credential(token);
     UserCredential userCredential =
         await this._authentication.signInWithCredential(facebookAuthCred);
     await _logIn(userCredential);
@@ -161,9 +161,15 @@ class MainController {
       _user.tokenid.remove(_messaging.token);
       await _rest.removeTokenidUser(_user.uid, _messaging.token);
     } catch (e) {} finally {
-      (await _storeManager.localFile('uid.txt')).delete();
-      (await _storeManager.localFile('local.json')).delete();
+      _removeFiles();
     }
+  }
+
+  Future<void> _removeFiles() async{
+    var uidTxt = await _storeManager.localFile('uid.txt');
+    if (uidTxt != null) uidTxt.delete();
+    var localTxt = await _storeManager.localFile('local.json');
+    if (localTxt != null) localTxt.delete();
   }
 
   Future<void> removeUser(String email, String password) async {
@@ -172,8 +178,7 @@ class MainController {
         await this._authentication.logInEmailPassword(email, password);
     await this._rest.removeUser(this._user.uid);
     await this._authentication.removeUser(userCredential);
-    (await _storeManager.localFile('uid.txt')).delete();
-    (await _storeManager.localFile('local.json')).delete();
+    _removeFiles();
   }
 
   Future<Queue> createQueue(String id, String luogo) async {

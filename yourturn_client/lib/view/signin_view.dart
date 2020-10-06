@@ -24,7 +24,7 @@ class _SignInViewState extends State<SignInView> {
   String _nome = '';
   String _cognome = '';
   String _telefono = '';
-  bool _validateNumber = true;
+  bool _validateNumber = false;
   String _email = '';
   String _password = '';
   String _ripetiPassword = '';
@@ -121,7 +121,7 @@ class _SignInViewState extends State<SignInView> {
                       initialValue: PhoneNumber(isoCode: 'IT'),
                       onInputChanged: (number) =>
                           this._telefono = number.toString(),
-                      onInputValidated: (value) => _validateNumber = true,
+                      onInputValidated: (value) => _validateNumber = value,
                     ),
                   ),
                   Text(
