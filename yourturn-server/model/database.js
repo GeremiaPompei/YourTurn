@@ -6,13 +6,13 @@ const tabQueues = 'queues';
 const tabTickets = 'tickets';
 
 async function createUser(map) {
-  await db.collection(tabUsers).doc(map.uid).set(map);
-  return map;
+  var doc = db.collection(tabUsers).doc(map.uid);
+  await doc.set(map);
+  return (await doc.get()).data();
 }
   
 async function getUser(id) {
-  var result = (await (db.collection(tabUsers).doc(id).get())).data();
-  return result;
+  return (await (db.collection(tabUsers).doc(id).get())).data();
 }
   
 async function removeUser(id) {
@@ -24,7 +24,7 @@ async function removeUser(id) {
     });
   }
   await doc.delete();
-  return 'Deleted';
+  return 'User Removed';
 }
   
 async function addTokenidUser(map) {
@@ -51,15 +51,14 @@ async function createQueue(map) {
 }
   
 async function getQueue(id) {
-  var result = (await (db.collection(tabQueues).doc(id).get())).data();
-  return result;
+  return (await (db.collection(tabQueues).doc(id).get())).data();
 }
   
 async function removeQueue(id) {
   var doc = db.collection(tabQueues).doc(id);
   var _queue = (await doc.get()).data();
   for (var i = 0; i < _queue.tickets.length; i++)
-    await removeTicket({'numberid': _queue.tickets[i]});
+    await removeTicket(_queue.tickets[i]);
   await db.collection(tabUsers).doc(_queue.admin).update({
     'queue': null,
   });
@@ -84,6 +83,28 @@ async function next(map) {
   return (await doc.get()).data();
 }
   
+async function enqueue(map) {
+  var doc = db.collection(tabTickets).doc(map.numberid);
+  await db.collection(tabUsers).doc(map.user).update({
+    'tickets': admin.firestore.FieldValue.arrayUnion(map.numberid),
+  });
+  await db.collection(tabQueues).doc(map.queue).update({
+    'tickets': admin.firestore.FieldValue.arrayUnion(map.numberid),
+  });
+  await doc.set(map);
+  return (await doc.get()).data();
+}
+  
+async function getTicket(id) {
+  return (await (db.collection(tabTickets).doc(id).get())).data();
+}
+
+async function setTicket(map) {
+  var doc = db.collection(tabTickets).doc(map.numberid);
+  await doc.set(map);
+  return (await doc.get()).data();
+}
+  
 async function removeTicket(id) {
   var doc = db.collection(tabTickets).doc(id);
   var _ticket = (await doc.get()).data();
@@ -92,28 +113,6 @@ async function removeTicket(id) {
   });
   await doc.delete();
   return 'Ticket removed';
-}
-  
-async function enqueue(map) {
-  await db.collection(tabUsers).doc(map.user).update({
-    'tickets': admin.firestore.FieldValue.arrayUnion(map.numberid),
-  });
-  await db.collection(tabQueues).doc(map.queue).update({
-    'tickets': admin.firestore.FieldValue.arrayUnion(map.numberid),
-  });
-  await db.collection(tabTickets).doc(map.numberid).set(map);
-  return map;
-}
-  
-async function getTicket(map) {
-  var result = (await (db.collection(tabTickets).doc(map.numberid).get())).data();
-  return result;
-}
-
-async function setTicket(map) {
-  var doc = db.collection(tabTickets).doc(map.numberid);
-  await doc.set(map);
-  return (await doc.get()).data();
 }
   
 module.exports = {
@@ -129,4 +128,4 @@ module.exports = {
   getTicket,
   setTicket,
   next,
-};
+}

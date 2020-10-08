@@ -11,16 +11,16 @@ const pathQrFiles = __dirname+'/qrfiles/';
 const blackListChars = ['/','\'','\"',';','(',')','[',']','{','}']
 
 async function createUser(req,res) {
-    var value;
+    var _user;
     if(checkText(req.body)) {
         var _user = user.fromJson(req.body.uid, req.body.tokenid, req.body.nome, req.body.cognome
             , req.body.annonascita, req.body.sesso, req.body.email, req.body.telefono);
-        value = await db.createUser(_user);
+        _user = await db.createUser(_user);
     }
-    res.send(value);
+    res.send(_user);
     //log
     console.log('User created ['+new Date().toLocaleString()+']');
-    console.log(value);
+    console.log(_user);
 }
 
 async function getUser(req,res) {
@@ -74,58 +74,58 @@ async function removeTokenidUser(req,res) {
 }
 
 async function createQueue(req,res) {
-    var value;
+    var _queue;
     console.log(req.body);
     if(checkText(req.body)) {
         var _queue = queue.fromJson(req.body.id, req.body.luogo, req.body.uid);
-        value = await db.createQueue(_queue);
+        _queue = await db.createQueue(_queue);
     }
-    res.send(value);
+    res.send(_queue);
     //log
     console.log('Queue created ['+new Date().toLocaleString()+']');
-    console.log(value);
+    console.log(_queue);
 }
 
 async function getQueue(req,res) {
-    var value;
+    var _queue;
     const id = req.params.id;
     console.log(id);
     if(checkText(id))
-        value = await db.getQueue(id);
-    res.send(value);
+        _queue = await db.getQueue(id);
+    res.send(_queue);
     //log
     console.log('Queue getted ['+new Date().toLocaleString()+']');
-    console.log(value);
+    console.log(_queue);
 }
 
 async function closeQueue(req,res) {
-    var value;
+    var _queue;
     if(checkText(req.params.id)) {
-        value = await db.getQueue(req.params.id);
+        _queue = await db.getQueue(req.params.id);
         //notifica
-        for (var i = value.index; i < value.tickets.length; i++)
-            notify(value.tickets[i],value.id,'La coda è terminata');
-        value = await db.removeQueue(req.params.id);
+        for (var i = _queue.index; i < _queue.tickets.length; i++)
+            notify(_queue.tickets[i],_queue.id,'La coda è terminata');
+        _queue = await db.removeQueue(req.params.id);
     }
-    res.send(value);
+    res.send(_queue);
     //log
     console.log('Queue closed ['+new Date().toLocaleString()+']');
     console.log(req.params);
 }
 
 async function enqueue(req,res) {
-    var value;
+    var _ticket;
     if(checkText(req.body)) {
         var _queue = await db.getQueue(req.body.id);
-        var _ticket = ticket.fromJson(req.body.uid, req.body.id, req.body.id + '-' + convert.fromInt(_queue.tickets.length + 1));
-        value = await db.enqueue(_ticket);
-        value.queue = await db.getQueue(value.queue);
-        value.queue.admin = await db.getUser(value.queue.admin);
+        var _ticketMap = ticket.fromJson(req.body.uid, req.body.id, req.body.id + '-' + convert.fromInt(_queue.tickets.length + 1));
+        _ticket = await db.enqueue(_ticketMap);
+        _ticket.queue = await db.getQueue(_ticket.queue);
+        _ticket.queue.admin = await db.getUser(_ticket.queue.admin);
     }
-    res.send(value);
+    res.send(_ticket);
     //log
     console.log('Enqueued ['+new Date().toLocaleString()+']');
-    console.log(value);
+    console.log(_ticket);
 }
 
 async function getTicket(req,res) {
@@ -142,7 +142,6 @@ async function next(req,res) {
     var _queue;
     if(checkText(req.body)) {
         _queue = await db.next(req.body);
-        console.log(_queue);
         _queue.tickets[_queue.index-1] = await db.getTicket(_queue.tickets[_queue.index-1]);
         _queue.tickets[_queue.index-1].user = await db.getUser(_queue.tickets[_queue.index-1].user);
         //notifica
@@ -158,30 +157,20 @@ async function next(req,res) {
     console.log('User next ['+new Date().toLocaleString()+']');
     console.log(_queue);
 }
-  
-async function notify(ticketid,title,body) {
-  var _ticket = await db.getTicket(ticketid);
-  var _user = await db.getUser(_ticket.user);
-  for (var i = 0; i < _user.tokenid.length; i++) {
-    try {
-        await messaging.notify(_user.tokenid[i], title, body);
-    } catch(e) {
-        db.removeTokenidUser({'uid': _user.uid,'tokenid': _user.tokenid[i]});
-    }
-  }
-}
 
 async function getQueuePdf(req,res) {
-    var value = await db.getQueue(req.params.id);
-    if(value!=null) {
+    var _queue = await db.getQueue(req.params.id);
+    if(_queue!=null) {
         fs.mkdirSync(pathQrFiles, { recursive: true });
-        var pathJpg = await qrgenerator.generate(pathQrFiles+value.id);
-        var pathPdf = await pdfconverter.convert(pathJpg, value.id);
+        var pathJpg = await qrgenerator.generate(pathQrFiles+_queue.id);
+        var pathPdf = await pdfconverter.convert(pathJpg, _queue.id);
         fs.unlinkSync(pathJpg);
         res.sendFile(pathPdf);
         setTimeout(()=>fs.unlinkSync(pathPdf),1000);
     }else
         res.send('<h1>Coda Inesistente!</h1>');
+    //log
+    console.log('QueuePdf getted ['+new Date().toLocaleString()+']');
 }
 
 function getBlackListChars(req,res) {
@@ -201,7 +190,18 @@ function error(req,res) {
     res.send('<h1>Error 404</h1>');
     //log
     console.log('Error 404 ['+new Date().toLocaleString()+']');
-    console.log(req.body);
+}
+  
+async function notify(ticketid,title,body) {
+  var _ticket = await db.getTicket(ticketid);
+  var _user = await db.getUser(_ticket.user);
+  for (var i = 0; i < _user.tokenid.length; i++) {
+    try {
+        await messaging.notify(_user.tokenid[i], title, body);
+    } catch(e) {
+        db.removeTokenidUser({'uid': _user.uid,'tokenid': _user.tokenid[i]});
+    }
+  }
 }
 
 function checkText(map) {
