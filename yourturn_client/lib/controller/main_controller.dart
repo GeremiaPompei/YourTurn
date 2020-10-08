@@ -37,11 +37,7 @@ class MainController {
   String get blacklistChars => _blacklistChars;
 
   Future<bool> _testConnection() async {
-    var res = await _rest.test();
-    if (res == 200)
-      return true;
-    else
-      return false;
+    return await _rest.test();
   }
 
   Future<Map> googleCedential() async {
@@ -251,6 +247,7 @@ class MainController {
 
   Future<void> closeQueue(Queue queue) async {
     await _rest.closeQueue(queue.id);
+    await update();
   }
 
   void configMessaging(context) {

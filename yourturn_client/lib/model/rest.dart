@@ -3,8 +3,8 @@ import 'package:http/http.dart';
 import '../main.dart';
 
 class Rest {
-  Future<dynamic> test() async {
-    return (await requestByGet('test')).statusCode;
+  Future<bool> test() async {
+    return (await requestByGet('test')) != null;
   }
 
   Future<String> createUser(
@@ -16,7 +16,7 @@ class Rest {
       String sesso,
       String email,
       String telefono) async {
-    return await requestByPost('createuser', {
+    return await requestByPut('createuser', {
       'uid': uid,
       'tokenid': [tokenid],
       'nome': nome,
@@ -29,11 +29,11 @@ class Rest {
   }
 
   Future<String> getUser(String uid) async {
-    return await requestByPost('getuser', {'uid': uid});
+    return await requestByGet('getuser/' + uid);
   }
 
   Future<String> removeUser(String uid) async {
-    return await requestByPost('removeuser', {'uid': uid});
+    return await requestByDelete('removeuser/' + uid);
   }
 
   Future<dynamic> addTokenidUser(String uid, String tokenid) async {
@@ -51,11 +51,8 @@ class Rest {
   }
 
   Future<String> createQueue(String id, String luogo, String uid) async {
-    return await requestByPost('createqueue', {
-      'id': id,
-      'luogo': luogo,
-      'uid': uid
-    });
+    return await requestByPut(
+        'createqueue', {'id': id, 'luogo': luogo, 'uid': uid});
   }
 
   Future<String> enqueue(String id, String uid) async {
@@ -63,19 +60,19 @@ class Rest {
   }
 
   Future<String> getQueue(String id) async {
-    return await requestByPost('getqueue', {'id': id});
+    return await requestByGet('getqueue/' + id);
   }
 
   Future<String> closeQueue(String id) async {
-    return await requestByPost('closequeue', {'id': id});
+    return await requestByDelete('closequeue/' + id);
   }
 
-  Future<String> getTicket(String number) async {
-    return await requestByPost('getticket', {'numberid': number});
+  Future<String> getTicket(String numberid) async {
+    return await requestByGet('getticket/' + numberid);
   }
 
   Future<String> getBlackListChars() async {
-    return (await requestByGet('blacklistchars')).body.toString();
+    return await requestByGet('blacklistchars');
   }
 
   Future<String> next(String id) async {
@@ -94,7 +91,33 @@ class Rest {
     return element;
   }
 
-  Future<Response> requestByGet(String url) async {
-    return await Client().get(Uri.parse(indirizzoRoot + url));
+  Future<String> requestByPut(String url, Map el) async {
+    String element;
+    Map<String, String> header = {"Content-Type": "application/json"};
+    dynamic body = json.encode(el);
+    final response = await Client()
+        .put(Uri.parse(indirizzoRoot + url), headers: header, body: body);
+    if (response.statusCode == 200) {
+      element = response.body;
+    }
+    return element;
+  }
+
+  Future<String> requestByGet(String url) async {
+    String element;
+    final response = await Client().get(Uri.parse(indirizzoRoot + url));
+    if (response.statusCode == 200) {
+      element = response.body;
+    }
+    return element;
+  }
+
+  Future<String> requestByDelete(String url) async {
+    String element;
+    final response = await Client().delete(Uri.parse(indirizzoRoot + url));
+    if (response.statusCode == 200) {
+      element = response.body;
+    }
+    return element;
   }
 }

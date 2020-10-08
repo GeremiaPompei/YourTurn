@@ -7,7 +7,7 @@ import 'package:yourturn_client/view/main_view.dart';
 import 'package:yourturn_client/view/service_view.dart';
 
 String indirizzoRoot = 'http://192.168.1.111:3000/';
-const String indirizzoCoda = 'queue/';
+const String indirizzoCoda = 'pdfqueue/';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

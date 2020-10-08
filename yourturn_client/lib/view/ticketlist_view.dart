@@ -2,7 +2,7 @@ import 'package:intl/intl.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:yourturn_client/model/ticket.dart';
+import 'package:yourturn_client/controller/main_controller.dart';
 import 'package:yourturn_client/utility/colore.dart';
 import 'package:yourturn_client/utility/stile_text.dart';
 import 'package:yourturn_client/utility/ticketnumber_converter.dart';
@@ -11,10 +11,9 @@ import 'detailedqueue_view.dart';
 import 'detailedticket_view.dart';
 
 class TicketListView extends StatefulWidget {
-  List<Ticket> _ticket;
-  Future<dynamic> Function() _update;
+  MainController _controller;
 
-  TicketListView(this._ticket, this._update);
+  TicketListView(this._controller);
 
   @override
   _TicketListViewState createState() => _TicketListViewState();
@@ -30,18 +29,18 @@ class _TicketListViewState extends State<TicketListView> {
       enablePullDown: true,
       header: ClassicHeader(),
       controller: _refreshController,
-      onRefresh: () => widget._update().then((value) {
+      onRefresh: () => widget._controller.update().then((value) {
         setState(() {
           (context as Element).reassemble();
+          _refreshController.refreshCompleted();
         });
-        _refreshController.refreshCompleted();
       }),
       child: ListView.separated(
         padding: EdgeInsets.all(8),
         scrollDirection: Axis.vertical,
         shrinkWrap: true,
         itemBuilder: (context, i) {
-          i = widget._ticket.length - 1 - i;
+          i = widget._controller.tickets.length - 1 - i;
           return ListTile(
             onTap: () {
               setState(() {
@@ -49,7 +48,8 @@ class _TicketListViewState extends State<TicketListView> {
                     context: context,
                     builder: (context) {
                       return AlertDialog(
-                        content: DetailedTicketView(widget._ticket[i]),
+                        content:
+                            DetailedTicketView(widget._controller.tickets[i]),
                       );
                     });
               });
@@ -63,7 +63,7 @@ class _TicketListViewState extends State<TicketListView> {
                 shape: BoxShape.circle,
               ),
               child: Text(
-                widget._ticket[i].numberCode,
+                widget._controller.tickets[i].numberCode,
                 style: StileText.sottotitolo,
               ),
             ),
@@ -71,16 +71,16 @@ class _TicketListViewState extends State<TicketListView> {
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Text(
-                  widget._ticket[i].queue.id.toString(),
+                  widget._controller.tickets[i].queue.id.toString(),
                   style: StileText.sottotitolo,
                 ),
                 Text(
-                  widget._ticket[i].queue.luogo.toString(),
+                  widget._controller.tickets[i].queue.luogo.toString(),
                   style: StileText.corpoMini1,
                 ),
                 Text(
                   DateFormat('yyyy:MM:dd HH:mm')
-                      .format(widget._ticket[i].startQueue),
+                      .format(widget._controller.tickets[i].startQueue),
                   style: StileText.corpoMini2,
                 ),
               ],
@@ -90,14 +90,14 @@ class _TicketListViewState extends State<TicketListView> {
               height: 60,
               alignment: Alignment.center,
               child: FloatingActionButton(
-                backgroundColor: widget._ticket[i].queue.index ==
-                        TicketNumberConverter()
-                            .fromString(widget._ticket[i].numberCode)
+                backgroundColor: widget._controller.tickets[i].queue.index ==
+                        TicketNumberConverter().fromString(
+                            widget._controller.tickets[i].numberCode)
                     ? Colors.green
                     : Colors.red,
                 child: Text(
                   TicketNumberConverter()
-                      .fromInt(widget._ticket[i].queue.index),
+                      .fromInt(widget._controller.tickets[i].queue.index),
                   style: StileText.sottotitoloWhite,
                 ),
                 onPressed: () {
@@ -106,7 +106,8 @@ class _TicketListViewState extends State<TicketListView> {
                         context: context,
                         builder: (context) {
                           return AlertDialog(
-                            content: DetailedQueueView(widget._ticket[i].queue),
+                            content: DetailedQueueView(
+                                widget._controller.tickets[i].queue),
                           );
                         });
                   });
@@ -116,7 +117,7 @@ class _TicketListViewState extends State<TicketListView> {
           );
         },
         separatorBuilder: (context, i) => Divider(),
-        itemCount: widget._ticket.length,
+        itemCount: widget._controller.tickets.length,
       ),
     );
   }

@@ -17,8 +17,7 @@ class _TicketsViewState extends State<TicketsView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: TicketListView(
-            widget._controller.tickets, widget._controller.update),
+        body: TicketListView(widget._controller),
         floatingActionButton: FABMenuView(widget._controller));
   }
 }

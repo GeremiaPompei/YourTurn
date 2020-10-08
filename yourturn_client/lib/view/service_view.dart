@@ -69,11 +69,11 @@ class _ServiceViewState extends State<ServiceView> {
           enablePullDown: true,
           header: ClassicHeader(),
           controller: _refreshController,
-          onRefresh: () => widget._controller.update().then((value) {
+          onRefresh: () => widget._controller.getQueue(_queue.id).then((value) {
             setState(() {
-              (context as Element).reassemble();
+              _queue = value;
+              _refreshController.refreshCompleted();
             });
-            _refreshController.refreshCompleted();
           }),
           child: ListView(
             padding: EdgeInsets.fromLTRB(40, 0, 40, 0),
