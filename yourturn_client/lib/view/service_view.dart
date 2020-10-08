@@ -4,7 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:share/share.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:yourturn_client/controller/main_controller.dart';
 import 'package:yourturn_client/model/queue.dart';
 import 'package:yourturn_client/utility/colore.dart';
@@ -92,17 +92,12 @@ class _ServiceViewState extends State<ServiceView> {
               FloatingActionButton(
                 backgroundColor: Colore.back1,
                 child: Icon(
-                  Icons.share,
+                  Icons.link,
                   color: Colore.front1,
                 ),
-                onPressed: () {
+                onPressed: () async{
                   final RenderBox box = context.findRenderObject();
-                  Share.share(indirizzoRoot + indirizzoCoda + _queue.id,
-                      subject: 'Your Turn [' +
-                          _queue.id +
-                          ']'.replaceAll(indirizzoRoot, ''),
-                      sharePositionOrigin:
-                          box.localToGlobal(Offset.zero) & box.size);
+                  await launch(indirizzoRoot + indirizzoCoda + _queue.id);
                 },
               ),
               Container(
