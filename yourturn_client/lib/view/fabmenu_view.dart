@@ -11,6 +11,7 @@ import 'package:yourturn_client/view/qr_scanner.dart';
 import 'package:yourturn_client/view/searchqueue_view.dart';
 
 import '../main.dart';
+import 'buttonback_view.dart';
 
 class FABMenuView extends StatefulWidget {
   MainController _controller;
@@ -44,10 +45,14 @@ class _FABMenuViewState extends State<FABMenuView>
         context: context,
         builder: (context) {
           return AlertDialog(
-              content: SearchQueueView(
-            widget._controller,
-            txt: txt,
-          ));
+            content: SearchQueueView(
+              widget._controller,
+              txt: txt,
+            ),
+            actions: [
+              ButtonBackView(),
+            ],
+          );
         });
   }
 

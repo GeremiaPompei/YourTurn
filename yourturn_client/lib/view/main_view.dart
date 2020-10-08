@@ -9,6 +9,8 @@ import 'package:yourturn_client/view/tickets_view.dart';
 import 'package:yourturn_client/view/navigation_bar.dart';
 import 'package:yourturn_client/view/detaileduser_view.dart';
 
+import 'buttonback_view.dart';
+
 class MainView extends StatefulWidget {
   MainController _controller;
 
@@ -87,6 +89,9 @@ class _MainViewState extends State<MainView> {
                                           child: RemoveUserView(
                                               widget._controller),
                                         ),
+                                        actions: [
+                                          ButtonBackView(),
+                                        ],
                                       );
                                     });
                               });
@@ -108,6 +113,9 @@ class _MainViewState extends State<MainView> {
                           ),
                         ],
                       ),
+                      actions: [
+                        ButtonBackView(),
+                      ],
                     );
                   });
             },

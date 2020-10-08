@@ -304,7 +304,7 @@ class _SignInViewState extends State<SignInView> {
                     style: StileText.corpo,
                   ),
                   FlatButton(
-                    color: Colors.red,
+                    color: Colore.google,
                     child: _indexButton == 0
                         ? Text(
                             'Google',
@@ -362,7 +362,7 @@ class _SignInViewState extends State<SignInView> {
                     },
                   ),
                   FlatButton(
-                    color: Colors.blueAccent,
+                    color: Colore.facebook,
                     child: _indexButton == 0
                         ? Text(
                             'Facebook',

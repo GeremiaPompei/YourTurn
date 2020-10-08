@@ -25,11 +25,11 @@ class _NavigationBarState extends State<NavigationBar> {
       backgroundColor: Colore.back1,
       items: [
         BottomNavigationBarItem(
-          icon: Icon(Icona.seconda),
+          icon: Icon(Icona.crea),
           title: Text(NavigationBar.titles[0]),
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icona.prima),
+          icon: Icon(Icona.partecipa),
           title: Text(NavigationBar.titles[1]),
         ),
       ],

@@ -5,7 +5,7 @@ import 'package:yourturn_client/model/ticket.dart';
 import 'package:yourturn_client/utility/colore.dart';
 import 'package:yourturn_client/utility/stile_text.dart';
 import 'package:yourturn_client/view/detailedqueue_view.dart';
-import 'package:yourturn_client/view/detaileduser_view.dart';
+import 'buttonback_view.dart';
 import 'cell_view.dart';
 
 class DetailedTicketView extends StatefulWidget {
@@ -50,7 +50,6 @@ class _DetailedTicketViewState extends State<DetailedTicketView> {
                     .format(widget._ticket.startQueue),
                 style: StileText.corpo),
           ),
-
           widget._ticket.queue == null
               ? CellView('Coda Eliminata', Container())
               : CellView(
@@ -66,6 +65,9 @@ class _DetailedTicketViewState extends State<DetailedTicketView> {
                               return AlertDialog(
                                 content:
                                     DetailedQueueView(widget._ticket.queue),
+                                actions: [
+                                  ButtonBackView(),
+                                ],
                               );
                             });
                       });

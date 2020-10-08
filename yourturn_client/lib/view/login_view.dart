@@ -147,7 +147,7 @@ class _LogInViewState extends State<LogInView> {
                     },
                   ),
                   FlatButton(
-                    color: Colors.red,
+                    color: Colore.google,
                     child: _indexButton == 0
                         ? Text(
                             'Google',
@@ -162,7 +162,7 @@ class _LogInViewState extends State<LogInView> {
                           _indexButton = 1;
                         });
                         try {
-                          await widget._controller.googleLogIn();
+                          await widget._controller.logInGoogle();
                           Navigator.pushNamedAndRemoveUntil(context, '/body',
                               (route) => route.popped == null);
                           setState(() {
@@ -181,7 +181,7 @@ class _LogInViewState extends State<LogInView> {
                     }),
                   ),
                   FlatButton(
-                    color: Colors.blueAccent,
+                    color: Colore.facebook,
                     child: _indexButton == 0
                         ? Text(
                             'Facebook',
@@ -196,7 +196,7 @@ class _LogInViewState extends State<LogInView> {
                           _indexButton = 1;
                         });
                         try {
-                          await widget._controller.facebookLogIn();
+                          await widget._controller.logInFacebook();
                           Navigator.pushNamedAndRemoveUntil(context, '/body',
                               (route) => route.popped == null);
                           setState(() {
@@ -218,7 +218,7 @@ class _LogInViewState extends State<LogInView> {
                     _errMexM.allMex['general'] == null
                         ? ''
                         : _errMexM.allMex['general'],
-                    style: TextStyle(color: Colors.red),
+                    style: StileText.error,
                   ),
                   Container(
                     height: 40,

@@ -7,6 +7,7 @@ import 'package:yourturn_client/utility/colore.dart';
 import 'package:yourturn_client/utility/stile_text.dart';
 import 'package:yourturn_client/utility/ticketnumber_converter.dart';
 
+import 'buttonback_view.dart';
 import 'detailedqueue_view.dart';
 import 'detailedticket_view.dart';
 
@@ -50,6 +51,9 @@ class _TicketListViewState extends State<TicketListView> {
                       return AlertDialog(
                         content:
                             DetailedTicketView(widget._controller.tickets[i]),
+                        actions: [
+                          ButtonBackView(),
+                        ],
                       );
                     });
               });
@@ -93,8 +97,8 @@ class _TicketListViewState extends State<TicketListView> {
                 backgroundColor: widget._controller.tickets[i].queue.index ==
                         TicketNumberConverter().fromString(
                             widget._controller.tickets[i].numberCode)
-                    ? Colors.green
-                    : Colors.red,
+                    ? Colore.allow
+                    : Colore.deny,
                 child: Text(
                   TicketNumberConverter()
                       .fromInt(widget._controller.tickets[i].queue.index),
@@ -108,6 +112,9 @@ class _TicketListViewState extends State<TicketListView> {
                           return AlertDialog(
                             content: DetailedQueueView(
                                 widget._controller.tickets[i].queue),
+                            actions: [
+                              ButtonBackView(),
+                            ],
                           );
                         });
                   });

@@ -7,6 +7,7 @@ import 'package:yourturn_client/utility/colore.dart';
 import 'package:yourturn_client/utility/stile_text.dart';
 import 'package:yourturn_client/view/detailedticket_view.dart';
 
+import 'buttonback_view.dart';
 import 'detailedqueue_view.dart';
 
 class PartecipaQueueView extends StatefulWidget {
@@ -53,7 +54,7 @@ class _PartecipaQueueViewState extends State<PartecipaQueueView> {
     return AlertDialog(
       content: _contentWidget,
       actions: [
-        _actionWidget,
+        ButtonBackView(),
       ],
     );
   }

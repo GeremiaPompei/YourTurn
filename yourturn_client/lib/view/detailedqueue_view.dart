@@ -5,6 +5,7 @@ import 'package:yourturn_client/model/queue.dart';
 import 'package:yourturn_client/utility/colore.dart';
 import 'package:yourturn_client/utility/stile_text.dart';
 import 'package:yourturn_client/utility/ticketnumber_converter.dart';
+import 'package:yourturn_client/view/buttonback_view.dart';
 import 'package:yourturn_client/view/qr_generator.dart';
 import 'package:yourturn_client/view/detaileduser_view.dart';
 import 'cell_view.dart';
@@ -94,6 +95,9 @@ class _DetailedQueueViewState extends State<DetailedQueueView> {
                             builder: (context) {
                               return AlertDialog(
                                 content: DetailedUserView(widget._queue.admin),
+                                actions: [
+                                  ButtonBackView(),
+                                ],
                               );
                             });
                       });

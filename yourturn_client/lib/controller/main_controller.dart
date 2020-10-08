@@ -34,11 +34,11 @@ class MainController {
     });
   }
 
-  String get blacklistChars => _blacklistChars;
-
-  Future<bool> _testConnection() async {
-    return await _rest.test();
+  void configMessaging(context) {
+    this._messaging.config(context, update);
   }
+
+  Future<bool> _testConnection() async => await _rest.test();
 
   Future<Map> googleCedential() async {
     await _testConnection();
@@ -140,7 +140,7 @@ class MainController {
     return _user;
   }
 
-  Future<myuser.User> googleLogIn() async {
+  Future<myuser.User> logInGoogle() async {
     Map authCredential = await googleCedential();
     UserCredential userCredential = await this
         ._authentication
@@ -149,7 +149,7 @@ class MainController {
     return this._user;
   }
 
-  Future<myuser.User> facebookLogIn() async {
+  Future<myuser.User> logInFacebook() async {
     FacebookLoginResult result = await this._authentication.facebookSignIn();
     final token = result.accessToken.token;
     final facebookAuthCred = FacebookAuthProvider.credential(token);
@@ -184,13 +184,6 @@ class MainController {
     } catch (e) {} finally {
       _removeFiles();
     }
-  }
-
-  Future<void> _removeFiles() async {
-    var uidTxt = await _storeManager.localFile('uid.txt');
-    if (uidTxt != null) uidTxt.delete();
-    var localTxt = await _storeManager.localFile('local.json');
-    if (localTxt != null) localTxt.delete();
   }
 
   Future<void> removeUserFacebook() async {
@@ -234,24 +227,22 @@ class MainController {
     return Queue.fromJson(queue, _cache);
   }
 
-  Future<Ticket> enqueueToOther(Queue queue, myuser.User user) async {
-    Map<String, dynamic> map =
-        json.decode(await _rest.enqueue(queue.id, user.uid));
-    return Ticket.fromJson(map, _cache);
-  }
-
-  Future<Queue> next(Queue queue) async {
-    Map<String, dynamic> map = json.decode(await _rest.next(queue.id));
-    return Queue.fromJson(map, _cache);
-  }
-
   Future<void> closeQueue(Queue queue) async {
     await _rest.closeQueue(queue.id);
     await update();
   }
 
-  void configMessaging(context) {
-    this._messaging.config(context);
+  Future<Ticket> enqueueToOther(Queue queue, myuser.User user) async {
+    Map<String, dynamic> map =
+        json.decode(await _rest.enqueue(queue.id, user.uid));
+    Ticket ticket = Ticket.fromJson(map, _cache);
+    update();
+    return ticket;
+  }
+
+  Future<Queue> next(Queue queue) async {
+    Map<String, dynamic> map = json.decode(await _rest.next(queue.id));
+    return Queue.fromJson(map, _cache);
   }
 
   Future<myuser.User> load() async {
@@ -264,32 +255,16 @@ class MainController {
     return this._user;
   }
 
-  Future<void> _saveUid() async {
-    await _storeManager.store(_user.uid, 'uid.txt');
+  Future<void> _loadBlackList() async {
+    if ((await this._storeManager.localFile('blacklist.txt')) != null) {
+      this._blacklistChars = await this._storeManager.load('blacklist.txt');
+    }
   }
 
   Future<void> _loadUid() async {
     this._user = myuser.User.fromJsonAdmin(
         json.decode(await _rest.getUser(await _storeManager.load('uid.txt'))),
         _cache);
-  }
-
-  Future<void> _saveLocal(response) async {
-    try {
-      await this._storeManager.store(response, 'local.json');
-    } catch (e) {}
-  }
-
-  Future<void> _saveBlackList() async {
-    try {
-      await this._storeManager.store(this._blacklistChars, 'blacklist.txt');
-    } catch (e) {}
-  }
-
-  Future<void> _loadBlackList() async {
-    if ((await this._storeManager.localFile('blacklist.txt')) != null) {
-      this._blacklistChars = await this._storeManager.load('blacklist.txt');
-    }
   }
 
   Future<void> _loadLocal() async {
@@ -299,7 +274,30 @@ class MainController {
     }
   }
 
-  Map<String, dynamic> get messages => this._messaging.messages;
+  Future<void> _saveBlackList() async {
+    try {
+      await this._storeManager.store(this._blacklistChars, 'blacklist.txt');
+    } catch (e) {}
+  }
+
+  Future<void> _saveUid() async {
+    await _storeManager.store(_user.uid, 'uid.txt');
+  }
+
+  Future<void> _saveLocal(response) async {
+    try {
+      await this._storeManager.store(response, 'local.json');
+    } catch (e) {}
+  }
+
+  Future<void> _removeFiles() async {
+    var uidTxt = await _storeManager.localFile('uid.txt');
+    if (uidTxt != null) uidTxt.delete();
+    var localTxt = await _storeManager.localFile('local.json');
+    if (localTxt != null) localTxt.delete();
+  }
+
+  String get blacklistChars => _blacklistChars;
 
   myuser.User get user => _user;
 

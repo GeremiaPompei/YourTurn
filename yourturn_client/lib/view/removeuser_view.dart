@@ -162,7 +162,7 @@ class _RemoveUserViewState extends State<RemoveUserView> {
                     },
                   ),
                   FlatButton(
-                    color: Colors.red,
+                    color: Colore.google,
                     child: _indexButton == 0
                         ? Text(
                             'Google',
@@ -193,7 +193,7 @@ class _RemoveUserViewState extends State<RemoveUserView> {
                     }),
                   ),
                   FlatButton(
-                    color: Colors.blueAccent,
+                    color: Colore.facebook,
                     child: _indexButton == 0
                         ? Text(
                             'Facebook',
@@ -227,7 +227,7 @@ class _RemoveUserViewState extends State<RemoveUserView> {
                     _errMexM.allMex['general'] == null
                         ? ''
                         : _errMexM.allMex['general'],
-                    style: TextStyle(color: Colors.red),
+                    style: StileText.error,
                   ),
                 ],
               ),

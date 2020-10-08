@@ -35,18 +35,16 @@ class User {
     String email = pjson['email'];
     String telefono = pjson['telefono'];
     Queue queue = cache.findQueue(pjson['queue']);
-    List<String> tokenid = [];
-    pjson['tokenid'].forEach((el) {
-      tokenid.add(el);
-    });
-    List<Ticket> tickets = [];
-    return User.all(uid, tokenid, nome, cognome, annonascita, sesso, email,
-        telefono, queue, tickets);
+    return User.all(
+        uid, [], nome, cognome, annonascita, sesso, email, telefono, queue, []);
   }
 
   static User fromJsonAdmin(dynamic pjson, Cache cache) {
     User user = User.fromJson(pjson, cache);
     cache.listUsers.add(user);
+    pjson['tokenid'].forEach((el) {
+      user.tokenid.add(el);
+    });
     pjson['tickets'].forEach((element) {
       user.tickets.add(cache.findTicket(element));
     });

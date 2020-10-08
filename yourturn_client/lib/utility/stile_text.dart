@@ -52,6 +52,6 @@ class StileText {
   );
 
   static final error = TextStyle(
-    color: Colors.red,
+    color: Colore.deny,
   );
 }

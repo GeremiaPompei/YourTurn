@@ -11,10 +11,10 @@ class Ticket {
   Ticket.all(this._numberId, this._startEnqueue, this._queue, this._user);
 
   static Ticket fromJson(dynamic pjson, Cache cache) {
-    User finaluser = cache.findUser(pjson['user']);
     String number = pjson['numberid'];
     DateTime startEnqueue = DateTime.parse(pjson['startenqueue']);
     Queue finalQueue = cache.findQueue(pjson['queue']);
+    User finaluser = cache.findUser(pjson['user']);
     return Ticket.all(number, startEnqueue, finalQueue, finaluser);
   }
 

@@ -48,6 +48,7 @@ class _SearchQueueViewState extends State<SearchQueueView> {
                           _varWidget = CircularProgressIndicator();
                         });
                         Queue queue = await widget._controller.getQueue(_text);
+                        Navigator.of(context, rootNavigator: true).pop();
                         showDialog(
                             context: context,
                             builder: (context) {

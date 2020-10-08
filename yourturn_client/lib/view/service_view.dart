@@ -144,7 +144,7 @@ class _ServiceViewState extends State<ServiceView> {
                 },
               ),
               FlatButton(
-                color: Colors.green,
+                color: Colore.allow,
                 child: _prossimoW[_indexProssimo],
                 onPressed: () async {
                   try {
@@ -170,7 +170,7 @@ class _ServiceViewState extends State<ServiceView> {
                 },
               ),
               FlatButton(
-                color: Colors.red,
+                color: Colore.deny,
                 child: Text('Termina', style: StileText.sottotitolo),
                 onPressed: () {
                   widget._controller.closeQueue(_queue);
