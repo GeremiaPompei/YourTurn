@@ -54,6 +54,7 @@ class _PartecipaQueueViewState extends State<PartecipaQueueView> {
     return AlertDialog(
       content: _contentWidget,
       actions: [
+        _actionWidget,
         ButtonBackView(),
       ],
     );

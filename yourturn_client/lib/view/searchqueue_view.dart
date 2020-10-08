@@ -95,21 +95,6 @@ class _SearchQueueViewState extends State<SearchQueueView> {
             ),
           ),
           Container(
-            color: Colore.back1,
-            child: ListTile(
-              title: Text(
-                'Non possono essere utilizzati tali caratteri: ',
-                style: StileText.corpo,
-                textAlign: TextAlign.center,
-              ),
-              subtitle: Text(
-                widget._controller.blacklistChars.toString(),
-                style: StileText.sottotitolo,
-                textAlign: TextAlign.center,
-              ),
-            ),
-          ),
-          Container(
             height: 15,
           ),
           Container(alignment: Alignment.center, child: _varWidget),
