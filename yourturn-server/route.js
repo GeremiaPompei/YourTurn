@@ -3,7 +3,6 @@ var bodyParser = require('body-parser');
 const controller = require('./controller');
 const router = express.Router();
 
-const pathQueue = 'pdfqueue';
 
 router.post('/addtokeniduser', bodyParser.json(), controller.addTokenidUser);
 router.post('/removetokeniduser', bodyParser.json(), controller.removeTokenidUser);
@@ -17,11 +16,8 @@ router.get('/getuser/:id', controller.getUser);
 router.get('/getqueue/:id', controller.getQueue);
 router.get('/getticket/:id', controller.getTicket);
 router.get('/blacklistchars', controller.getBlackListChars);
-router.get('/'+pathQueue+'/:id', controller.getQueuePdf);
+router.get('/pdfqueue/:id', controller.getQueuePdf);
 router.get('/test', controller.test);
 router.use(controller.error);
 
-module.exports = {
-    router,
-    pathQueue,
-};
+module.exports = router;

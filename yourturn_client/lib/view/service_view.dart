@@ -96,7 +96,6 @@ class _ServiceViewState extends State<ServiceView> {
                   color: Colore.front1,
                 ),
                 onPressed: () async{
-                  final RenderBox box = context.findRenderObject();
                   await launch(indirizzoRoot + indirizzoCoda + _queue.id);
                 },
               ),

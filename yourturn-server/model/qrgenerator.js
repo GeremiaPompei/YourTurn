@@ -1,11 +1,11 @@
 const qrcode = require('qrcode');
 const network = require('./network');
-const route = require('../route');
 
-async function generate(name) {
-    var finalpath = name+'.png';
-    await qrcode.toFile(finalpath, 'http://'+network.address+':'+network.port+'/'+route.pathQueue+'/'+name);
-    console.log('Genarated: '+finalpath);
+async function generate(path, name) {
+    var finalpath = path+'.png';
+    var strGenerated = 'http://'+network.address+':'+network.port+'/pdfqueue/'+name;
+    await qrcode.toFile(finalpath, strGenerated);
+    console.log('Genarated: '+strGenerated);
     return finalpath;
 }
 

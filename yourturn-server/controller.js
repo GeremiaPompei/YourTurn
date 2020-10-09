@@ -162,11 +162,12 @@ async function getQueuePdf(req,res) {
     var _queue = await db.getQueue(req.params.id);
     if(_queue!=null) {
         fs.mkdirSync(pathQrFiles, { recursive: true });
-        var pathJpg = await qrgenerator.generate(pathQrFiles+_queue.id);
+        var pathJpg = await qrgenerator.generate(pathQrFiles+_queue.id, _queue.id);
         var pathPdf = await pdfconverter.convert(pathJpg, _queue.id);
         fs.unlinkSync(pathJpg);
-        res.sendFile(pathPdf);
-        setTimeout(()=>fs.unlinkSync(pathPdf),1000);
+        res.sendFile(pathPdf,function(err) {
+            fs.unlinkSync(pathPdf)
+        });
     }else
         res.send('<h1>Coda Inesistente!</h1>');
     //log
