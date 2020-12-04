@@ -103,7 +103,8 @@ class _MainViewState extends State<MainView> {
                                 Icon(Icons.exit_to_app, color: Colore.front1),
                             onPressed: () {
                               setState(() {
-                                widget._controller.logOut().then((value) =>
+                                widget._controller.logOut()
+                                    .then((value) =>
                                     Navigator.pushNamedAndRemoveUntil(
                                         context,
                                         '/authenticate',

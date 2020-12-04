@@ -177,13 +177,9 @@ class MainController {
   }
 
   Future<void> logOut() async {
-    try {
-      await this._authentication.logOut();
-      _user.tokenid.remove(_messaging.token);
-      await _rest.removeTokenidUser(_user.uid, _messaging.token);
-    } catch (e) {} finally {
-      _removeFiles();
-    }
+    await this._authentication.logOut();
+    _user.tokenid.remove(_messaging.token);
+    await _rest.removeTokenidUser(_user.uid, _messaging.token);
   }
 
   Future<void> removeUserFacebook() async {
