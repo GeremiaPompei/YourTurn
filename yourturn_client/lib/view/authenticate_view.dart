@@ -6,8 +6,6 @@ import 'package:yourturn_client/utility/stile_text.dart';
 import 'package:yourturn_client/view/login_view.dart';
 import 'package:yourturn_client/view/signin_view.dart';
 
-import '../main.dart';
-
 class AuthenticateView extends StatefulWidget {
   MainController _controller;
 
@@ -20,29 +18,9 @@ class AuthenticateView extends StatefulWidget {
 class _AuthenticateViewState extends State<AuthenticateView> {
   Widget _varWidget;
 
-  //TODO provvisorio dato che l'ip del server non è statico
-  Widget _tmpWidget;
-  List<Widget> _tmpWs;
-
   @override
   void initState() {
     this._varWidget = LogInView(widget._controller);
-    this._tmpWs = [
-      Text(
-        'YourTurn',
-        style: StileText.titolo,
-      ),
-      TextField(
-          decoration: InputDecoration(
-            hintText: 'Inserisci Ip del Server (es. 192.168.1.111)',
-            labelText: indirizzoRoot,
-          ),
-          onSubmitted: (input) => setState(() {
-                indirizzoRoot = 'http://' + input + ':3000/';
-                _tmpWidget = _tmpWs[0];
-              }))
-    ];
-    this._tmpWidget = this._tmpWs[0];
   }
 
   @override
@@ -52,16 +30,9 @@ class _AuthenticateViewState extends State<AuthenticateView> {
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: Colore.back1,
-          title: FlatButton(
-            child: _tmpWidget,
-            onPressed: () {
-              setState(() {
-                if (_tmpWidget == _tmpWs[0])
-                  _tmpWidget = _tmpWs[1];
-                else
-                  _tmpWidget = _tmpWs[0];
-              });
-            },
+          title: Text(
+            'YourTurn',
+            style: StileText.titolo,
           ),
           bottom: TabBar(
             indicatorColor: Colore.front1,

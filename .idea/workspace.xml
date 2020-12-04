@@ -19,37 +19,10 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="3f1a1f3b-27fa-4a3e-84ba-1b49cb8dc486" name="Default Changelist" comment="README.md aggiornato">
-      <change afterPath="$PROJECT_DIR$/yourturn-server/model/network.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/yourturn-server/model/pdfconverter.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/yourturn-server/model/qrgenerator.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/yourturn-server/model/user.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/yourturn-server/controller.js" beforeDir="false" afterPath="$PROJECT_DIR$/yourturn-server/controller.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/yourturn-server/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/yourturn-server/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/yourturn-server/model/database.js" beforeDir="false" afterPath="$PROJECT_DIR$/yourturn-server/model/database.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/yourturn-server/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/yourturn-server/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/yourturn-server/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/yourturn-server/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/yourturn-server/route.js" beforeDir="false" afterPath="$PROJECT_DIR$/yourturn-server/route.js" afterDir="false" />
+    <list default="true" id="3f1a1f3b-27fa-4a3e-84ba-1b49cb8dc486" name="Default Changelist" comment="Sistemate funzioni dopo l'esame">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/yourturn_client/.dart_tool/package_config.json" beforeDir="false" afterPath="$PROJECT_DIR$/yourturn_client/.dart_tool/package_config.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/yourturn_client/.packages" beforeDir="false" afterPath="$PROJECT_DIR$/yourturn_client/.packages" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/yourturn_client/ios/Flutter/.last_build_id" beforeDir="false" afterPath="$PROJECT_DIR$/yourturn_client/ios/Flutter/.last_build_id" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/yourturn_client/ios/Flutter/Flutter.framework/Flutter" beforeDir="false" afterPath="$PROJECT_DIR$/yourturn_client/ios/Flutter/Flutter.framework/Flutter" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/yourturn_client/ios/Flutter/Flutter.framework/Headers/Flutter.h" beforeDir="false" afterPath="$PROJECT_DIR$/yourturn_client/ios/Flutter/Flutter.framework/Headers/Flutter.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/yourturn_client/ios/Flutter/Flutter.framework/Headers/FlutterBinaryMessenger.h" beforeDir="false" afterPath="$PROJECT_DIR$/yourturn_client/ios/Flutter/Flutter.framework/Headers/FlutterBinaryMessenger.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/yourturn_client/ios/Flutter/Flutter.framework/Headers/FlutterEngine.h" beforeDir="false" afterPath="$PROJECT_DIR$/yourturn_client/ios/Flutter/Flutter.framework/Headers/FlutterEngine.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/yourturn_client/ios/Flutter/Flutter.framework/Headers/FlutterPlugin.h" beforeDir="false" afterPath="$PROJECT_DIR$/yourturn_client/ios/Flutter/Flutter.framework/Headers/FlutterPlugin.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/yourturn_client/ios/Flutter/Flutter.framework/Headers/FlutterViewController.h" beforeDir="false" afterPath="$PROJECT_DIR$/yourturn_client/ios/Flutter/Flutter.framework/Headers/FlutterViewController.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/yourturn_client/ios/Flutter/Flutter.framework/Info.plist" beforeDir="false" afterPath="$PROJECT_DIR$/yourturn_client/ios/Flutter/Flutter.framework/Info.plist" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/yourturn_client/ios/Flutter/Flutter.framework/_CodeSignature/CodeResources" beforeDir="false" afterPath="$PROJECT_DIR$/yourturn_client/ios/Flutter/Flutter.framework/_CodeSignature/CodeResources" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/yourturn_client/ios/Flutter/Generated.xcconfig" beforeDir="false" afterPath="$PROJECT_DIR$/yourturn_client/ios/Flutter/Generated.xcconfig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/yourturn_client/ios/Flutter/flutter_export_environment.sh" beforeDir="false" afterPath="$PROJECT_DIR$/yourturn_client/ios/Flutter/flutter_export_environment.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/yourturn_client/ios/Podfile.lock" beforeDir="false" afterPath="$PROJECT_DIR$/yourturn_client/ios/Podfile.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/yourturn_client/lib/controller/main_controller.dart" beforeDir="false" afterPath="$PROJECT_DIR$/yourturn_client/lib/controller/main_controller.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/yourturn_client/lib/model/rest.dart" beforeDir="false" afterPath="$PROJECT_DIR$/yourturn_client/lib/model/rest.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/yourturn_client/lib/view/createqueue_view.dart" beforeDir="false" afterPath="$PROJECT_DIR$/yourturn_client/lib/view/createqueue_view.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/yourturn_client/lib/view/login_view.dart" beforeDir="false" afterPath="$PROJECT_DIR$/yourturn_client/lib/view/login_view.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/yourturn_client/lib/view/removeuser_view.dart" beforeDir="false" afterPath="$PROJECT_DIR$/yourturn_client/lib/view/removeuser_view.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/yourturn_client/lib/view/signin_view.dart" beforeDir="false" afterPath="$PROJECT_DIR$/yourturn_client/lib/view/signin_view.dart" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -165,7 +138,14 @@
       <option name="project" value="LOCAL" />
       <updated>1601837905087</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="Sistemate funzioni dopo l'esame">
+      <created>1602232606067</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1602232606067</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -191,7 +171,8 @@
     <MESSAGE value="Miglioramento interazione client e server. Delegata creazione queue a server" />
     <MESSAGE value="README.md" />
     <MESSAGE value="README.md aggiornato" />
-    <option name="LAST_COMMIT_MESSAGE" value="README.md aggiornato" />
+    <MESSAGE value="Sistemate funzioni dopo l'esame" />
+    <option name="LAST_COMMIT_MESSAGE" value="Sistemate funzioni dopo l'esame" />
   </component>
   <component name="WindowStateProjectService">
     <state x="57" y="14" width="1071" height="786" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1600450741124">
@@ -226,11 +207,11 @@
       <screen x="0" y="0" width="1280" height="800" />
     </state>
     <state x="94" y="38" key="SettingsEditor/0.0.1280.800@0.0.1280.800" timestamp="1600450561374" />
-    <state x="56" y="132" key="Vcs.Push.Dialog.v2" timestamp="1601837920901">
-      <screen x="0" y="0" width="1280" height="800" />
+    <state x="56" y="151" key="Vcs.Push.Dialog.v2" timestamp="1602232608748">
+      <screen x="0" y="23" width="1280" height="777" />
     </state>
     <state x="56" y="132" key="Vcs.Push.Dialog.v2/0.0.1280.800@0.0.1280.800" timestamp="1601837920901" />
-    <state x="56" y="151" key="Vcs.Push.Dialog.v2/0.23.1280.777@0.23.1280.777" timestamp="1600975205365" />
+    <state x="56" y="151" key="Vcs.Push.Dialog.v2/0.23.1280.777@0.23.1280.777" timestamp="1602232608748" />
     <state x="200" y="152" key="com.intellij.openapi.vcs.changes.SpecificFilesViewDialog" timestamp="1600887648781">
       <screen x="0" y="23" width="1280" height="777" />
     </state>
