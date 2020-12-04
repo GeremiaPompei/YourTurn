@@ -6,7 +6,7 @@ import 'package:yourturn_client/view/authenticate_view.dart';
 import 'package:yourturn_client/view/main_view.dart';
 import 'package:yourturn_client/view/service_view.dart';
 
-const String indirizzoRoot = 'https://.../';
+const String indirizzoRoot = 'https://yturn.herokuapp.com/';
 const String indirizzoCoda = 'pdfqueue/';
 
 void main() async {
