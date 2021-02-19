@@ -185,13 +185,6 @@ function test(req,res) {
     //log
     console.log('Test ['+new Date().toLocaleString()+']');
 }
-
-function error(req,res) {
-    res.statusCode = 404;
-    res.send('<h1>Error 404</h1>');
-    //log
-    console.log('Error 404 ['+new Date().toLocaleString()+']');
-}
   
 async function notify(ticketid,title,body) {
   var _ticket = await db.getTicket(ticketid);
