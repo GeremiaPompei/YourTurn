@@ -17,7 +17,7 @@
             <key>metadata</key>
             <dict>
                 <key>bundle-identifier</key>
-                <string>com.unicam.pawm</string>
+                <string>com.unicam.pawm.yourturn.client.yourturn-client</string>
                 <key>bundle-version</key>
                 <string>1.0.0</string>
                 <key>kind</key>
