@@ -16,5 +16,7 @@ router.get('/getqueue/:id', controller.getQueue);
 router.get('/getticket/:id', controller.getTicket);
 router.get('/blacklistchars', controller.getBlackListChars);
 router.get('/pdfqueue/:id', controller.getQueuePdf);
+router.get('/test', controller.test);
+router.use(controller.error);
 
 module.exports = router;
